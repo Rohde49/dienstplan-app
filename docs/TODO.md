@@ -12,7 +12,7 @@ Entwicklung erfolgt mit Claude Code (Electron + Vite + React + TypeScript). Begr
 - [x] SQLite-Anbindung über `better-sqlite3` im Main-Prozess isoliert testen — `src/main/db.ts` legt DB in `app.getPath('userData')` an, Smoke-Test (Tabelle anlegen, Insert, Select) beim App-Start bestätigt per Log und Datei auf Disk
 - [x] Git-Repository auf GitHub angelegt und verbunden (`github.com/Rohde49/dienstplan-app`), erster Commit gepusht
 
-## Schritt 2: Styling-Fundament (aktueller Schritt)
+## Schritt 2: Styling-Fundament (abgeschlossen)
 
 Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.md).
 
@@ -20,9 +20,9 @@ Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.m
 - [x] shadcn im Style „new-york" einrichten (`components.json`, Pfad-Alias `@/` → `src/renderer/src`), `lucide-react` installieren
 - [x] `cn()`-Hilfsfunktion mit `clsx` + `tailwind-merge` anlegen (nicht wie im Referenzprojekt nur `clsx` allein, siehe `styling.md`)
 - [x] Erste UI-Primitives nachbauen, mindestens `Card` (zusammengesetzt aus `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter`) und `Button` — zusätzlich `CardDescription`, `Button` mit `asChild`/`@radix-ui/react-slot`
-- [ ] Farbpalette für Theme festlegen, gleichzeitig die noch offene Palette für `TeamMember.farbe` aus `architektur/datenmodell.md` mit klären — Vorschlag (neutrale, zurückhaltende Palette, siehe `architektur/styling.md`) ist in `base.css` umgesetzt, aber noch nicht final bestätigt
+- [x] Farbpalette für Theme festlegen, gleichzeitig die noch offene Palette für `TeamMember.farbe` aus `architektur/datenmodell.md` mit klären — Theme final in `base.css` (neutral, siehe `architektur/styling.md`), `TeamMember.farbe`-Palette (10 Werte) final in `architektur/datenmodell.md`, Code-Platzierung (`shared/types.ts`) folgt bei Umsetzung der Team-Verwaltung
 
-## Schritt 3: Startseite mit Navigation (geplant)
+## Schritt 3: Startseite mit Navigation (aktueller Schritt)
 
 - [ ] React Router einrichten (Routing-Grundgerüst, keine persistente Navigationsleiste, da die Cards auf der Startseite die Navigation übernehmen)
 - [ ] Startseite (`StartPage`) mit drei Cards (auf Basis der in Schritt 2 gebauten `Card`-Komponente): Team-Verwaltung, Eintrag-Verwaltung, Dienstplan erstellen

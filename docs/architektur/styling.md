@@ -34,7 +34,6 @@ Begründung: Das Setup ist im Referenzprojekt bereits gelöst und funktioniert d
 - Der Pfad-Alias `@/` muss sowohl in `electron.vite.config.ts` (Renderer-Resolve-Alias) als auch in `tsconfig.web.json` (`paths`) eingetragen werden, analog zur `vite.config.ts`/`tsconfig.app.json`-Kombination im Referenzprojekt.
 - `components.json` verweist entsprechend auf `src/renderer/src` statt auf ein einfaches `src`-Verzeichnis wie im Referenzprojekt.
 
-## Offen
+## Theme-Farbpalette (final)
 
-- Konkrete Farbwerte für das Theme sind noch nicht festgelegt. Das verbindet sich mit der in [`datenmodell.md`](./datenmodell.md) offenen Frage nach der Farbpalette für `TeamMember.farbe`, beides sollte zusammen entschieden werden.
-- Dark Mode ist nicht gefordert und nicht Teil dieses Schritts.
+Neutrale, zurückhaltende Palette (Graustufen + neutraler Primary-Ton, kein Farbakzent), Werte in `assets/base.css` als CSS-Variablen (`--background`, `--foreground`, `--primary` usw.) hinterlegt. Begründung: Die Theme-Primary-Farbe bleibt bewusst gedeckt (UI-Chrome: Buttons, Fokus-Ringe), damit sie nicht mit der separaten `TeamMember.farbe`-Palette (siehe [`datenmodell.md`](./datenmodell.md)) im Dienstplan-Grid konkurriert oder verwechselt wird. Beide Paletten nehmen bewusst getrennte visuelle Rollen ein: Theme = neutral/gedeckt, Mitarbeiterfarben = eigene kräftige, gesättigte Palette. `baseColor: "neutral"` in `components.json` korrespondiert damit. Dark Mode ist nicht gefordert und nicht Teil dieses Schritts.

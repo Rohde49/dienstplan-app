@@ -33,10 +33,26 @@ interface TeamMember {
 
 **`wochenarbeitszeitMinuten` als Zahl in Minuten**: Zeitwerte werden in der gesamten App im Format HH:MM dargestellt und eingegeben, das betrifft aber nur Anzeige und Eingabe. Intern wird die Wochenarbeitszeit als Minutenzahl gespeichert (z. B. 39h = 2340), weil spätere Berechnungen (Soll-/Ist-Vergleich, Summenbildung über einen Monat) mit einer Zahl fehlerfrei möglich sind, während ein String wie `"39:00"` bei jeder Rechnung neu geparst werden müsste. Die Umrechnung HH:MM ↔ Minuten erfolgt an der UI-Grenze (Renderer).
 
-**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Die konkrete Palette (Liste der erlaubten Hex-Werte) ist noch offen und wird bei der Umsetzung der Team-Verwaltung (UI) festgelegt, vorgesehen als exportierte Konstante in `shared/types.ts`, die Main und Renderer gemeinsam nutzen.
+**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Palette in Schritt 2 zusammen mit der Theme-Farbpalette entschieden (siehe [`styling.md`](./styling.md)): zehn kräftige, gut unterscheidbare Farbtöne, bewusst getrennt vom neutralen Theme-Akzent — kein Grauton (für UI-Chrome reserviert) und keine zu große Nähe zum `--destructive`-Rotton (um Verwechslung mit Fehler-/Lösch-Zuständen zu vermeiden):
+
+```typescript
+export const TEAM_MEMBER_COLORS = [
+  '#3A8DFF', // Blau
+  '#34B37A', // Grün
+  '#F2994A', // Orange
+  '#9B6BDE', // Violett
+  '#2FB6C4', // Türkis
+  '#E15A97', // Pink
+  '#C9A227', // Oliv-Gelb
+  '#5C6BC0', // Indigo
+  '#C1662F', // Terrakotta
+  '#7FB236' // Lindgrün
+] as const
+```
+
+Die Werte sind hiermit final. Der Code-Ort (`shared/types.ts`, als exportierte Konstante, die Main und Renderer gemeinsam nutzen) folgt dem in [`projektstruktur.md`](./projektstruktur.md) festgelegten Ablauf: `shared/types.ts` und die `TeamMember`-Entität werden erst bei der tatsächlichen Umsetzung der Team-Verwaltung angelegt, nicht vorab auf Vorrat.
 
 ## Offen
 
 - `ShiftType`/`Dienstplan`: Struktur noch zu klären.
 - `PlanEntry`: Struktur noch zu klären, abhängig von `ShiftType`.
-- Konkrete Farbwerte der Palette für `TeamMember.farbe`.
