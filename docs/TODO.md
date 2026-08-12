@@ -78,20 +78,20 @@ Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanP
 - [x] Platzhalter-Spalten Rufbereitschaft und Bemerkung (ohne Funktion)
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich mit Mockup) und Doku-Update — alle drei Checks sauber (78 Tests), Screenshot-Serie über CDP (Kopfbereich, Spaltenfarben, sticky Header/Datum-Spalte bei diagonalem Scroll, Wochenende-/Feiertags-Färbung inkl. Ostern/Weihnachten) bestätigt
 
-## Schritt 7: Dienstplan/Dienstplantag – Anlegen & Speichern
+## Schritt 7: Dienstplan/Dienstplantag – Anlegen & Speichern (abgeschlossen)
 
 Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag`-Zeilen, mit dem dazugehörigen Titel-Feld. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen — siehe [`temp/temp-PlanungPage.md`](./temp/temp-PlanungPage.md) für die dafür zurückgestellten Fragen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt7-dienstplan-anlegen-speichern.md`](./ablaufplaene/schritt7-dienstplan-anlegen-speichern.md).
 
-- [ ] `Dienstplan`/`Dienstplantag`-Typen in `shared/types.ts`
-- [ ] Repository-Funktionssignaturen (`getDienstplaene`/`getDienstplanMitTagen`/`createDienstplan`/`updateDienstplanTitel`), zunächst mit Testdaten
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] Kopfbereich: Zustandslogik Erstellen/Speichern/Neu-anlegen, Titel-Feld
-- [ ] Laden-Dialog mit Liste vorhandener Dienstpläne
-- [ ] Warnhinweis bei ungespeicherten Änderungen
-- [ ] `PlanungsGrid` mit `Dienstplantag`-Zeilen verknüpfen (Vorbereitung für spätere Schritte)
-- [ ] Echte SQLite-Anbindung (Tabellen `dienstplaene`/`dienstplantage`, Transaktion beim Erstellen)
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+- [x] `Dienstplan`/`Dienstplantag`-Typen in `shared/types.ts`
+- [x] Repository-Funktionssignaturen (`getDienstplaene`/`getDienstplanMitTagen`/`createDienstplan`/`updateDienstplanTitel`), zunächst mit Testdaten
+- [x] IPC-Handler und typisierte Preload-API
+- [x] Kopfbereich: Zustandslogik Erstellen/Speichern/Neu-anlegen, Titel-Feld
+- [x] Laden-Dialog mit Liste vorhandener Dienstpläne
+- [x] Warnhinweis bei ungespeicherten Änderungen
+- [x] `PlanungsGrid` mit `Dienstplantag`-Zeilen verknüpfen (Vorbereitung für spätere Schritte)
+- [x] Echte SQLite-Anbindung (Tabellen `dienstplaene`/`dienstplantage`, Transaktion beim Erstellen)
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (93 Tests, 15 davon neu für `dienstplanRepository`), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (Titel „Persistenz-Test SQLite (final)" und aktualisiertes `geaendertAm` nach Neustart weiterhin in der SQLite-Datei vorhanden, `erstelltAm` unverändert), Warnhinweis-Flow (Laden/Neu anlegen, Abbrechen/Fortfahren) im laufenden Fenster durchgespielt
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

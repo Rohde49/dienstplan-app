@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
-import type { Kalendertag } from '@/lib/kalendertage'
+import type { Kalendertag } from '../../../../shared/kalendertage'
 import { cn } from '@/lib/utils'
-import type { TeamMember } from '../../../../shared/types'
+import type { Dienstplantag, TeamMember } from '../../../../shared/types'
 
 const FEIERTAG_FARBE = 'bg-[color-mix(in_oklch,var(--destructive)_12%,var(--card))]'
 const WOCHENENDE_FARBE = 'bg-muted'
@@ -14,15 +14,28 @@ const BEMERKUNG_SPALTE_MINDESTBREITE = '12rem'
 interface PlanungsGridProps {
   members: TeamMember[]
   tage: Kalendertag[]
+  dienstplantage?: Dienstplantag[]
 }
 
 function formatTagUndMonat(datum: string): string {
   return `${datum.slice(8, 10)}.${datum.slice(5, 7)}.`
 }
 
-function PlanungsGrid({ members, tage }: PlanungsGridProps): React.JSX.Element {
+function PlanungsGrid({
+  members,
+  tage,
+  dienstplantage = []
+}: PlanungsGridProps): React.JSX.Element {
+  const dienstplantagIdProDatum = new Map(dienstplantage.map((tag) => [tag.datum, tag.id]))
+  const istVorschau = dienstplantage.length === 0
+
   return (
-    <div className="bg-card min-h-0 w-full flex-1 overflow-hidden rounded-lg border">
+    <div className="bg-card relative min-h-0 w-full flex-1 overflow-hidden rounded-lg border">
+      {istVorschau && (
+        <span className="text-muted-foreground absolute top-2 right-3 z-40 text-xs">
+          Vorschau · nicht gespeichert
+        </span>
+      )}
       <div className="h-full w-full overflow-auto">
         <table className="w-full table-fixed border-separate border-spacing-0 text-sm">
           <colgroup>
@@ -122,7 +135,11 @@ function PlanungsGrid({ members, tage }: PlanungsGridProps): React.JSX.Element {
                   ? WOCHENENDE_FARBE
                   : undefined
               return (
-                <tr key={tag.datum} className={cn(zeilenFarbe)}>
+                <tr
+                  key={tag.datum}
+                  data-dienstplantag-id={dienstplantagIdProDatum.get(tag.datum) ?? ''}
+                  className={cn(zeilenFarbe)}
+                >
                   <td
                     className={cn(
                       'sticky left-0 z-10 border-r border-b px-4 py-2 text-center',

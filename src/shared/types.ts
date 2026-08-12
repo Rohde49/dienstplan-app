@@ -33,3 +33,19 @@ export interface Eintragsdefinition {
   nachtbereitschaftMinuten: number
   nachtarbeitMinuten: number
 }
+
+export interface Dienstplan {
+  id: number
+  monat: number // 1-12
+  jahr: number
+  titel: string
+  erstelltAm: string // ISO-Zeitstempel
+  geaendertAm: string // ISO-Zeitstempel
+}
+
+export interface Dienstplantag {
+  id: number
+  dienstplanId: number // FK auf Dienstplan.id
+  datum: string // ISO-Datum, z. B. "2026-09-01"
+  bemerkung: string | null
+}

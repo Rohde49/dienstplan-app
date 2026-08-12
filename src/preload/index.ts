@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Eintragsdefinition, TeamMember } from '../shared/types'
+import type { Dienstplan, Dienstplantag, Eintragsdefinition, TeamMember } from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -17,6 +17,19 @@ const api = {
       ipcRenderer.invoke('eintragsdefinition:add', data),
     update: (id: number, data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
       ipcRenderer.invoke('eintragsdefinition:update', id, data)
+  },
+  dienstplan: {
+    list: (): Promise<Dienstplan[]> => ipcRenderer.invoke('dienstplan:list'),
+    get: (id: number): Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] } | null> =>
+      ipcRenderer.invoke('dienstplan:get', id),
+    create: (data: {
+      monat: number
+      jahr: number
+      titel: string
+    }): Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] }> =>
+      ipcRenderer.invoke('dienstplan:create', data),
+    updateTitel: (id: number, titel: string): Promise<Dienstplan> =>
+      ipcRenderer.invoke('dienstplan:updateTitel', id, titel)
   }
 }
 

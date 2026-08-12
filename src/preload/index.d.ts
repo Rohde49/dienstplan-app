@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { Eintragsdefinition, TeamMember } from '../shared/types'
+import type { Dienstplan, Dienstplantag, Eintragsdefinition, TeamMember } from '../shared/types'
 
 interface TeamAPI {
   list: () => Promise<TeamMember[]>
@@ -13,9 +13,21 @@ interface EintragsdefinitionAPI {
   update: (id: number, data: Omit<Eintragsdefinition, 'id'>) => Promise<Eintragsdefinition>
 }
 
+interface DienstplanAPI {
+  list: () => Promise<Dienstplan[]>
+  get: (id: number) => Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] } | null>
+  create: (data: {
+    monat: number
+    jahr: number
+    titel: string
+  }) => Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] }>
+  updateTitel: (id: number, titel: string) => Promise<Dienstplan>
+}
+
 interface API {
   team: TeamAPI
   eintragsdefinition: EintragsdefinitionAPI
+  dienstplan: DienstplanAPI
 }
 
 declare global {
