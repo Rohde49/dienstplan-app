@@ -66,17 +66,17 @@ Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `
 
 **Nacharbeit nach Abschluss (kein neuer nummerierter Schritt, siehe `entwicklungstagebuch.md`)**: Nutzer-Feedback aus dem laufenden Dev-Server umgesetzt — eigenes gestapeltes Layout (`StackedManagementLayout`) für die breite Eintragsdefinitionen-Tabelle statt des zu schmalen `ManagementLayout`-Rasters; fachliche Korrektur, dass `arbeitszeitMinuten` bei `berechnungsart: 'mitarbeiterabhaengig'` ebenfalls deaktiviert und auf `0` erzwungen wird (nicht nur die vier anderen Zeitwerte), da dieser Wert erst beim späteren `Planeintrag` berechnet wird; Anlegen/Bearbeiten-Card und Liste innerhalb des gestapelten Layouts getauscht (Formular jetzt oben, Liste darunter) und die Formular-Card über eine neue `Collapsible`-Primitive (`@radix-ui/react-collapsible`) ausklappbar gemacht, standardmäßig eingeklappt.
 
-## Schritt 6: Planungsansicht – Gerüst
+## Schritt 6: Planungsansicht – Gerüst (abgeschlossen)
 
 Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanPage.tsx`) auf: Kalendertage-Berechnung, Kopfbereich mit Monat/Jahr-Auswahl, Grid mit echten Mitarbeiterdaten, Platzhalter-Spalten für spätere Funktionen. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Persistenz von `Dienstplan`/`Dienstplantag`. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt6-planungsansicht-geruest.md`](./ablaufplaene/schritt6-planungsansicht-geruest.md).
 
-- [ ] Kalendertage-Funktion (reine Funktion inkl. Feiertagsberechnung nach Brandenburgischem Feiertagsgesetz) inkl. Unit-Tests
-- [ ] `PlanungsPage`: Kopfbereich mit Monat-/Jahr-Auswahl sowie deaktivierten Schaltflächen „Verkürzte Form" und „Auswertung"
-- [ ] Grid-/Scroll-Grundstruktur (sticky Kopfzeile, sticky Datum-Spalte, horizontaler Scroll bei vielen Mitarbeitenden) zunächst mit Platzhalterdaten geprüft
-- [ ] Mitarbeiter-Spaltengruppen mit echten `TeamMember`-Daten (Name, Farbe), Eintrag-/Beginn-/Ende-Unterspalten vorerst leer
-- [ ] Kalendertage-Zeilen mit echten Daten (Wochenende-/Feiertags-Kennzeichnung)
-- [ ] Platzhalter-Spalten Rufbereitschaft und Bemerkung (ohne Funktion)
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich mit Mockup) und Doku-Update
+- [x] Kalendertage-Funktion (reine Funktion inkl. Feiertagsberechnung nach Brandenburgischem Feiertagsgesetz) inkl. Unit-Tests
+- [x] `PlanungsPage`: Kopfbereich mit Monat-/Jahr-Auswahl sowie deaktivierten Schaltflächen „Verkürzte Form" und „Auswertung"
+- [x] Grid-/Scroll-Grundstruktur (sticky Kopfzeile, sticky Datum-Spalte, horizontaler Scroll bei vielen Mitarbeitenden) zunächst mit Platzhalterdaten geprüft
+- [x] Mitarbeiter-Spaltengruppen mit echten `TeamMember`-Daten (Name, Farbe), Eintrag-/Beginn-/Ende-Unterspalten vorerst leer
+- [x] Kalendertage-Zeilen mit echten Daten (Wochenende-/Feiertags-Kennzeichnung)
+- [x] Platzhalter-Spalten Rufbereitschaft und Bemerkung (ohne Funktion)
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich mit Mockup) und Doku-Update — alle drei Checks sauber (78 Tests), Screenshot-Serie über CDP (Kopfbereich, Spaltenfarben, sticky Header/Datum-Spalte bei diagonalem Scroll, Wochenende-/Feiertags-Färbung inkl. Ostern/Weihnachten) bestätigt
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

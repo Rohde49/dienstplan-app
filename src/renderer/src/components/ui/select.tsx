@@ -23,6 +23,7 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       className={cn(
         'border-input flex h-9 w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none',
+        'hover:bg-accent hover:text-accent-foreground',
         'focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-1',
         'disabled:cursor-not-allowed disabled:opacity-50',
         '[&>span]:line-clamp-1',
