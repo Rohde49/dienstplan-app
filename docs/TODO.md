@@ -22,12 +22,12 @@ Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.m
 - [x] Erste UI-Primitives nachbauen, mindestens `Card` (zusammengesetzt aus `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter`) und `Button` — zusätzlich `CardDescription`, `Button` mit `asChild`/`@radix-ui/react-slot`
 - [x] Farbpalette für Theme festlegen, gleichzeitig die noch offene Palette für `TeamMember.farbe` aus `architektur/datenmodell.md` mit klären — Theme final in `base.css` (neutral, siehe `architektur/styling.md`), `TeamMember.farbe`-Palette (10 Werte) final in `architektur/datenmodell.md`, Code-Platzierung (`shared/types.ts`) folgt bei Umsetzung der Team-Verwaltung
 
-## Schritt 3: Startseite mit Navigation (aktueller Schritt)
+## Schritt 3: Startseite mit Navigation (abgeschlossen)
 
-- [ ] React Router einrichten (Routing-Grundgerüst, keine persistente Navigationsleiste, da die Cards auf der Startseite die Navigation übernehmen)
-- [ ] Startseite (`StartPage`) mit drei Cards (auf Basis der in Schritt 2 gebauten `Card`-Komponente): Team-Verwaltung, Eintrag-Verwaltung, Dienstplan erstellen
-- [ ] Jede Card verlinkt per Klick auf die zugehörige Route (Zielseiten vorerst leere Platzhalter, ohne Fachlogik oder Datenanbindung)
-- [ ] Hinweis: Router-Typ vor Umsetzung festlegen — `BrowserRouter` funktioniert nicht zuverlässig, da der Renderer über `file://` geladen wird; für Electron-Apps üblich sind `HashRouter` oder `MemoryRouter`
+- [x] React Router einrichten (Routing-Grundgerüst, keine persistente Navigationsleiste, da die Cards auf der Startseite die Navigation übernehmen) — `react-router-dom` installiert, `HashRouter` in `main.tsx` eingehängt
+- [x] Startseite (`StartPage`) mit drei Cards (auf Basis der in Schritt 2 gebauten `Card`-Komponente): Team-Verwaltung, Eintrag-Verwaltung, Dienstplan erstellen — `src/renderer/src/pages/StartPage.tsx`, Card-Primitive selbst unverändert
+- [x] Jede Card verlinkt per Klick auf die zugehörige Route (Zielseiten vorerst leere Platzhalter, ohne Fachlogik oder Datenanbindung) — Platzhalterseiten `TeamPage`, `EintraegePage`, `PlanPage` unter `src/renderer/src/pages/`, mit Rückweg-Link zur Startseite
+- [x] Hinweis: Router-Typ vor Umsetzung festlegen — entschieden für `HashRouter` statt `MemoryRouter`: funktioniert mit `file://`, und die aktuelle Route bleibt Teil der geladenen URL und übersteht damit einen vollständigen Reload (bei `MemoryRouter` wäre die Historie danach immer bei `/`)
 
 ## Geplante nächste Schritte (noch nicht im Detail geplant)
 

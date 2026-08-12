@@ -1,55 +1,22 @@
 @import 'tailwindcss';
 
 :root {
-  --ev-c-white: #ffffff;
-  --ev-c-white-soft: #f8f8f8;
-  --ev-c-white-mute: #f2f2f2;
-
-  --ev-c-black: #1b1b1f;
-  --ev-c-black-soft: #222222;
-  --ev-c-black-mute: #282828;
-
-  --ev-c-gray-1: #515c67;
-  --ev-c-gray-2: #414853;
-  --ev-c-gray-3: #32363f;
-
-  --ev-c-text-1: rgba(255, 255, 245, 0.86);
-  --ev-c-text-2: rgba(235, 235, 245, 0.6);
-  --ev-c-text-3: rgba(235, 235, 245, 0.38);
-
-  --ev-button-alt-border: transparent;
-  --ev-button-alt-text: var(--ev-c-text-1);
-  --ev-button-alt-bg: var(--ev-c-gray-3);
-  --ev-button-alt-hover-border: transparent;
-  --ev-button-alt-hover-text: var(--ev-c-text-1);
-  --ev-button-alt-hover-bg: var(--ev-c-gray-2);
-}
-
-:root {
-  --scaffold-color-background: var(--ev-c-black);
-  --scaffold-color-background-soft: var(--ev-c-black-soft);
-  --scaffold-color-background-mute: var(--ev-c-black-mute);
-
-  --scaffold-color-text: var(--ev-c-text-1);
-}
-
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.995 0.003 165);
+  --foreground: oklch(0.17 0.006 165);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --card-foreground: oklch(0.17 0.006 165);
+  --primary: oklch(0.58 0.085 165);
+  --primary-foreground: oklch(0.99 0.006 165);
+  --secondary: oklch(0.97 0.004 165);
+  --secondary-foreground: oklch(0.22 0.01 165);
+  --muted: oklch(0.965 0.018 165);
+  --muted-foreground: oklch(0.48 0.015 165);
+  --accent: oklch(0.93 0.035 165);
+  --accent-foreground: oklch(0.28 0.04 165);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.9 0.012 165);
+  --input: oklch(0.9 0.012 165);
+  --ring: oklch(0.72 0.07 165);
   --radius: 0.5rem;
 }
 
@@ -98,21 +65,16 @@ ul {
 
 body {
   min-height: 100vh;
-  color: var(--scaffold-color-text);
-  background: var(--scaffold-color-background);
+  color: var(--foreground);
+  background: var(--background);
   line-height: 1.6;
   font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
     'Segoe UI',
+    system-ui,
+    -apple-system,
     Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
+    Helvetica,
+    Arial,
     sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
