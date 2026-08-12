@@ -93,11 +93,26 @@ Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (93 Tests, 15 davon neu für `dienstplanRepository`), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (Titel „Persistenz-Test SQLite (final)" und aktualisiertes `geaendertAm` nach Neustart weiterhin in der SQLite-Datei vorhanden, `erstelltAm` unverändert), Warnhinweis-Flow (Laden/Neu anlegen, Abbrechen/Fortfahren) im laufenden Fenster durchgespielt
 
+## Schritt 8: Planeintrag – Setzen und Bearbeiten
+
+Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover je Zellengruppe, persistiert gemeinsam mit dem Titel über den bestehenden „Speichern"-Button aus Schritt 7. Noch kein `Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt8-planeintrag-setzen.md`](./ablaufplaene/schritt8-planeintrag-setzen.md).
+
+- [ ] `Planeintrag`-Typ in `shared/types.ts`
+- [ ] Berechnungsfunktion für mitarbeiterabhängige Arbeitszeit inkl. Unit-Tests
+- [ ] Repository-Funktionssignaturen (`getPlaneintraegeFuerDienstplan`, kombinierte Speicherfunktion), zunächst mit Testdaten
+- [ ] IPC-Handler und typisierte Preload-API
+- [ ] Popover-Primitive und Eintragsdefinition-Auswahl-Komponente
+- [ ] Popover ans Grid anbinden, lokaler Entwurf inkl. ungespeichert-Indikator
+- [ ] Laden erweitert Planeinträge in die Baseline
+- [ ] „Speichern" um Planeintrag-Änderungen erweitern
+- [ ] Echte SQLite-Anbindung (Tabelle `planeintraege`, Transaktion)
+- [ ] Repository-Tests gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
-- [ ] Planungsansicht – Setzen von `Planeintrag` (siehe offene Fragen in `temp/temp-PlanungPage.md`)
 - [ ] Planungsansicht – Setzen von `Rufbereitschaft` (siehe offene Fragen in `temp/temp-PlanungPage.md`)
 - [ ] Planungsansicht – Bemerkung-Spalte (siehe offene Fragen in `temp/temp-PlanungPage.md`)
 - [ ] Planungsansicht – berechnete Kennzahlen (u. a. Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) — UI-Platzhalter dafür bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik, in eigenem Ablaufplan getrennt von den obigen Setz-Funktionen
