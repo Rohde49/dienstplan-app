@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { Plus } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { ManagementLayout } from '@/components/ManagementLayout'
+import { ManagementLayout } from '@/components/layout/ManagementLayout'
 import { TeamMemberForm, type TeamMemberFormValues } from '@/components/TeamMemberForm'
 import { TeamMemberTable } from '@/components/TeamMemberTable'
 import { formatMinutesToHHMM, parseHHMMToMinutes } from '@/lib/time'
@@ -90,36 +90,36 @@ function TeamPage(): React.JSX.Element {
   }
 
   return (
-    <div className="p-6">
-      <Link to="/" className="text-sm text-muted-foreground hover:underline">
-        ← Zurück zur Startseite
-      </Link>
-
-      <div className="mt-4">
-        <ManagementLayout
-          title="Team-Verwaltung"
-          description="Mitarbeiter anlegen, bearbeiten und verwalten"
-          primaryAction={
-            <Button onClick={handleNewMember}>
-              <Plus className="size-4" />
-              Neuer Mitarbeiter
-            </Button>
-          }
-          list={
-            <TeamMemberTable members={teamMembers} selectedId={selectedId} onEdit={handleEdit} />
-          }
-          detail={
-            <TeamMemberForm
-              mode={selectedId === null ? 'create' : 'edit'}
-              values={formValues}
-              errors={errors}
-              onChange={handleFormChange}
-              onSubmit={handleSubmit}
-              onCancel={handleNewMember}
-            />
-          }
-        />
-      </div>
+    <div className="p-6 pt-12">
+      <ManagementLayout
+        title="Team-Verwaltung"
+        description="Mitarbeiter anlegen, bearbeiten und verwalten"
+        backAction={
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/">
+              <ArrowLeft className="size-4" />
+              Zurück zur Startseite
+            </Link>
+          </Button>
+        }
+        primaryAction={
+          <Button onClick={handleNewMember}>
+            <Plus className="size-4" />
+            Neuer Mitarbeiter
+          </Button>
+        }
+        list={<TeamMemberTable members={teamMembers} selectedId={selectedId} onEdit={handleEdit} />}
+        detail={
+          <TeamMemberForm
+            mode={selectedId === null ? 'create' : 'edit'}
+            values={formValues}
+            errors={errors}
+            onChange={handleFormChange}
+            onSubmit={handleSubmit}
+            onCancel={handleNewMember}
+          />
+        }
+      />
     </div>
   )
 }
