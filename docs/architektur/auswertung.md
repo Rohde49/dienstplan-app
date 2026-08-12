@@ -47,3 +47,10 @@ In derselben Reihenfolge wie oben, mit Bezug auf die Feldnamen aus `datenmodell.
 **14. Soll-Arbeitszeit** = Anzahl Arbeitstage (Zeile 12) × `TeamMember.wochenarbeitszeitMinuten` / 5, gerundet auf die volle Minute (Beispiel: 21 × 39:00 / 5 = 163:48). Für alle Erzieher wird dieselbe Anzahl Arbeitstage verwendet, aber die jeweils eigene Wochenarbeitszeit.
 
 **15. Differenz Soll/Ist** = Ist-Arbeitszeit (Zeile 13) − Soll-Arbeitszeit (Zeile 14). Darstellung mit Vorzeichen: positiv mit `+` (Soll überschritten), `0:00` bei Ausgleich, negativ mit `−` (Soll noch nicht erreicht).
+
+## Bezug zu den Kopf-/Fußzeilen-Platzhaltern in der Planungstabelle (seit Schritt 6)
+
+`PlanungsGrid.tsx` (Planungsansicht) hat seit Schritt 6 bereits Platzhalter für eine kleine Auswahl dieser Kennzahlen direkt in der Planungstabelle selbst, unabhängig von dieser separaten `AuswertungsPage`: je Mitarbeiter eine Kopfzeile „SN/F-Dienste" (≈ Zeile 1 oben), „Freie Tage" und „Δ Soll/Ist" (≈ Zeile 15 oben), sowie zwei Fußzeilen „Ist"/„Soll" (≈ Zeile 13/14 oben). Bisher nur Anzeige-Gerüst ohne Berechnung (siehe `TODO.md`, „Geplante nächste Schritte"). Beim Nachziehen der Berechnungslogik zu klären, statt hier stillschweigend anzunehmen:
+
+- **„Freie Tage" ist in der Planungstabelle ein einzelner Wert**, während diese Auswertung freie Tage nach Samstag (Zeile 2) und Sonntag/Feiertag (Zeile 3) getrennt ausweist. Offen, ob „Freie Tage" in `PlanungsGrid` beide Zeilen addiert oder eine eigene, einfachere Definition (z. B. alle Tage mit `kuerzel === '/'`, unabhängig vom Wochentag) verwendet.
+- Die farbliche Hervorhebung von „Δ Soll/Ist" im ursprünglichen Mockup (grün bei `0:00`, sonst farblich abgesetzt) ist noch nicht umgesetzt, nur die reine Zahl/der Platzhaltertext.

@@ -82,7 +82,7 @@ Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanP
 
 Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
-- [ ] Planungsansicht – berechnete Werte ohne `Planeintrag` (u. a. Soll-Arbeitszeit je Mitarbeiter aus `TeamMember.wochenarbeitszeitMinuten`)
+- [ ] Planungsansicht – berechnete Werte ohne `Planeintrag` (u. a. Soll-Arbeitszeit je Mitarbeiter aus `TeamMember.wochenarbeitszeitMinuten`) — UI-Platzhalter dafür (Kopfzeile „SN/F-Dienste"/„Freie Tage"/„Δ Soll/Ist" je Mitarbeiter, Fußzeilen „Ist"/„Soll") bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik
 - [ ] Planungsansicht – Setzen von `Planeintrag`/`Rufbereitschaft` inkl. Persistenz von `Dienstplan`/`Dienstplantag` (dort auch das bislang zurückgestellte Titel-Feld)
 - [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
