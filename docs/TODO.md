@@ -29,11 +29,27 @@ Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.m
 - [x] Jede Card verlinkt per Klick auf die zugehörige Route (Zielseiten vorerst leere Platzhalter, ohne Fachlogik oder Datenanbindung) — Platzhalterseiten `TeamPage`, `EintraegePage`, `PlanPage` unter `src/renderer/src/pages/`, mit Rückweg-Link zur Startseite
 - [x] Hinweis: Router-Typ vor Umsetzung festlegen — entschieden für `HashRouter` statt `MemoryRouter`: funktioniert mit `file://`, und die aktuelle Route bleibt Teil der geladenen URL und übersteht damit einen vollständigen Reload (bei `MemoryRouter` wäre die Historie danach immer bei `/`)
 
+## Schritt 4: Team-Verwaltung (aktueller Schritt)
+
+Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md)). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/schritt4-team-verwaltung.md`](./ablaufplaene/schritt4-team-verwaltung.md), Reihenfolge folgt [`architektur/projektstruktur.md`](./architektur/projektstruktur.md).
+
+- [ ] Vitest-Testinfrastruktur einrichten (Dependencies, `vitest.config.ts`, npm-Script „test", Platzhalter-Test)
+- [ ] `TeamMember`-Typ und `TEAM_MEMBER_COLORS`-Palette in `shared/types.ts` anlegen
+- [ ] Konvertierungsfunktionen HH:MM ↔ Minuten (`parseHHMMToMinutes`/`formatMinutesToHHMM`) inkl. Unit-Tests
+- [ ] Validierungsfunktion für neue Mitarbeiter-Einträge inkl. Unit-Tests
+- [ ] Repository-Funktionssignaturen `getTeamMembers`/`addTeamMember` in `teamRepository.ts`, zunächst mit Testdaten
+- [ ] IPC-Handler (`team:list`, `team:add`) und typisierte Preload-API
+- [ ] Fehlende UI-Primitives ergänzen (Input, Label, Select), nach Muster aus Schritt 2
+- [ ] `TeamPage`: Liste der Mitarbeitenden anzeigen (Testdaten)
+- [ ] `TeamPage`: Formular zum Anlegen eines Mitarbeiters
+- [ ] Repository auf echte SQLite-Anbindung umstellen (Tabelle `team_members`)
+- [ ] Repository-Tests gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+
 ## Geplante nächste Schritte (noch nicht im Detail geplant)
 
 Werden nacheinander aufgebaut, jeweils nach dem in [`architektur/projektstruktur.md`](./architektur/projektstruktur.md) festgelegten Ablauf (Entität entwerfen → Repository-Signaturen mit Testdaten → UI → echte SQLite-Anbindung):
 
-- [ ] Team-Verwaltung (Entität `TeamMember` bereits entworfen, siehe `architektur/datenmodell.md`)
 - [ ] Eintrag-Verwaltung (Struktur von `ShiftType`/`PlanEntry` vorher in `architektur/datenmodell.md` klären, siehe Abschnitt „Offen")
 - [ ] Planungsansicht: dynamische Erzeugung je Monat/Jahr (inkl. Entscheidung, ob Monats-/Jahres-Auswahl eigene Route oder interner Schritt der Planungsansicht ist)
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
