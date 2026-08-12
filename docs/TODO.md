@@ -78,12 +78,29 @@ Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanP
 - [x] Platzhalter-Spalten Rufbereitschaft und Bemerkung (ohne Funktion)
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich mit Mockup) und Doku-Update — alle drei Checks sauber (78 Tests), Screenshot-Serie über CDP (Kopfbereich, Spaltenfarben, sticky Header/Datum-Spalte bei diagonalem Scroll, Wochenende-/Feiertags-Färbung inkl. Ostern/Weihnachten) bestätigt
 
+## Schritt 7: Dienstplan/Dienstplantag – Anlegen & Speichern
+
+Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag`-Zeilen, mit dem dazugehörigen Titel-Feld. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen — siehe [`temp/temp-PlanungPage.md`](./temp/temp-PlanungPage.md) für die dafür zurückgestellten Fragen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt7-dienstplan-anlegen-speichern.md`](./ablaufplaene/schritt7-dienstplan-anlegen-speichern.md).
+
+- [ ] `Dienstplan`/`Dienstplantag`-Typen in `shared/types.ts`
+- [ ] Repository-Funktionssignaturen (`getDienstplaene`/`getDienstplanMitTagen`/`createDienstplan`/`updateDienstplanTitel`), zunächst mit Testdaten
+- [ ] IPC-Handler und typisierte Preload-API
+- [ ] Kopfbereich: Zustandslogik Erstellen/Speichern/Neu-anlegen, Titel-Feld
+- [ ] Laden-Dialog mit Liste vorhandener Dienstpläne
+- [ ] Warnhinweis bei ungespeicherten Änderungen
+- [ ] `PlanungsGrid` mit `Dienstplantag`-Zeilen verknüpfen (Vorbereitung für spätere Schritte)
+- [ ] Echte SQLite-Anbindung (Tabellen `dienstplaene`/`dienstplantage`, Transaktion beim Erstellen)
+- [ ] Repository-Tests gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
-- [ ] Planungsansicht – berechnete Werte ohne `Planeintrag` (u. a. Soll-Arbeitszeit je Mitarbeiter aus `TeamMember.wochenarbeitszeitMinuten`) — UI-Platzhalter dafür (Kopfzeile „SN/F-Dienste"/„Freie Tage"/„Δ Soll/Ist" je Mitarbeiter, Fußzeilen „Ist"/„Soll") bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik
-- [ ] Planungsansicht – Setzen von `Planeintrag`/`Rufbereitschaft` inkl. Persistenz von `Dienstplan`/`Dienstplantag` (dort auch das bislang zurückgestellte Titel-Feld)
+- [ ] Planungsansicht – Setzen von `Planeintrag` (siehe offene Fragen in `temp/temp-PlanungPage.md`)
+- [ ] Planungsansicht – Setzen von `Rufbereitschaft` (siehe offene Fragen in `temp/temp-PlanungPage.md`)
+- [ ] Planungsansicht – Bemerkung-Spalte (siehe offene Fragen in `temp/temp-PlanungPage.md`)
+- [ ] Planungsansicht – berechnete Kennzahlen (u. a. Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) — UI-Platzhalter dafür bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik, in eigenem Ablaufplan getrennt von den obigen Setz-Funktionen
 - [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
 - [ ] PDF-Export/Druck-Funktion: Schaltfläche auf der verkürzten Ansicht (dient zugleich als Druckvorschau in der App), öffnet den Windows-Dialog für PDF-Export bzw. Drucken
