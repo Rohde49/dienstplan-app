@@ -19,3 +19,17 @@ export const TEAM_MEMBER_COLORS = [
   '#C1662F', // Terrakotta
   '#7FB236' // Lindgrün
 ] as const
+
+export interface Eintragsdefinition {
+  id: number
+  kuerzel: string
+  name: string
+  berechnungsart: 'fest' | 'mitarbeiterabhaengig'
+  beginn: string | null
+  ende: string | null
+  anwesenheitszeitMinuten: number
+  arbeitszeitMinuten: number
+  arbeitszeitOhneNachtbereitschaftMinuten: number
+  nachtbereitschaftMinuten: number
+  nachtarbeitMinuten: number
+}

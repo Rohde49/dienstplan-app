@@ -48,21 +48,23 @@ Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./
 
 **Nacharbeit nach Abschluss (kein neuer nummerierter Schritt, siehe `entwicklungstagebuch.md`)**: Team-Verwaltung nach Nutzer-Mockup umgebaut — Bearbeiten-Funktion (`updateTeamMember`, `team:update`), echte `Table`-Primitive statt Card-Grid, wiederverwendbare `ManagementLayout`-Komponente (`components/layout/`), globale Inter-Schrift.
 
-## Schritt 5: Eintrag-Verwaltung (aktueller Schritt)
+## Schritt 5: Eintrag-Verwaltung (abgeschlossen)
 
 Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md); Auswertungslogik separat in [`architektur/auswertung.md`](./architektur/auswertung.md)). Dieser Schritt verwaltet nur die `Eintragsdefinition`-Stammdaten, die übrigen vier Entitäten gehören zur Planungsansicht (nächster Schritt). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/schritt5-eintrag-verwaltung.md`](./ablaufplaene/schritt5-eintrag-verwaltung.md).
 
-- [ ] `Eintragsdefinition`-Typ in `shared/types.ts` anlegen
-- [ ] Validierungsfunktion für Uhrzeiten (Zeitpunkte, `"HH:MM"` 00–23) inkl. Unit-Tests
-- [ ] Validierungsfunktion für neue/bearbeitete Eintragsdefinitionen inkl. Unit-Tests
-- [ ] Repository-Funktionssignaturen `getEintragsdefinitionen`/`addEintragsdefinition`/`updateEintragsdefinition`, zunächst mit Testdaten
-- [ ] IPC-Handler (`eintragsdefinition:list`/`add`/`update`) und typisierte Preload-API
-- [ ] `EintraegePage`: Liste der Eintragsdefinitionen anzeigen (Testdaten)
-- [ ] `EintraegePage`: Formular zum Anlegen einer Eintragsdefinition (berechnungsart-abhängige Feldsteuerung)
-- [ ] `EintraegePage`: Formular zum Bearbeiten bestehender Eintragsdefinitionen
-- [ ] Repository auf echte SQLite-Anbindung umstellen (Tabelle `eintragsdefinitionen`)
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+- [x] `Eintragsdefinition`-Typ in `shared/types.ts` anlegen
+- [x] Validierungsfunktion für Uhrzeiten (Zeitpunkte, `"HH:MM"` 00–23) inkl. Unit-Tests
+- [x] Validierungsfunktion für neue/bearbeitete Eintragsdefinitionen inkl. Unit-Tests
+- [x] Repository-Funktionssignaturen `getEintragsdefinitionen`/`addEintragsdefinition`/`updateEintragsdefinition`, zunächst mit Testdaten
+- [x] IPC-Handler (`eintragsdefinition:list`/`add`/`update`) und typisierte Preload-API
+- [x] `EintraegePage`: Liste der Eintragsdefinitionen anzeigen (Testdaten)
+- [x] `EintraegePage`: Formular zum Anlegen einer Eintragsdefinition (berechnungsart-abhängige Feldsteuerung)
+- [x] `EintraegePage`: Formular zum Bearbeiten bestehender Eintragsdefinitionen
+- [x] Repository auf echte SQLite-Anbindung umstellen (Tabelle `eintragsdefinitionen`)
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber, Persistenz über vollständigen App-Neustart per Screenshot bestätigt (Eintragsdefinitionen „Spätdienst-Nacht (bearbeitet)" und „Krankheit" nach Neustart weiterhin in der SQLite-Datei vorhanden)
+
+**Nacharbeit nach Abschluss (kein neuer nummerierter Schritt, siehe `entwicklungstagebuch.md`)**: Nutzer-Feedback aus dem laufenden Dev-Server umgesetzt — eigenes gestapeltes Layout (`StackedManagementLayout`) für die breite Eintragsdefinitionen-Tabelle statt des zu schmalen `ManagementLayout`-Rasters; fachliche Korrektur, dass `arbeitszeitMinuten` bei `berechnungsart: 'mitarbeiterabhaengig'` ebenfalls deaktiviert und auf `0` erzwungen wird (nicht nur die vier anderen Zeitwerte), da dieser Wert erst beim späteren `Planeintrag` berechnet wird; Anlegen/Bearbeiten-Card und Liste innerhalb des gestapelten Layouts getauscht (Formular jetzt oben, Liste darunter) und die Formular-Card über eine neue `Collapsible`-Primitive (`@radix-ui/react-collapsible`) ausklappbar gemacht, standardmäßig eingeklappt.
 
 ## Geplante nächste Schritte (noch nicht im Detail geplant)
 

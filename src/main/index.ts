@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { runDbSmokeTest } from './db'
+import { registerEintragsdefinitionHandlers } from './ipc/eintragsdefinitionHandlers'
 import { registerTeamHandlers } from './ipc/teamHandlers'
 
 function createWindow(): void {
@@ -58,6 +59,7 @@ app.whenReady().then(() => {
 
   runDbSmokeTest()
   registerTeamHandlers()
+  registerEintragsdefinitionHandlers()
 
   createWindow()
 

@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { TeamMember } from '../shared/types'
+import type { Eintragsdefinition, TeamMember } from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -10,6 +10,13 @@ const api = {
       ipcRenderer.invoke('team:add', data),
     update: (id: number, data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
       ipcRenderer.invoke('team:update', id, data)
+  },
+  eintragsdefinition: {
+    list: (): Promise<Eintragsdefinition[]> => ipcRenderer.invoke('eintragsdefinition:list'),
+    add: (data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
+      ipcRenderer.invoke('eintragsdefinition:add', data),
+    update: (id: number, data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
+      ipcRenderer.invoke('eintragsdefinition:update', id, data)
   }
 }
 

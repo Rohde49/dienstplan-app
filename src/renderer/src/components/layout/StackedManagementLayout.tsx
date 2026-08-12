@@ -1,22 +1,24 @@
 import { ManagementHeader } from './ManagementHeader'
 
-interface ManagementLayoutProps {
+interface StackedManagementLayoutProps {
   title: string
   description?: string
   backAction?: React.ReactNode
   primaryAction?: React.ReactNode
   list: React.ReactNode
   detail: React.ReactNode
+  detailPosition?: 'top' | 'bottom'
 }
 
-function ManagementLayout({
+function StackedManagementLayout({
   title,
   description,
   backAction,
   primaryAction,
   list,
-  detail
-}: ManagementLayoutProps): React.JSX.Element {
+  detail,
+  detailPosition = 'bottom'
+}: StackedManagementLayoutProps): React.JSX.Element {
   return (
     <div className="mx-auto w-full max-w-7xl">
       <ManagementHeader
@@ -25,12 +27,13 @@ function ManagementLayout({
         backAction={backAction}
         primaryAction={primaryAction}
       />
-      <div className="mt-10 grid gap-6 md:grid-cols-[1fr_380px]">
+      <div className="mt-10 flex flex-col gap-6">
+        {detailPosition === 'top' && <div>{detail}</div>}
         <div>{list}</div>
-        <div>{detail}</div>
+        {detailPosition === 'bottom' && <div>{detail}</div>}
       </div>
     </div>
   )
 }
 
-export { ManagementLayout }
+export { StackedManagementLayout }
