@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { runDbSmokeTest } from './db'
+import { registerTeamHandlers } from './ipc/teamHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -56,6 +57,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   runDbSmokeTest()
+  registerTeamHandlers()
 
   createWindow()
 

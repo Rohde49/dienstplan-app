@@ -1,8 +1,17 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import type { TeamMember } from '../shared/types'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  team: {
+    list: (): Promise<TeamMember[]> => ipcRenderer.invoke('team:list'),
+    add: (data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
+      ipcRenderer.invoke('team:add', data),
+    update: (id: number, data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
+      ipcRenderer.invoke('team:update', id, data)
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
