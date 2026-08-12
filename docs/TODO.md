@@ -66,9 +66,25 @@ Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `
 
 **Nacharbeit nach Abschluss (kein neuer nummerierter Schritt, siehe `entwicklungstagebuch.md`)**: Nutzer-Feedback aus dem laufenden Dev-Server umgesetzt — eigenes gestapeltes Layout (`StackedManagementLayout`) für die breite Eintragsdefinitionen-Tabelle statt des zu schmalen `ManagementLayout`-Rasters; fachliche Korrektur, dass `arbeitszeitMinuten` bei `berechnungsart: 'mitarbeiterabhaengig'` ebenfalls deaktiviert und auf `0` erzwungen wird (nicht nur die vier anderen Zeitwerte), da dieser Wert erst beim späteren `Planeintrag` berechnet wird; Anlegen/Bearbeiten-Card und Liste innerhalb des gestapelten Layouts getauscht (Formular jetzt oben, Liste darunter) und die Formular-Card über eine neue `Collapsible`-Primitive (`@radix-ui/react-collapsible`) ausklappbar gemacht, standardmäßig eingeklappt.
 
-## Geplante nächste Schritte (noch nicht im Detail geplant)
+## Schritt 6: Planungsansicht – Gerüst
 
-Werden nacheinander aufgebaut, jeweils nach dem in [`architektur/projektstruktur.md`](./architektur/projektstruktur.md) festgelegten Ablauf (Entität entwerfen → Repository-Signaturen mit Testdaten → UI → echte SQLite-Anbindung):
+Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanPage.tsx`) auf: Kalendertage-Berechnung, Kopfbereich mit Monat/Jahr-Auswahl, Grid mit echten Mitarbeiterdaten, Platzhalter-Spalten für spätere Funktionen. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Persistenz von `Dienstplan`/`Dienstplantag`. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt6-planungsansicht-geruest.md`](./ablaufplaene/schritt6-planungsansicht-geruest.md).
 
-- [ ] Planungsansicht: dynamische Erzeugung je Monat/Jahr (inkl. Entscheidung, ob Monats-/Jahres-Auswahl eigene Route oder interner Schritt der Planungsansicht ist); verwaltet `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft`
+- [ ] Kalendertage-Funktion (reine Funktion inkl. Feiertagsberechnung nach Brandenburgischem Feiertagsgesetz) inkl. Unit-Tests
+- [ ] `PlanungsPage`: Kopfbereich mit Monat-/Jahr-Auswahl sowie deaktivierten Schaltflächen „Verkürzte Form" und „Auswertung"
+- [ ] Grid-/Scroll-Grundstruktur (sticky Kopfzeile, sticky Datum-Spalte, horizontaler Scroll bei vielen Mitarbeitenden) zunächst mit Platzhalterdaten geprüft
+- [ ] Mitarbeiter-Spaltengruppen mit echten `TeamMember`-Daten (Name, Farbe), Eintrag-/Beginn-/Ende-Unterspalten vorerst leer
+- [ ] Kalendertage-Zeilen mit echten Daten (Wochenende-/Feiertags-Kennzeichnung)
+- [ ] Platzhalter-Spalten Rufbereitschaft und Bemerkung (ohne Funktion)
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich mit Mockup) und Doku-Update
+
+## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
+
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+
+- [ ] Planungsansicht – berechnete Werte ohne `Planeintrag` (u. a. Soll-Arbeitszeit je Mitarbeiter aus `TeamMember.wochenarbeitszeitMinuten`)
+- [ ] Planungsansicht – Setzen von `Planeintrag`/`Rufbereitschaft` inkl. Persistenz von `Dienstplan`/`Dienstplantag` (dort auch das bislang zurückgestellte Titel-Feld)
+- [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt
+- [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
+- [ ] PDF-Export/Druck-Funktion: Schaltfläche auf der verkürzten Ansicht (dient zugleich als Druckvorschau in der App), öffnet den Windows-Dialog für PDF-Export bzw. Drucken
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
