@@ -46,10 +46,27 @@ Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber, Persistenz über vollständigen App-Neustart per Screenshot bestätigt (neu angelegter Mitarbeiter „Michael Roth" nach Neustart weiterhin in der SQLite-Datei vorhanden)
 
+**Nacharbeit nach Abschluss (kein neuer nummerierter Schritt, siehe `entwicklungstagebuch.md`)**: Team-Verwaltung nach Nutzer-Mockup umgebaut — Bearbeiten-Funktion (`updateTeamMember`, `team:update`), echte `Table`-Primitive statt Card-Grid, wiederverwendbare `ManagementLayout`-Komponente (`components/layout/`), globale Inter-Schrift.
+
+## Schritt 5: Eintrag-Verwaltung (aktueller Schritt)
+
+Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md); Auswertungslogik separat in [`architektur/auswertung.md`](./architektur/auswertung.md)). Dieser Schritt verwaltet nur die `Eintragsdefinition`-Stammdaten, die übrigen vier Entitäten gehören zur Planungsansicht (nächster Schritt). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/schritt5-eintrag-verwaltung.md`](./ablaufplaene/schritt5-eintrag-verwaltung.md).
+
+- [ ] `Eintragsdefinition`-Typ in `shared/types.ts` anlegen
+- [ ] Validierungsfunktion für Uhrzeiten (Zeitpunkte, `"HH:MM"` 00–23) inkl. Unit-Tests
+- [ ] Validierungsfunktion für neue/bearbeitete Eintragsdefinitionen inkl. Unit-Tests
+- [ ] Repository-Funktionssignaturen `getEintragsdefinitionen`/`addEintragsdefinition`/`updateEintragsdefinition`, zunächst mit Testdaten
+- [ ] IPC-Handler (`eintragsdefinition:list`/`add`/`update`) und typisierte Preload-API
+- [ ] `EintraegePage`: Liste der Eintragsdefinitionen anzeigen (Testdaten)
+- [ ] `EintraegePage`: Formular zum Anlegen einer Eintragsdefinition (berechnungsart-abhängige Feldsteuerung)
+- [ ] `EintraegePage`: Formular zum Bearbeiten bestehender Eintragsdefinitionen
+- [ ] Repository auf echte SQLite-Anbindung umstellen (Tabelle `eintragsdefinitionen`)
+- [ ] Repository-Tests gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+
 ## Geplante nächste Schritte (noch nicht im Detail geplant)
 
 Werden nacheinander aufgebaut, jeweils nach dem in [`architektur/projektstruktur.md`](./architektur/projektstruktur.md) festgelegten Ablauf (Entität entwerfen → Repository-Signaturen mit Testdaten → UI → echte SQLite-Anbindung):
 
-- [ ] Eintrag-Verwaltung (Struktur von `ShiftType`/`PlanEntry` vorher in `architektur/datenmodell.md` klären, siehe Abschnitt „Offen")
-- [ ] Planungsansicht: dynamische Erzeugung je Monat/Jahr (inkl. Entscheidung, ob Monats-/Jahres-Auswahl eigene Route oder interner Schritt der Planungsansicht ist)
+- [ ] Planungsansicht: dynamische Erzeugung je Monat/Jahr (inkl. Entscheidung, ob Monats-/Jahres-Auswahl eigene Route oder interner Schritt der Planungsansicht ist); verwaltet `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft`
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
