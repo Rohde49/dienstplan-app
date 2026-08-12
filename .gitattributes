@@ -1,0 +1,6 @@
+# Repository-weite Normalisierung der Zeilenumbrüche auf LF, unabhängig von
+# lokaler/globaler/system-weiter core.autocrlf-Einstellung (z. B. Git for
+# Windows installiert core.autocrlf=true system-weit). Ohne diese Datei
+# checkt Git Text-Dateien mit CRLF im Arbeitsbaum aus, obwohl das Repository
+# LF speichert (siehe docs/entwicklungstagebuch.md).
+* text=auto eol=lf
