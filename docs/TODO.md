@@ -184,11 +184,20 @@ Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskad
 - [x] Repository-Test gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (163 Tests, 2 davon neu für `deleteDienstplan`), End-to-End-Test im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit Planeinträgen/Rufbereitschaft angelegt und gespeichert, nicht-aktiven sowie aktiven Dienstplan über den Laden-Dialog gelöscht — bei Löschen des aktiven Plans fällt `PlanPage` sichtbar in den Ausgangszustand zurück —, nach vollständigem App-Neustart per „Laden" bestätigt, dass beide Testpläne wirklich weg sind)
 
+## Schritt 15: AuswertungsPage
+
+Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelöst über den bestehenden „Auswertung"-Button, zeigt alle 15 Kennzahlen-Zeilen aus `auswertung.md` nur für Erzieher, live aus dem aktuellen Entwurf. Inklusive der in Schritt 11 zurückgestellten farblichen Hervorhebung von Δ Soll/Ist (jetzt auch rückwirkend in `PlanungsGrid`). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt15-auswertungspage.md`](./ablaufplaene/schritt15-auswertungspage.md).
+
+- [ ] Farbfunktion für Δ Soll/Ist inkl. Unit-Tests
+- [ ] `AuswertungDialog.tsx`: Grundstruktur (Dialog-Größe, Layout, Zeilenbeschriftungen, nur Erzieher-Spalten)
+- [ ] Echte Berechnung und Formatierung einbinden
+- [ ] `PlanungsGrid`: Δ Soll/Ist-Kopfzelle rückwirkend einfärben
+- [ ] `PlanPage` verdrahten (Button aktivieren, Dialog einbinden)
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
-
-- [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt — die restlichen zehn Kennzahlen-Zeilen aus Schritt 11 stehen dafür schon als reine Funktionen bereit
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
 - [ ] PDF-Export/Druck-Funktion: Schaltfläche auf der verkürzten Ansicht (dient zugleich als Druckvorschau in der App), öffnet den Windows-Dialog für PDF-Export bzw. Drucken
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
