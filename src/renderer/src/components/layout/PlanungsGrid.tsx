@@ -1,11 +1,17 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { Kalendertag } from '../../../../shared/kalendertage'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
 import { RufbereitschaftAuswahl } from '@/components/RufbereitschaftAuswahl'
-import { planeintragSchluessel } from '@/lib/planeintragSchluessel'
+import { planeintragSchluessel } from '../../../../shared/planeintragSchluessel'
+import {
+  berechneKennzahlenFuerMitarbeiter,
+  formatiereSollIstDifferenz,
+  type Kennzahlen
+} from '../../../../shared/auswertung'
+import { formatMinutesToHHMM } from '../../../../shared/time'
 import { MAX_BEMERKUNG_LAENGE } from '@/lib/validateBemerkung'
 import type {
   Dienstplantag,
@@ -206,6 +212,25 @@ function PlanungsGrid({
   const dienstplantagIdProDatum = new Map(dienstplantage.map((tag) => [tag.datum, tag.id]))
   const istVorschau = dienstplantage.length === 0
 
+  const kennzahlenProMitarbeiter = useMemo(() => {
+    const ergebnis = new Map<number, Kennzahlen>()
+    members.forEach((member) => {
+      if (member.rolle !== 'Erzieher') return
+      ergebnis.set(
+        member.id,
+        berechneKennzahlenFuerMitarbeiter(
+          member.id,
+          member.wochenarbeitszeitMinuten,
+          tage,
+          dienstplantage,
+          planeintraegeEntwurf,
+          rufbereitschaftEntwurf
+        )
+      )
+    })
+    return ergebnis
+  }, [members, tage, dienstplantage, planeintraegeEntwurf, rufbereitschaftEntwurf])
+
   return (
     <div className="bg-card relative min-h-0 w-full flex-1 overflow-hidden rounded-lg border">
       {istVorschau && (
@@ -235,34 +260,45 @@ function PlanungsGrid({
               >
                 Datum
               </th>
-              {members.map((member) => (
-                <Fragment key={member.id}>
-                  <th className="bg-muted sticky top-0 z-20 h-12 border-b border-l px-1 py-1 text-center align-middle">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
-                        SN/F-Dienste
-                      </span>
-                      <span className="text-xs font-semibold">–</span>
-                    </div>
-                  </th>
-                  <th className="bg-muted sticky top-0 z-20 h-12 border-b px-1 py-1 text-center align-middle">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
-                        Freie Tage
-                      </span>
-                      <span className="text-xs font-semibold">–</span>
-                    </div>
-                  </th>
-                  <th className="bg-muted sticky top-0 z-20 h-12 border-b px-1 py-1 text-center align-middle">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
-                        Δ Soll/Ist
-                      </span>
-                      <span className="text-xs font-semibold">–</span>
-                    </div>
-                  </th>
-                </Fragment>
-              ))}
+              {members.map((member) => {
+                const kennzahlen = kennzahlenProMitarbeiter.get(member.id)
+                return (
+                  <Fragment key={member.id}>
+                    <th className="bg-muted sticky top-0 z-20 h-12 border-b border-l px-1 py-1 text-center align-middle">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
+                          SN/F-Dienste
+                        </span>
+                        <span className="text-xs font-semibold">
+                          {kennzahlen ? kennzahlen.anzahlSnfDienste : 'n/A'}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="bg-muted sticky top-0 z-20 h-12 border-b px-1 py-1 text-center align-middle">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
+                          Freie Tage
+                        </span>
+                        <span className="text-xs font-semibold">
+                          {kennzahlen ? kennzahlen.anzahlFreieTage : 'n/A'}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="bg-muted sticky top-0 z-20 h-12 border-b px-1 py-1 text-center align-middle">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
+                          Δ Soll/Ist
+                        </span>
+                        <span className="text-xs font-semibold">
+                          {kennzahlen
+                            ? formatiereSollIstDifferenz(kennzahlen.differenzSollIstMinuten)
+                            : 'n/A'}
+                        </span>
+                      </div>
+                    </th>
+                  </Fragment>
+                )
+              })}
               <th
                 rowSpan={3}
                 className="bg-card sticky top-0 z-20 h-28 border-b border-l px-2 align-middle text-xs font-medium tracking-wide"
@@ -397,15 +433,18 @@ function PlanungsGrid({
               <td className="bg-secondary sticky left-0 z-10 border-t-2 border-r border-b px-4 py-2 font-semibold">
                 Ist
               </td>
-              {members.map((member) => (
-                <td
-                  key={member.id}
-                  colSpan={3}
-                  className="text-muted-foreground border-t-2 border-b border-l px-2 py-2 text-center"
-                >
-                  –
-                </td>
-              ))}
+              {members.map((member) => {
+                const kennzahlen = kennzahlenProMitarbeiter.get(member.id)
+                return (
+                  <td
+                    key={member.id}
+                    colSpan={3}
+                    className="text-muted-foreground border-t-2 border-b border-l px-2 py-2 text-center"
+                  >
+                    {kennzahlen ? formatMinutesToHHMM(kennzahlen.istArbeitszeitMinuten) : 'n/A'}
+                  </td>
+                )
+              })}
               <td className="border-t-2 border-b border-l px-2 py-2" />
               <td className="border-t-2 border-b border-l px-2 py-2" />
             </tr>
@@ -413,15 +452,18 @@ function PlanungsGrid({
               <td className="bg-secondary sticky left-0 z-10 border-b px-4 py-2 font-semibold">
                 Soll
               </td>
-              {members.map((member) => (
-                <td
-                  key={member.id}
-                  colSpan={3}
-                  className="text-muted-foreground border-b border-l px-2 py-2 text-center"
-                >
-                  –
-                </td>
-              ))}
+              {members.map((member) => {
+                const kennzahlen = kennzahlenProMitarbeiter.get(member.id)
+                return (
+                  <td
+                    key={member.id}
+                    colSpan={3}
+                    className="text-muted-foreground border-b border-l px-2 py-2 text-center"
+                  >
+                    {kennzahlen ? formatMinutesToHHMM(kennzahlen.sollArbeitszeitMinuten) : 'n/A'}
+                  </td>
+                )
+              })}
               <td className="border-b border-l px-2 py-2" />
               <td className="border-b border-l px-2 py-2" />
             </tr>

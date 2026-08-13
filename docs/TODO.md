@@ -139,17 +139,17 @@ Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkun
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (131 Tests, 5 davon neu für `speicherePlanungsstand`/Bemerkung), Persistenz über vollständigen Prozess-Neustart per Screenshot bestätigt (mehrere Bemerkungen gesetzt, eine geändert, eine geleert, zusammen mit Planeintrag- und Rufbereitschaft-Änderung gespeichert, nach Neustart per „Laden" korrekt wiedergefunden, geleerte Bemerkung als `null` in der Datenbank bestätigt)
 
-## Schritt 11: Berechnete Kennzahlen
+## Schritt 11: Berechnete Kennzahlen (abgeschlossen)
 
 Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`architektur/auswertung.md`](./architektur/auswertung.md) als reine Funktionen in `shared/`, verdrahtet davon zunächst nur die fünf Platzhalter in `PlanungsGrid.tsx` (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll), live aus dem aktuellen Entwurf, nur für Erzieher. Die übrigen zehn Zeilen sind für die spätere `AuswertungsPage` vorbereitet, aber noch nicht angezeigt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt11-kennzahlen-berechnen.md`](./ablaufplaene/schritt11-kennzahlen-berechnen.md).
 
-- [ ] Rundungshilfsfunktion vereinheitlichen (`rundeAufVolleMinute` nach `shared/`)
-- [ ] Anzahl Arbeitstage im Monat inkl. Unit-Tests
-- [ ] Tagesbezogene Zählungen je Mitarbeiter (SN/F-Dienste, Freie Tage/Samstage/Sonntage+Feiertage, Sonntag/Feiertag-Stunden, Rufbereitschaften)
-- [ ] Monatssummen und abgeleitete Werte (Arbeitszeit-Summen, Zuschläge, Ist/Soll/Differenz)
-- [ ] Formatierung Δ Soll/Ist mit Vorzeichen
-- [ ] `PlanungsGrid` verdrahten (live, nur Erzieher, „n/A" für andere Rollen)
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update
+- [x] Rundungshilfsfunktion vereinheitlichen (`rundeAufVolleMinute` nach `shared/`)
+- [x] Anzahl Arbeitstage im Monat inkl. Unit-Tests
+- [x] Tagesbezogene Zählungen je Mitarbeiter (SN/F-Dienste, Freie Tage/Samstage/Sonntage+Feiertage, Sonntag/Feiertag-Stunden, Rufbereitschaften)
+- [x] Monatssummen und abgeleitete Werte (Arbeitszeit-Summen, Zuschläge, Ist/Soll/Differenz)
+- [x] Formatierung Δ Soll/Ist mit Vorzeichen
+- [x] `PlanungsGrid` verdrahten (live, nur Erzieher, „n/A" für andere Rollen)
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (156 Tests, 25 davon neu), manuelle Kontrollrechnung im laufenden Fenster über CDP-Skript bestätigt (SN/F-Dienste für drei Erzieher unterschiedlicher Wochenarbeitszeit sowie eine Wirtschaftskraft gesetzt, zwei Rufbereitschaften vergeben; alle fünf Grid-Werte stimmten exakt mit der Handrechnung überein, Aktualisierung sofort ohne „Speichern")
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

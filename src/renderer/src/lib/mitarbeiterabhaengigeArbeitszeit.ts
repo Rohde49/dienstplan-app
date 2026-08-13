@@ -1,5 +1,7 @@
+import { rundeAufVolleMinute } from '../../../shared/rundeAufVolleMinute'
+
 export function berechneMitarbeiterabhaengigeArbeitszeitMinuten(
   wochenarbeitszeitMinuten: number
 ): number {
-  return Math.round(wochenarbeitszeitMinuten / 5)
+  return rundeAufVolleMinute(wochenarbeitszeitMinuten / 5)
 }

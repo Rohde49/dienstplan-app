@@ -8,7 +8,7 @@ import {
   type EintragsdefinitionFormValues
 } from '@/components/EintragsdefinitionForm'
 import { EintragsdefinitionTable } from '@/components/EintragsdefinitionTable'
-import { formatMinutesToHHMM, parseHHMMToMinutes } from '@/lib/time'
+import { formatMinutesToHHMM, parseHHMMToMinutes } from '../../../shared/time'
 import { validateEintragsdefinitionInput } from '@/lib/validateEintragsdefinition'
 import type { Eintragsdefinition } from '../../../shared/types'
 

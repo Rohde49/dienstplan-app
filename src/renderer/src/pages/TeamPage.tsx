@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ManagementLayout } from '@/components/layout/ManagementLayout'
 import { TeamMemberForm, type TeamMemberFormValues } from '@/components/TeamMemberForm'
 import { TeamMemberTable } from '@/components/TeamMemberTable'
-import { formatMinutesToHHMM, parseHHMMToMinutes } from '@/lib/time'
+import { formatMinutesToHHMM, parseHHMMToMinutes } from '../../../shared/time'
 import { validateTeamMemberInput } from '@/lib/validateTeamMember'
 import type { TeamMember } from '../../../shared/types'
 

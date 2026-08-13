@@ -1,5 +1,5 @@
 import { berechneMitarbeiterabhaengigeArbeitszeitMinuten } from './mitarbeiterabhaengigeArbeitszeit'
-import { planeintragSchluessel } from './planeintragSchluessel'
+import { planeintragSchluessel } from '../../../shared/planeintragSchluessel'
 import type {
   Eintragsdefinition,
   Planeintrag,

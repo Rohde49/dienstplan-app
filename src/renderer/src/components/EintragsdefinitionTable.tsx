@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { formatMinutesToHHMM } from '@/lib/time'
+import { formatMinutesToHHMM } from '../../../shared/time'
 import { cn } from '@/lib/utils'
 import type { Eintragsdefinition } from '../../../shared/types'
 

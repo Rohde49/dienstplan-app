@@ -24,7 +24,10 @@ import {
 import { PlanungsGrid } from '@/components/layout/PlanungsGrid'
 import { DienstplanLadenDialog } from '@/components/DienstplanLadenDialog'
 import { getKalendertageFuerMonat } from '../../../shared/kalendertage'
-import { parsePlaneintragSchluessel, planeintragSchluessel } from '@/lib/planeintragSchluessel'
+import {
+  parsePlaneintragSchluessel,
+  planeintragSchluessel
+} from '../../../shared/planeintragSchluessel'
 import { erzeugePlaneintragSnapshot, planeintraegeAlsEntwurf } from '@/lib/planeintragSnapshot'
 import { rufbereitschaftenAlsEntwurf } from '@/lib/rufbereitschaftEntwurf'
 import type {
