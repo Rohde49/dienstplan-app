@@ -151,9 +151,42 @@ Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`archi
 - [x] `PlanungsGrid` verdrahten (live, nur Erzieher, „n/A" für andere Rollen)
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (156 Tests, 25 davon neu), manuelle Kontrollrechnung im laufenden Fenster über CDP-Skript bestätigt (SN/F-Dienste für drei Erzieher unterschiedlicher Wochenarbeitszeit sowie eine Wirtschaftskraft gesetzt, zwei Rufbereitschaften vergeben; alle fünf Grid-Werte stimmten exakt mit der Handrechnung überein, Aktualisierung sofort ohne „Speichern")
 
+## Schritt 12: TeamMember löschen
+
+Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn der Mitarbeiter bereits in `Planeintrag`/`Rufbereitschaft` verwendet wird. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt12-teammember-loeschen.md`](./ablaufplaene/schritt12-teammember-loeschen.md).
+
+- [ ] Repository-Funktion `deleteTeamMember` (mit Verwendungsprüfung)
+- [ ] IPC-Handler und typisierte Preload-API
+- [ ] `TeamMemberForm` um Löschen-Button erweitern
+- [ ] `TeamPage` verdrahten
+- [ ] Repository-Tests gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+
+## Schritt 13: Eintragsdefinition löschen
+
+Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwendungsprüfung (bereits gesetzte Planeinträge sind laut Datenmodell als Snapshot unabhängig von der Eintragsdefinition). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt13-eintragsdefinition-loeschen.md`](./ablaufplaene/schritt13-eintragsdefinition-loeschen.md).
+
+- [ ] Repository-Funktion `deleteEintragsdefinition`
+- [ ] IPC-Handler und typisierte Preload-API
+- [ ] `EintragsdefinitionForm` um Löschen-Button erweitern
+- [ ] `EintraegePage` verdrahten
+- [ ] Repository-Test gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+
+## Schritt 14: Dienstplan löschen
+
+Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskadiert über `dienstplantage`/`planeintraege`/`rufbereitschaften` in einer Transaktion. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt14-dienstplan-loeschen.md`](./ablaufplaene/schritt14-dienstplan-loeschen.md).
+
+- [ ] Repository-Funktion `deleteDienstplan` (kaskadierende Transaktion)
+- [ ] IPC-Handler und typisierte Preload-API
+- [ ] `DienstplanLadenDialog` um Löschen-Button pro Zeile erweitern
+- [ ] `PlanPage` auf Löschen des aktiven Dienstplans reagieren lassen
+- [ ] Repository-Test gegen In-Memory-SQLite
+- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
 - [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt — die restlichen zehn Kennzahlen-Zeilen aus Schritt 11 stehen dafür schon als reine Funktionen bereit
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
