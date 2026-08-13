@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Home, Pencil } from 'lucide-react'
+import { Home, Pencil, Printer } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/card'
@@ -22,6 +22,7 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { PlanungsGrid } from '@/components/layout/PlanungsGrid'
+import { VerkuerzteAnsicht } from '@/components/layout/VerkuerzteAnsicht'
 import { DienstplanLadenDialog } from '@/components/DienstplanLadenDialog'
 import { AuswertungDialog } from '@/components/AuswertungDialog'
 import { getKalendertageFuerMonat } from '../../../shared/kalendertage'
@@ -73,6 +74,7 @@ function PlanPage(): React.JSX.Element {
   const [monat, setMonat] = useState(heute.getMonth() + 1)
   const [jahr, setJahr] = useState(heute.getFullYear())
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
+  const [ansicht, setAnsicht] = useState<'planung' | 'druckvorschau'>('planung')
 
   const [aktiverDienstplan, setAktiverDienstplan] = useState<Dienstplan | null>(null)
   const [dienstplantage, setDienstplantage] = useState<Dienstplantag[]>([])
@@ -399,21 +401,34 @@ function PlanPage(): React.JSX.Element {
                 >
                   <button
                     type="button"
-                    disabled
-                    aria-pressed="true"
-                    className="bg-card text-card-foreground cursor-not-allowed rounded-sm px-3 py-1 text-sm font-medium shadow-sm"
+                    aria-pressed={ansicht === 'planung'}
+                    onClick={() => setAnsicht('planung')}
+                    className={
+                      ansicht === 'planung'
+                        ? 'bg-card text-card-foreground rounded-sm px-3 py-1 text-sm font-medium shadow-sm'
+                        : 'text-muted-foreground rounded-sm px-3 py-1 text-sm font-medium'
+                    }
                   >
                     Planung
                   </button>
                   <button
                     type="button"
-                    disabled
-                    aria-pressed="false"
-                    className="text-muted-foreground cursor-not-allowed rounded-sm px-3 py-1 text-sm font-medium"
+                    aria-pressed={ansicht === 'druckvorschau'}
+                    onClick={() => setAnsicht('druckvorschau')}
+                    className={
+                      ansicht === 'druckvorschau'
+                        ? 'bg-card text-card-foreground rounded-sm px-3 py-1 text-sm font-medium shadow-sm'
+                        : 'text-muted-foreground rounded-sm px-3 py-1 text-sm font-medium'
+                    }
                   >
                     Druckvorschau
                   </button>
                 </div>
+
+                <Button variant="outline" size="sm" disabled>
+                  <Printer className="size-4" />
+                  Drucken
+                </Button>
 
                 <Button
                   size="sm"
@@ -473,20 +488,31 @@ function PlanPage(): React.JSX.Element {
           </CardContent>
         </Card>
 
-        <PlanungsGrid
-          members={teamMembers}
-          tage={tage}
-          dienstplantage={dienstplantage}
-          planeintraegeEntwurf={planeintraegeEntwurf}
-          veraenderteZellen={veraenderteZellen}
-          onEintragChange={handleEintragChange}
-          rufbereitschaftEntwurf={rufbereitschaftEntwurf}
-          veraenderteRufbereitschaftZellen={veraenderteRufbereitschaftZellen}
-          onRufbereitschaftChange={handleRufbereitschaftChange}
-          bemerkungEntwurf={bemerkungEntwurf}
-          veraenderteBemerkungZellen={veraenderteBemerkungZellen}
-          onBemerkungChange={handleBemerkungChange}
-        />
+        {ansicht === 'planung' ? (
+          <PlanungsGrid
+            members={teamMembers}
+            tage={tage}
+            dienstplantage={dienstplantage}
+            planeintraegeEntwurf={planeintraegeEntwurf}
+            veraenderteZellen={veraenderteZellen}
+            onEintragChange={handleEintragChange}
+            rufbereitschaftEntwurf={rufbereitschaftEntwurf}
+            veraenderteRufbereitschaftZellen={veraenderteRufbereitschaftZellen}
+            onRufbereitschaftChange={handleRufbereitschaftChange}
+            bemerkungEntwurf={bemerkungEntwurf}
+            veraenderteBemerkungZellen={veraenderteBemerkungZellen}
+            onBemerkungChange={handleBemerkungChange}
+          />
+        ) : (
+          <VerkuerzteAnsicht
+            members={teamMembers}
+            tage={tage}
+            dienstplantage={dienstplantage}
+            planeintraegeEntwurf={planeintraegeEntwurf}
+            rufbereitschaftEntwurf={rufbereitschaftEntwurf}
+            bemerkungEntwurf={bemerkungEntwurf}
+          />
+        )}
       </div>
 
       <DienstplanLadenDialog
