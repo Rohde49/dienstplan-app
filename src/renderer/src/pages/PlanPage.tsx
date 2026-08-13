@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { PlanungsGrid } from '@/components/layout/PlanungsGrid'
 import { DienstplanLadenDialog } from '@/components/DienstplanLadenDialog'
+import { AuswertungDialog } from '@/components/AuswertungDialog'
 import { getKalendertageFuerMonat } from '../../../shared/kalendertage'
 import {
   parsePlaneintragSchluessel,
@@ -88,6 +89,7 @@ function PlanPage(): React.JSX.Element {
   const [letzterGespeicherterTitel, setLetzterGespeicherterTitel] = useState('')
   const [titelWirdBearbeitet, setTitelWirdBearbeitet] = useState(false)
   const [ladenDialogOffen, setLadenDialogOffen] = useState(false)
+  const [auswertungOffen, setAuswertungOffen] = useState(false)
   const [ausstehendeAktion, setAusstehendeAktion] = useState<
     'laden' | 'neuAnlegen' | 'startseite' | null
   >(null)
@@ -413,7 +415,11 @@ function PlanPage(): React.JSX.Element {
                   </button>
                 </div>
 
-                <Button disabled size="sm">
+                <Button
+                  size="sm"
+                  disabled={aktiverDienstplan === null}
+                  onClick={() => setAuswertungOffen(true)}
+                >
                   Auswertung
                 </Button>
               </div>
@@ -489,6 +495,16 @@ function PlanPage(): React.JSX.Element {
         onSelect={handleDienstplanAuswaehlen}
         aktiverDienstplanId={aktiverDienstplan?.id ?? null}
         onAktiverDienstplanGeloescht={fuehreNeuAnlegenAus}
+      />
+
+      <AuswertungDialog
+        open={auswertungOffen}
+        onOpenChange={setAuswertungOffen}
+        members={teamMembers}
+        tage={tage}
+        dienstplantage={dienstplantage}
+        planeintraegeEntwurf={planeintraegeEntwurf}
+        rufbereitschaftEntwurf={rufbereitschaftEntwurf}
       />
 
       <AlertDialog

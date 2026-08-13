@@ -184,16 +184,16 @@ Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskad
 - [x] Repository-Test gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (163 Tests, 2 davon neu für `deleteDienstplan`), End-to-End-Test im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit Planeinträgen/Rufbereitschaft angelegt und gespeichert, nicht-aktiven sowie aktiven Dienstplan über den Laden-Dialog gelöscht — bei Löschen des aktiven Plans fällt `PlanPage` sichtbar in den Ausgangszustand zurück —, nach vollständigem App-Neustart per „Laden" bestätigt, dass beide Testpläne wirklich weg sind)
 
-## Schritt 15: AuswertungsPage
+## Schritt 15: AuswertungsPage (abgeschlossen)
 
 Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelöst über den bestehenden „Auswertung"-Button, zeigt alle 15 Kennzahlen-Zeilen aus `auswertung.md` nur für Erzieher, live aus dem aktuellen Entwurf. Inklusive der in Schritt 11 zurückgestellten farblichen Hervorhebung von Δ Soll/Ist (jetzt auch rückwirkend in `PlanungsGrid`). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt15-auswertungspage.md`](./ablaufplaene/schritt15-auswertungspage.md).
 
-- [ ] Farbfunktion für Δ Soll/Ist inkl. Unit-Tests
-- [ ] `AuswertungDialog.tsx`: Grundstruktur (Dialog-Größe, Layout, Zeilenbeschriftungen, nur Erzieher-Spalten)
-- [ ] Echte Berechnung und Formatierung einbinden
-- [ ] `PlanungsGrid`: Δ Soll/Ist-Kopfzelle rückwirkend einfärben
-- [ ] `PlanPage` verdrahten (Button aktivieren, Dialog einbinden)
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update
+- [x] Farbfunktion für Δ Soll/Ist inkl. Unit-Tests
+- [x] `AuswertungDialog.tsx`: Grundstruktur (Dialog-Größe, Layout, Zeilenbeschriftungen, nur Erzieher-Spalten)
+- [x] Echte Berechnung und Formatierung einbinden
+- [x] `PlanungsGrid`: Δ Soll/Ist-Kopfzelle rückwirkend einfärben
+- [x] `PlanPage` verdrahten (Button aktivieren, Dialog einbinden)
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (167 Tests, 4 davon neu für `sollIstFarbe`), manuelle Kontrollrechnung im laufenden Fenster über CDP-Skript bestätigt (drei Erzieher mit unterschiedlichen SN/F-Diensten, freien Tagen, Sonntagsarbeit, Rufbereitschaften und einem gezielt exakt auf die Soll-Arbeitszeit gesetzten Testfall; alle 15 Zeilen je Erzieher stimmten exakt mit der Handrechnung überein, Δ Soll/Ist zeigte dabei sowohl den Grün- als auch den Abweichungsfall im selben Screenshot)
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

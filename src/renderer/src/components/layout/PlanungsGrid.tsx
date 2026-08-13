@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
 import { RufbereitschaftAuswahl } from '@/components/RufbereitschaftAuswahl'
+import { sollIstFarbe } from '@/lib/sollIstFarbe'
 import { planeintragSchluessel } from '../../../../shared/planeintragSchluessel'
 import {
   berechneKennzahlenFuerMitarbeiter,
@@ -289,7 +290,12 @@ function PlanungsGrid({
                         <span className="text-muted-foreground text-[9px] leading-tight font-medium uppercase">
                           Δ Soll/Ist
                         </span>
-                        <span className="text-xs font-semibold">
+                        <span
+                          className={cn(
+                            'text-xs font-semibold',
+                            kennzahlen && sollIstFarbe(kennzahlen.differenzSollIstMinuten)
+                          )}
+                        >
                           {kennzahlen
                             ? formatiereSollIstDifferenz(kennzahlen.differenzSollIstMinuten)
                             : 'n/A'}
