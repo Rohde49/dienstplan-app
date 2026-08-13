@@ -52,3 +52,23 @@ export function updateTeamMember(
 
   return { id, ...data }
 }
+
+export function deleteTeamMember(id: number, database: Db): { geloescht: boolean; grund?: string } {
+  const inPlaneintraegen = database
+    .prepare('SELECT EXISTS(SELECT 1 FROM planeintraege WHERE teamMemberId = ?) AS vorhanden')
+    .get(id) as { vorhanden: number }
+  const inRufbereitschaften = database
+    .prepare('SELECT EXISTS(SELECT 1 FROM rufbereitschaften WHERE teamMemberId = ?) AS vorhanden')
+    .get(id) as { vorhanden: number }
+
+  if (inPlaneintraegen.vorhanden || inRufbereitschaften.vorhanden) {
+    return {
+      geloescht: false,
+      grund:
+        'Mitarbeiter kann nicht gelöscht werden, da er bereits in einem Dienstplan verwendet wird.'
+    }
+  }
+
+  database.prepare('DELETE FROM team_members WHERE id = ?').run(id)
+  return { geloescht: true }
+}

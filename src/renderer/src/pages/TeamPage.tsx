@@ -89,6 +89,19 @@ function TeamPage(): React.JSX.Element {
     })
   }
 
+  function handleDelete(): void {
+    if (selectedId === null) return
+
+    window.api.team.delete(selectedId).then((result) => {
+      if (result.geloescht) {
+        handleNewMember()
+        loadTeamMembers()
+      } else {
+        setErrors(result.grund ? [result.grund] : ['Löschen nicht möglich.'])
+      }
+    })
+  }
+
   return (
     <div className="p-6 pt-12">
       <ManagementLayout
@@ -117,6 +130,7 @@ function TeamPage(): React.JSX.Element {
             onChange={handleFormChange}
             onSubmit={handleSubmit}
             onCancel={handleNewMember}
+            onDelete={handleDelete}
           />
         }
       />

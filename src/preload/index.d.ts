@@ -15,6 +15,7 @@ interface TeamAPI {
   list: () => Promise<TeamMember[]>
   add: (data: Omit<TeamMember, 'id'>) => Promise<TeamMember>
   update: (id: number, data: Omit<TeamMember, 'id'>) => Promise<TeamMember>
+  delete: (id: number) => Promise<{ geloescht: boolean; grund?: string }>
 }
 
 interface EintragsdefinitionAPI {

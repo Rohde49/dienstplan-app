@@ -1,12 +1,20 @@
 import Database from 'better-sqlite3'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  createDienstplan,
+  ensureDienstplanTabellen,
+  speicherePlanungsstand
+} from './dienstplanRepository'
+import { ensurePlaneintraegeTabelle } from './planeintragRepository'
+import { ensureRufbereitschaftenTabelle } from './rufbereitschaftRepository'
+import {
   addTeamMember,
+  deleteTeamMember,
   ensureTeamMembersTable,
   getTeamMembers,
   updateTeamMember
 } from './teamRepository'
-import type { TeamMember } from '../../shared/types'
+import type { PlaneintragSnapshot, TeamMember } from '../../shared/types'
 
 let testDb: InstanceType<typeof Database>
 
@@ -21,9 +29,24 @@ function neuerMitarbeiter(overrides: Partial<Omit<TeamMember, 'id'>> = {}): Omit
   }
 }
 
+const festerSnapshot: PlaneintragSnapshot = {
+  eintragsdefinitionId: 1,
+  kuerzel: 'F',
+  beginn: '06:00',
+  ende: '14:00',
+  anwesenheitszeitMinuten: 480,
+  arbeitszeitMinuten: 450,
+  arbeitszeitOhneNachtbereitschaftMinuten: 450,
+  nachtbereitschaftMinuten: 0,
+  nachtarbeitMinuten: 0
+}
+
 beforeEach(() => {
   testDb = new Database(':memory:')
   ensureTeamMembersTable(testDb)
+  ensureDienstplanTabellen(testDb)
+  ensurePlaneintraegeTabelle(testDb)
+  ensureRufbereitschaftenTabelle(testDb)
 })
 
 describe('getTeamMembers', () => {
@@ -101,5 +124,54 @@ describe('updateTeamMember', () => {
     const members = getTeamMembers(testDb)
     expect(members.find((m) => m.id === first.id)?.vorname).toBe('Nina-Updated')
     expect(members.find((m) => m.id === second.id)?.vorname).toBe('Tom')
+  })
+})
+
+describe('deleteTeamMember', () => {
+  it('löscht einen unbenutzten Mitarbeiter', () => {
+    const created = addTeamMember(neuerMitarbeiter(), testDb)
+
+    const result = deleteTeamMember(created.id, testDb)
+
+    expect(result).toEqual({ geloescht: true })
+    expect(getTeamMembers(testDb)).toHaveLength(0)
+  })
+
+  it('blockiert das Löschen, wenn der Mitarbeiter in einem Planeintrag verwendet wird', () => {
+    const created = addTeamMember(neuerMitarbeiter(), testDb)
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [{ dienstplantagId: tage[0].id, teamMemberId: created.id, eintrag: festerSnapshot }],
+      [],
+      [],
+      testDb
+    )
+
+    const result = deleteTeamMember(created.id, testDb)
+
+    expect(result.geloescht).toBe(false)
+    expect(result.grund).toBeTruthy()
+    expect(getTeamMembers(testDb)).toHaveLength(1)
+  })
+
+  it('blockiert das Löschen, wenn der Mitarbeiter in einer Rufbereitschaft verwendet wird', () => {
+    const created = addTeamMember(neuerMitarbeiter(), testDb)
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: created.id }],
+      [],
+      testDb
+    )
+
+    const result = deleteTeamMember(created.id, testDb)
+
+    expect(result.geloescht).toBe(false)
+    expect(result.grund).toBeTruthy()
+    expect(getTeamMembers(testDb)).toHaveLength(1)
   })
 })

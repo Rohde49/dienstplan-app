@@ -19,7 +19,9 @@ const api = {
     add: (data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
       ipcRenderer.invoke('team:add', data),
     update: (id: number, data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
-      ipcRenderer.invoke('team:update', id, data)
+      ipcRenderer.invoke('team:update', id, data),
+    delete: (id: number): Promise<{ geloescht: boolean; grund?: string }> =>
+      ipcRenderer.invoke('team:delete', id)
   },
   eintragsdefinition: {
     list: (): Promise<Eintragsdefinition[]> => ipcRenderer.invoke('eintragsdefinition:list'),

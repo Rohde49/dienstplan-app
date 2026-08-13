@@ -3,6 +3,7 @@ import { db } from '../db'
 import type { TeamMember } from '../../shared/types'
 import {
   addTeamMember,
+  deleteTeamMember,
   ensureTeamMembersTable,
   getTeamMembers,
   updateTeamMember
@@ -19,5 +20,9 @@ export function registerTeamHandlers(): void {
 
   ipcMain.handle('team:update', (_event, id: number, data: Omit<TeamMember, 'id'>): TeamMember =>
     updateTeamMember(id, data, db)
+  )
+
+  ipcMain.handle('team:delete', (_event, id: number): { geloescht: boolean; grund?: string } =>
+    deleteTeamMember(id, db)
   )
 }

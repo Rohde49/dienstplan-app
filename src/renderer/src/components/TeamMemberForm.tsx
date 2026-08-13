@@ -1,4 +1,14 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -28,6 +38,7 @@ interface TeamMemberFormProps {
   onChange: (patch: Partial<TeamMemberFormValues>) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onCancel: () => void
+  onDelete: () => void
 }
 
 function TeamMemberForm({
@@ -36,8 +47,10 @@ function TeamMemberForm({
   errors,
   onChange,
   onSubmit,
-  onCancel
+  onCancel,
+  onDelete
 }: TeamMemberFormProps): React.JSX.Element {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   return (
     <Card>
       <CardHeader>
@@ -125,9 +138,43 @@ function TeamMemberForm({
             <Button type="button" variant="outline" onClick={onCancel}>
               Abbrechen
             </Button>
+            {mode === 'edit' && (
+              <Button
+                type="button"
+                variant="destructive"
+                className="ml-auto"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                Löschen
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mitarbeiter löschen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Soll {values.vorname} {values.name} wirklich gelöscht werden? Diese Aktion kann nicht
+              rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-white hover:bg-destructive/90"
+              onClick={() => {
+                setDeleteDialogOpen(false)
+                onDelete()
+              }}
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }

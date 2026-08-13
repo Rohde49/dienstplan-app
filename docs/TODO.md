@@ -151,16 +151,16 @@ Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`archi
 - [x] `PlanungsGrid` verdrahten (live, nur Erzieher, „n/A" für andere Rollen)
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (156 Tests, 25 davon neu), manuelle Kontrollrechnung im laufenden Fenster über CDP-Skript bestätigt (SN/F-Dienste für drei Erzieher unterschiedlicher Wochenarbeitszeit sowie eine Wirtschaftskraft gesetzt, zwei Rufbereitschaften vergeben; alle fünf Grid-Werte stimmten exakt mit der Handrechnung überein, Aktualisierung sofort ohne „Speichern")
 
-## Schritt 12: TeamMember löschen
+## Schritt 12: TeamMember löschen (abgeschlossen)
 
 Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn der Mitarbeiter bereits in `Planeintrag`/`Rufbereitschaft` verwendet wird. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt12-teammember-loeschen.md`](./ablaufplaene/schritt12-teammember-loeschen.md).
 
-- [ ] Repository-Funktion `deleteTeamMember` (mit Verwendungsprüfung)
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] `TeamMemberForm` um Löschen-Button erweitern
-- [ ] `TeamPage` verdrahten
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+- [x] Repository-Funktion `deleteTeamMember` (mit Verwendungsprüfung)
+- [x] IPC-Handler und typisierte Preload-API
+- [x] `TeamMemberForm` um Löschen-Button erweitern
+- [x] `TeamPage` verdrahten
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (159 Tests, 3 davon neu für `deleteTeamMember`), Löschen im laufenden Fenster über CDP-Skript geprüft (unbenutzten Mitarbeiter „Frau Müller" gelöscht, verschwindet aus der Liste; Löschversuch bei „Max Mustermann" — verwendet in Planeintrag und Rufbereitschaft — zeigt die Fehlermeldung im Formular, Mitarbeiter bleibt erhalten)
 
 ## Schritt 13: Eintragsdefinition löschen
 
