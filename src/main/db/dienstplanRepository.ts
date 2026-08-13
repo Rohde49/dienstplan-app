@@ -4,9 +4,12 @@ import type {
   Dienstplan,
   Dienstplantag,
   Planeintrag,
-  PlaneintragAenderung
+  PlaneintragAenderung,
+  Rufbereitschaft,
+  RufbereitschaftAenderung
 } from '../../shared/types'
 import { getPlaneintraegeFuerDienstplan } from './planeintragRepository'
+import { getRufbereitschaftenFuerDienstplan } from './rufbereitschaftRepository'
 
 type Db = InstanceType<typeof Database>
 
@@ -121,8 +124,9 @@ export function speicherePlanungsstand(
   dienstplanId: number,
   titel: string,
   aenderungen: PlaneintragAenderung[],
+  rufbereitschaftAenderungen: RufbereitschaftAenderung[],
   database: Db
-): { dienstplan: Dienstplan; planeintraege: Planeintrag[] } {
+): { dienstplan: Dienstplan; planeintraege: Planeintrag[]; rufbereitschaften: Rufbereitschaft[] } {
   const speichern = database.transaction(() => {
     const dienstplan = updateDienstplanTitel(dienstplanId, titel, database)
 
@@ -154,10 +158,31 @@ export function speicherePlanungsstand(
       }
     }
 
+    const entfernenRufbereitschaft = database.prepare(
+      'DELETE FROM rufbereitschaften WHERE dienstplantagId = @dienstplantagId'
+    )
+    const einfuegenRufbereitschaft = database.prepare(
+      'INSERT INTO rufbereitschaften (dienstplantagId, teamMemberId) VALUES (@dienstplantagId, @teamMemberId)'
+    )
+
+    for (const aenderung of rufbereitschaftAenderungen) {
+      entfernenRufbereitschaft.run({ dienstplantagId: aenderung.dienstplantagId })
+      if (aenderung.teamMemberId !== null) {
+        einfuegenRufbereitschaft.run({
+          dienstplantagId: aenderung.dienstplantagId,
+          teamMemberId: aenderung.teamMemberId
+        })
+      }
+    }
+
     return dienstplan
   })
 
   const dienstplan = speichern()
 
-  return { dienstplan, planeintraege: getPlaneintraegeFuerDienstplan(dienstplanId, database) }
+  return {
+    dienstplan,
+    planeintraege: getPlaneintraegeFuerDienstplan(dienstplanId, database),
+    rufbereitschaften: getRufbereitschaftenFuerDienstplan(dienstplanId, database)
+  }
 }

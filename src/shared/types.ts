@@ -72,3 +72,14 @@ export interface PlaneintragAenderung {
   teamMemberId: number
   eintrag: PlaneintragSnapshot | null // null = Eintrag entfernen
 }
+
+export interface Rufbereitschaft {
+  id: number
+  dienstplantagId: number // FK auf Dienstplantag.id
+  teamMemberId: number // FK auf TeamMember.id, muss rolle: 'Erzieher' sein
+}
+
+export interface RufbereitschaftAenderung {
+  dienstplantagId: number
+  teamMemberId: number | null // null = Rufbereitschaft entfernen
+}

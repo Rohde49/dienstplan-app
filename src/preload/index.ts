@@ -6,6 +6,8 @@ import type {
   Eintragsdefinition,
   Planeintrag,
   PlaneintragAenderung,
+  Rufbereitschaft,
+  RufbereitschaftAenderung,
   TeamMember
 } from '../shared/types'
 
@@ -38,13 +40,28 @@ const api = {
     speichernPlanungsstand: (
       dienstplanId: number,
       titel: string,
-      aenderungen: PlaneintragAenderung[]
-    ): Promise<{ dienstplan: Dienstplan; planeintraege: Planeintrag[] }> =>
-      ipcRenderer.invoke('dienstplan:speichernPlanungsstand', dienstplanId, titel, aenderungen)
+      aenderungen: PlaneintragAenderung[],
+      rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+    ): Promise<{
+      dienstplan: Dienstplan
+      planeintraege: Planeintrag[]
+      rufbereitschaften: Rufbereitschaft[]
+    }> =>
+      ipcRenderer.invoke(
+        'dienstplan:speichernPlanungsstand',
+        dienstplanId,
+        titel,
+        aenderungen,
+        rufbereitschaftAenderungen
+      )
   },
   planeintrag: {
     listFuerDienstplan: (dienstplanId: number): Promise<Planeintrag[]> =>
       ipcRenderer.invoke('planeintrag:listFuerDienstplan', dienstplanId)
+  },
+  rufbereitschaft: {
+    listFuerDienstplan: (dienstplanId: number): Promise<Rufbereitschaft[]> =>
+      ipcRenderer.invoke('rufbereitschaft:listFuerDienstplan', dienstplanId)
   }
 }
 

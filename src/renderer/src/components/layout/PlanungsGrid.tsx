@@ -3,6 +3,7 @@ import type { Kalendertag } from '../../../../shared/kalendertage'
 import { cn } from '@/lib/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
+import { RufbereitschaftAuswahl } from '@/components/RufbereitschaftAuswahl'
 import { planeintragSchluessel } from '@/lib/planeintragSchluessel'
 import type {
   Dienstplantag,
@@ -30,6 +31,9 @@ interface PlanungsGridProps {
     teamMemberId: number,
     eintragsdefinition: Eintragsdefinition | null
   ) => void
+  rufbereitschaftEntwurf?: Record<string, number>
+  veraenderteRufbereitschaftZellen?: Set<string>
+  onRufbereitschaftChange?: (dienstplantagId: number, teamMember: TeamMember | null) => void
 }
 
 function formatTagUndMonat(datum: string): string {
@@ -102,13 +106,62 @@ function PlaneintragZellengruppe({
   )
 }
 
+interface RufbereitschaftZelleProps {
+  istInteraktiv: boolean
+  teamMember: TeamMember | undefined
+  hatAbweichung: boolean
+  onSelect: (teamMember: TeamMember | null) => void
+}
+
+function RufbereitschaftZelle({
+  istInteraktiv,
+  teamMember,
+  hatAbweichung,
+  onSelect
+}: RufbereitschaftZelleProps): React.JSX.Element {
+  const [offen, setOffen] = useState(false)
+
+  if (!istInteraktiv) {
+    return <td className="text-muted-foreground border-b border-l px-2 py-2 text-center">–</td>
+  }
+
+  return (
+    <td className="relative border-b border-l p-0 text-center">
+      <Popover open={offen} onOpenChange={setOffen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className="hover:bg-accent/50 flex h-full w-full items-center justify-center px-2 py-2"
+          >
+            {teamMember?.name ?? '–'}
+            {hatAbweichung && (
+              <span className="bg-primary absolute top-1 right-1 size-1.5 rounded-full" />
+            )}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start">
+          <RufbereitschaftAuswahl
+            onSelect={(member) => {
+              onSelect(member)
+              setOffen(false)
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </td>
+  )
+}
+
 function PlanungsGrid({
   members,
   tage,
   dienstplantage = [],
   planeintraegeEntwurf = {},
   veraenderteZellen = new Set(),
-  onEintragChange = () => {}
+  onEintragChange = () => {},
+  rufbereitschaftEntwurf = {},
+  veraenderteRufbereitschaftZellen = new Set(),
+  onRufbereitschaftChange = () => {}
 }: PlanungsGridProps): React.JSX.Element {
   const dienstplantagIdProDatum = new Map(dienstplantage.map((tag) => [tag.datum, tag.id]))
   const istVorschau = dienstplantage.length === 0
@@ -260,7 +313,26 @@ function PlanungsGrid({
                       </Fragment>
                     )
                   })}
-                  <td className="border-b border-l px-2 py-2" />
+                  <RufbereitschaftZelle
+                    istInteraktiv={dienstplantagId !== undefined}
+                    teamMember={
+                      dienstplantagId !== undefined
+                        ? members.find(
+                            (member) =>
+                              member.id === rufbereitschaftEntwurf[String(dienstplantagId)]
+                          )
+                        : undefined
+                    }
+                    hatAbweichung={
+                      dienstplantagId !== undefined
+                        ? veraenderteRufbereitschaftZellen.has(String(dienstplantagId))
+                        : false
+                    }
+                    onSelect={(teamMember) => {
+                      if (dienstplantagId === undefined) return
+                      onRufbereitschaftChange(dienstplantagId, teamMember)
+                    }}
+                  />
                   <td className="border-b border-l px-2 py-2" />
                 </tr>
               )

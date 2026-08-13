@@ -109,25 +109,26 @@ Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (113 Tests, 21 davon neu für `planeintragSchluessel`/`planeintragSnapshot`/`mitarbeiterabhaengigeArbeitszeit` sowie `speicherePlanungsstand`/`getPlaneintraegeFuerDienstplan`), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (mehrere Einträge gesetzt, einen mitarbeiterabhängigen geändert, einen entfernt, gespeichert, nach Neustart per „Laden" korrekt wiedergefunden), Warnhinweis-Flow mit offenen Planeintrag-Änderungen (Abbrechen/Fortfahren) im laufenden Fenster durchgespielt
 
-## Schritt 9: Rufbereitschaft – Setzen, Ändern und Entfernen
+## Schritt 9: Rufbereitschaft – Setzen, Ändern und Entfernen (abgeschlossen)
 
 Setzen/Ändern/Entfernen von `Rufbereitschaft` in der Rufbereitschaft-Spalte, nach demselben Popover- und Entwurf/Baseline-Muster wie `Planeintrag` in Schritt 8, persistiert gemeinsam über den bestehenden „Speichern"-Button. Noch keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt9-rufbereitschaft-setzen.md`](./ablaufplaene/schritt9-rufbereitschaft-setzen.md).
 
-- [ ] `Rufbereitschaft`-Typ in `shared/types.ts`
-- [ ] Repository-Funktionssignaturen (`getRufbereitschaftenFuerDienstplan`), zunächst mit Testdaten
-- [ ] `speicherePlanungsstand` um Rufbereitschaft-Änderungen erweitern
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] `RufbereitschaftAuswahl`-Komponente
-- [ ] Rufbereitschaft-Spalte im Grid anbinden, lokaler Entwurf inkl. ungespeichert-Indikator
-- [ ] Laden erweitert Rufbereitschaften in die Baseline
-- [ ] „Speichern" um Rufbereitschaft-Änderungen erweitern
-- [ ] Echte SQLite-Anbindung (Tabelle `rufbereitschaften`, UNIQUE auf `dienstplantagId`)
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+- [x] `Rufbereitschaft`-Typ in `shared/types.ts`
+- [x] Repository-Funktionssignaturen (`getRufbereitschaftenFuerDienstplan`), zunächst mit Testdaten
+- [x] `speicherePlanungsstand` um Rufbereitschaft-Änderungen erweitern
+- [x] IPC-Handler und typisierte Preload-API
+- [x] `RufbereitschaftAuswahl`-Komponente
+- [x] Rufbereitschaft-Spalte im Grid anbinden, lokaler Entwurf inkl. ungespeichert-Indikator
+- [x] Laden erweitert Rufbereitschaften in die Baseline
+- [x] „Speichern" um Rufbereitschaft-Änderungen erweitern
+- [x] Echte SQLite-Anbindung (Tabelle `rufbereitschaften`, UNIQUE auf `dienstplantagId`)
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (122 Tests, 7 davon neu für `speicherePlanungsstand`/`getRufbereitschaftenFuerDienstplan`/UNIQUE-Constraint), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (drei Rufbereitschaften gesetzt, eine geändert, eine entfernt, zusammen mit einem Planeintrag gespeichert, nach Neustart per „Laden" korrekt wiedergefunden), Warnhinweis-Flow mit offenen Rufbereitschaft-Änderungen im laufenden Fenster durchgespielt
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
 Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+
 - [ ] Planungsansicht – Bemerkung-Spalte (siehe offene Fragen in `temp/temp-PlanungPage.md`)
 - [ ] Planungsansicht – berechnete Kennzahlen (u. a. Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) — UI-Platzhalter dafür bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik, in eigenem Ablaufplan getrennt von den obigen Setz-Funktionen
 - [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt

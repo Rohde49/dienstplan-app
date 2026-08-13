@@ -6,6 +6,7 @@ import { runDbSmokeTest } from './db'
 import { registerDienstplanHandlers } from './ipc/dienstplanHandlers'
 import { registerEintragsdefinitionHandlers } from './ipc/eintragsdefinitionHandlers'
 import { registerPlaneintragHandlers } from './ipc/planeintragHandlers'
+import { registerRufbereitschaftHandlers } from './ipc/rufbereitschaftHandlers'
 import { registerTeamHandlers } from './ipc/teamHandlers'
 
 function createWindow(): void {
@@ -65,6 +66,7 @@ app.whenReady().then(() => {
   registerEintragsdefinitionHandlers()
   registerDienstplanHandlers()
   registerPlaneintragHandlers()
+  registerRufbereitschaftHandlers()
 
   createWindow()
 

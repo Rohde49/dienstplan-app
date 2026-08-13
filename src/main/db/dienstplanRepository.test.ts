@@ -9,6 +9,10 @@ import {
   updateDienstplanTitel
 } from './dienstplanRepository'
 import { ensurePlaneintraegeTabelle, getPlaneintraegeFuerDienstplan } from './planeintragRepository'
+import {
+  ensureRufbereitschaftenTabelle,
+  getRufbereitschaftenFuerDienstplan
+} from './rufbereitschaftRepository'
 import type { PlaneintragSnapshot } from '../../shared/types'
 
 let testDb: InstanceType<typeof Database>
@@ -41,6 +45,7 @@ beforeEach(() => {
   testDb = new Database(':memory:')
   ensureDienstplanTabellen(testDb)
   ensurePlaneintraegeTabelle(testDb)
+  ensureRufbereitschaftenTabelle(testDb)
 })
 
 describe('createDienstplan', () => {
@@ -162,6 +167,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [],
       testDb
     )
 
@@ -181,6 +187,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: festerSnapshot }],
+      [],
       testDb
     )
     const alteId = erstesSpeichern.planeintraege[0].id
@@ -189,6 +196,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: mitarbeiterabhaengigerSnapshot }],
+      [],
       testDb
     )
 
@@ -209,12 +217,14 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: festerSnapshot }],
+      [],
       testDb
     )
     const { planeintraege } = speicherePlanungsstand(
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: null }],
+      [],
       testDb
     )
 
@@ -228,6 +238,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       'Neu',
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [],
       testDb
     )
 
@@ -242,6 +253,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: mitarbeiterabhaengigerSnapshot }],
+      [],
       testDb
     )
 
@@ -260,6 +272,7 @@ describe('speicherePlanungsstand', () => {
         { dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot },
         { dienstplantagId: tage[1].id, teamMemberId: 2, eintrag: mitarbeiterabhaengigerSnapshot }
       ],
+      [],
       testDb
     )
 
@@ -267,6 +280,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: null }],
+      [],
       testDb
     )
 
@@ -289,10 +303,134 @@ describe('getPlaneintraegeFuerDienstplan (über speicherePlanungsstand)', () => 
       ersterPlan.dienstplan.id,
       ersterPlan.dienstplan.titel,
       [{ dienstplantagId: ersterPlan.tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [],
       testDb
     )
 
     expect(getPlaneintraegeFuerDienstplan(ersterPlan.dienstplan.id, testDb)).toHaveLength(1)
     expect(getPlaneintraegeFuerDienstplan(zweiterPlan.dienstplan.id, testDb)).toHaveLength(0)
+  })
+})
+
+describe('speicherePlanungsstand – Rufbereitschaft', () => {
+  it('legt eine neue Rufbereitschaft an', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    const { rufbereitschaften } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      testDb
+    )
+
+    expect(rufbereitschaften).toHaveLength(1)
+    expect(rufbereitschaften[0]).toMatchObject({ dienstplantagId: tage[0].id, teamMemberId: 1 })
+  })
+
+  it('ersetzt eine bestehende Rufbereitschaft: andere Person am selben Tag', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    const erstesSpeichern = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      testDb
+    )
+    const alteId = erstesSpeichern.rufbereitschaften[0].id
+
+    const { rufbereitschaften } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: 2 }],
+      testDb
+    )
+
+    expect(rufbereitschaften).toHaveLength(1)
+    expect(rufbereitschaften[0].id).not.toBe(alteId)
+    expect(rufbereitschaften[0]).toMatchObject({ dienstplantagId: tage[0].id, teamMemberId: 2 })
+  })
+
+  it('entfernt eine Rufbereitschaft ohne Ersatz, wenn teamMemberId null ist', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      testDb
+    )
+    const { rufbereitschaften } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [{ dienstplantagId: tage[0].id, teamMemberId: null }],
+      testDb
+    )
+
+    expect(rufbereitschaften).toHaveLength(0)
+  })
+
+  it('speichert Titel-, Planeintrag- und Rufbereitschaft-Änderungen gemeinsam in einem Aufruf', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'Alt' }, testDb)
+
+    const {
+      dienstplan: aktualisiert,
+      planeintraege,
+      rufbereitschaften
+    } = speicherePlanungsstand(
+      dienstplan.id,
+      'Neu',
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [{ dienstplantagId: tage[1].id, teamMemberId: 2 }],
+      testDb
+    )
+
+    expect(aktualisiert.titel).toBe('Neu')
+    expect(planeintraege).toHaveLength(1)
+    expect(rufbereitschaften).toHaveLength(1)
+    expect(rufbereitschaften[0]).toMatchObject({ dienstplantagId: tage[1].id, teamMemberId: 2 })
+  })
+})
+
+describe('getRufbereitschaftenFuerDienstplan (über speicherePlanungsstand)', () => {
+  it('gibt eine leere Liste zurück, wenn noch keine Rufbereitschaft existiert', () => {
+    const { dienstplan } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    expect(getRufbereitschaftenFuerDienstplan(dienstplan.id, testDb)).toEqual([])
+  })
+
+  it('gibt nur die Rufbereitschaften des angefragten Dienstplans zurück, nicht die eines anderen', () => {
+    const ersterPlan = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    const zweiterPlan = createDienstplan({ monat: 9, jahr: 2026, titel: 'B' }, testDb)
+
+    speicherePlanungsstand(
+      ersterPlan.dienstplan.id,
+      ersterPlan.dienstplan.titel,
+      [],
+      [{ dienstplantagId: ersterPlan.tage[0].id, teamMemberId: 1 }],
+      testDb
+    )
+
+    expect(getRufbereitschaftenFuerDienstplan(ersterPlan.dienstplan.id, testDb)).toHaveLength(1)
+    expect(getRufbereitschaftenFuerDienstplan(zweiterPlan.dienstplan.id, testDb)).toHaveLength(0)
+  })
+})
+
+describe('rufbereitschaften – UNIQUE-Constraint auf dienstplantagId', () => {
+  it('lässt keinen zweiten Datensatz für denselben dienstplantagId zu', () => {
+    const { tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    testDb
+      .prepare('INSERT INTO rufbereitschaften (dienstplantagId, teamMemberId) VALUES (?, ?)')
+      .run(tage[0].id, 1)
+
+    expect(() =>
+      testDb
+        .prepare('INSERT INTO rufbereitschaften (dienstplantagId, teamMemberId) VALUES (?, ?)')
+        .run(tage[0].id, 2)
+    ).toThrow()
   })
 })

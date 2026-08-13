@@ -26,12 +26,14 @@ import { DienstplanLadenDialog } from '@/components/DienstplanLadenDialog'
 import { getKalendertageFuerMonat } from '../../../shared/kalendertage'
 import { parsePlaneintragSchluessel, planeintragSchluessel } from '@/lib/planeintragSchluessel'
 import { erzeugePlaneintragSnapshot, planeintraegeAlsEntwurf } from '@/lib/planeintragSnapshot'
+import { rufbereitschaftenAlsEntwurf } from '@/lib/rufbereitschaftEntwurf'
 import type {
   Dienstplan,
   Dienstplantag,
   Eintragsdefinition,
   PlaneintragAenderung,
   PlaneintragSnapshot,
+  RufbereitschaftAenderung,
   TeamMember
 } from '../../../shared/types'
 
@@ -71,6 +73,8 @@ function PlanPage(): React.JSX.Element {
   const [planeintraegeBaseline, setPlaneintraegeBaseline] = useState<
     Record<string, PlaneintragSnapshot>
   >({})
+  const [rufbereitschaftEntwurf, setRufbereitschaftEntwurf] = useState<Record<string, number>>({})
+  const [rufbereitschaftBaseline, setRufbereitschaftBaseline] = useState<Record<string, number>>({})
   const [titelEntwurf, setTitelEntwurf] = useState('')
   const [letzterGespeicherterTitel, setLetzterGespeicherterTitel] = useState('')
   const [titelWirdBearbeitet, setTitelWirdBearbeitet] = useState(false)
@@ -103,9 +107,27 @@ function PlanPage(): React.JSX.Element {
     return veraendert
   }, [planeintraegeEntwurf, planeintraegeBaseline])
 
+  const veraenderteRufbereitschaftZellen = useMemo(() => {
+    const alleSchluessel = new Set([
+      ...Object.keys(rufbereitschaftEntwurf),
+      ...Object.keys(rufbereitschaftBaseline)
+    ])
+    const veraendert = new Set<string>()
+    alleSchluessel.forEach((schluessel) => {
+      if (
+        (rufbereitschaftEntwurf[schluessel] ?? null) !==
+        (rufbereitschaftBaseline[schluessel] ?? null)
+      )
+        veraendert.add(schluessel)
+    })
+    return veraendert
+  }, [rufbereitschaftEntwurf, rufbereitschaftBaseline])
+
   const gibtUngespeicherteAenderung =
     aktiverDienstplan !== null &&
-    (titelEntwurf !== letzterGespeicherterTitel || veraenderteZellen.size > 0)
+    (titelEntwurf !== letzterGespeicherterTitel ||
+      veraenderteZellen.size > 0 ||
+      veraenderteRufbereitschaftZellen.size > 0)
 
   function handleErstellen(): void {
     window.api.dienstplan
@@ -115,6 +137,8 @@ function PlanPage(): React.JSX.Element {
         setDienstplantage(neueTage)
         setPlaneintraegeEntwurf({})
         setPlaneintraegeBaseline({})
+        setRufbereitschaftEntwurf({})
+        setRufbereitschaftBaseline({})
         setTitelEntwurf(dienstplan.titel)
         setLetzterGespeicherterTitel(dienstplan.titel)
         setTitelWirdBearbeitet(false)
@@ -126,6 +150,8 @@ function PlanPage(): React.JSX.Element {
     setDienstplantage([])
     setPlaneintraegeEntwurf({})
     setPlaneintraegeBaseline({})
+    setRufbereitschaftEntwurf({})
+    setRufbereitschaftBaseline({})
     setTitelEntwurf('')
     setLetzterGespeicherterTitel('')
     setTitelWirdBearbeitet(false)
@@ -150,6 +176,22 @@ function PlanPage(): React.JSX.Element {
     })
   }
 
+  function handleRufbereitschaftChange(
+    dienstplantagId: number,
+    teamMember: TeamMember | null
+  ): void {
+    const schluessel = String(dienstplantagId)
+    setRufbereitschaftEntwurf((bisherig) => {
+      const naechster = { ...bisherig }
+      if (teamMember === null) {
+        delete naechster[schluessel]
+        return naechster
+      }
+      naechster[schluessel] = teamMember.id
+      return naechster
+    })
+  }
+
   function handleNeuAnlegen(): void {
     if (gibtUngespeicherteAenderung) {
       setAusstehendeAktion('neuAnlegen')
@@ -166,14 +208,29 @@ function PlanPage(): React.JSX.Element {
       return { dienstplantagId, teamMemberId, eintrag: planeintraegeEntwurf[schluessel] ?? null }
     })
 
+    const rufbereitschaftAenderungen: RufbereitschaftAenderung[] = Array.from(
+      veraenderteRufbereitschaftZellen
+    ).map((schluessel) => ({
+      dienstplantagId: Number(schluessel),
+      teamMemberId: rufbereitschaftEntwurf[schluessel] ?? null
+    }))
+
     window.api.dienstplan
-      .speichernPlanungsstand(aktiverDienstplan.id, titelEntwurf, aenderungen)
-      .then(({ dienstplan, planeintraege }) => {
+      .speichernPlanungsstand(
+        aktiverDienstplan.id,
+        titelEntwurf,
+        aenderungen,
+        rufbereitschaftAenderungen
+      )
+      .then(({ dienstplan, planeintraege, rufbereitschaften }) => {
         const entwurf = planeintraegeAlsEntwurf(planeintraege)
+        const rufbereitschaftEntwurfGespeichert = rufbereitschaftenAlsEntwurf(rufbereitschaften)
         setAktiverDienstplan(dienstplan)
         setLetzterGespeicherterTitel(dienstplan.titel)
         setPlaneintraegeEntwurf(entwurf)
         setPlaneintraegeBaseline(entwurf)
+        setRufbereitschaftEntwurf(rufbereitschaftEntwurfGespeichert)
+        setRufbereitschaftBaseline(rufbereitschaftEntwurfGespeichert)
         setTitelWirdBearbeitet(false)
       })
   }
@@ -208,15 +265,19 @@ function PlanPage(): React.JSX.Element {
   function handleDienstplanAuswaehlen(id: number): void {
     Promise.all([
       window.api.dienstplan.get(id),
-      window.api.planeintrag.listFuerDienstplan(id)
-    ]).then(([geladen, planeintraege]) => {
+      window.api.planeintrag.listFuerDienstplan(id),
+      window.api.rufbereitschaft.listFuerDienstplan(id)
+    ]).then(([geladen, planeintraege, rufbereitschaften]) => {
       if (geladen === null) return
 
       const entwurf = planeintraegeAlsEntwurf(planeintraege)
+      const rufbereitschaftEntwurfGeladen = rufbereitschaftenAlsEntwurf(rufbereitschaften)
       setAktiverDienstplan(geladen.dienstplan)
       setDienstplantage(geladen.tage)
       setPlaneintraegeEntwurf(entwurf)
       setPlaneintraegeBaseline(entwurf)
+      setRufbereitschaftEntwurf(rufbereitschaftEntwurfGeladen)
+      setRufbereitschaftBaseline(rufbereitschaftEntwurfGeladen)
       setMonat(geladen.dienstplan.monat)
       setJahr(geladen.dienstplan.jahr)
       setTitelEntwurf(geladen.dienstplan.titel)
@@ -373,6 +434,9 @@ function PlanPage(): React.JSX.Element {
           planeintraegeEntwurf={planeintraegeEntwurf}
           veraenderteZellen={veraenderteZellen}
           onEintragChange={handleEintragChange}
+          rufbereitschaftEntwurf={rufbereitschaftEntwurf}
+          veraenderteRufbereitschaftZellen={veraenderteRufbereitschaftZellen}
+          onRufbereitschaftChange={handleRufbereitschaftChange}
         />
       </div>
 
@@ -392,8 +456,8 @@ function PlanPage(): React.JSX.Element {
           <AlertDialogHeader>
             <AlertDialogTitle>Ungespeicherte Änderungen</AlertDialogTitle>
             <AlertDialogDescription>
-              Es gibt Änderungen (Titel oder Einträge), die seitdem nicht gespeichert wurden.
-              Änderungen gehen verloren, wenn du fortfährst.
+              Es gibt Änderungen (Titel, Einträge oder Rufbereitschaft), die seitdem nicht
+              gespeichert wurden. Änderungen gehen verloren, wenn du fortfährst.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

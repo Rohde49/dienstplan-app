@@ -4,7 +4,9 @@ import type {
   Dienstplan,
   Dienstplantag,
   Planeintrag,
-  PlaneintragAenderung
+  PlaneintragAenderung,
+  Rufbereitschaft,
+  RufbereitschaftAenderung
 } from '../../shared/types'
 import {
   createDienstplan,
@@ -39,8 +41,12 @@ export function registerDienstplanHandlers(): void {
       _event,
       dienstplanId: number,
       titel: string,
-      aenderungen: PlaneintragAenderung[]
-    ): { dienstplan: Dienstplan; planeintraege: Planeintrag[] } =>
-      speicherePlanungsstand(dienstplanId, titel, aenderungen, db)
+      aenderungen: PlaneintragAenderung[],
+      rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+    ): {
+      dienstplan: Dienstplan
+      planeintraege: Planeintrag[]
+      rufbereitschaften: Rufbereitschaft[]
+    } => speicherePlanungsstand(dienstplanId, titel, aenderungen, rufbereitschaftAenderungen, db)
   )
 }

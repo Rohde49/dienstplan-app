@@ -5,6 +5,8 @@ import type {
   Eintragsdefinition,
   Planeintrag,
   PlaneintragAenderung,
+  Rufbereitschaft,
+  RufbereitschaftAenderung,
   TeamMember
 } from '../shared/types'
 
@@ -31,12 +33,21 @@ interface DienstplanAPI {
   speichernPlanungsstand: (
     dienstplanId: number,
     titel: string,
-    aenderungen: PlaneintragAenderung[]
-  ) => Promise<{ dienstplan: Dienstplan; planeintraege: Planeintrag[] }>
+    aenderungen: PlaneintragAenderung[],
+    rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+  ) => Promise<{
+    dienstplan: Dienstplan
+    planeintraege: Planeintrag[]
+    rufbereitschaften: Rufbereitschaft[]
+  }>
 }
 
 interface PlaneintragAPI {
   listFuerDienstplan: (dienstplanId: number) => Promise<Planeintrag[]>
+}
+
+interface RufbereitschaftAPI {
+  listFuerDienstplan: (dienstplanId: number) => Promise<Rufbereitschaft[]>
 }
 
 interface API {
@@ -44,6 +55,7 @@ interface API {
   eintragsdefinition: EintragsdefinitionAPI
   dienstplan: DienstplanAPI
   planeintrag: PlaneintragAPI
+  rufbereitschaft: RufbereitschaftAPI
 }
 
 declare global {
