@@ -139,12 +139,23 @@ Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkun
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (131 Tests, 5 davon neu für `speicherePlanungsstand`/Bemerkung), Persistenz über vollständigen Prozess-Neustart per Screenshot bestätigt (mehrere Bemerkungen gesetzt, eine geändert, eine geleert, zusammen mit Planeintrag- und Rufbereitschaft-Änderung gespeichert, nach Neustart per „Laden" korrekt wiedergefunden, geleerte Bemerkung als `null` in der Datenbank bestätigt)
 
+## Schritt 11: Berechnete Kennzahlen
+
+Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`architektur/auswertung.md`](./architektur/auswertung.md) als reine Funktionen in `shared/`, verdrahtet davon zunächst nur die fünf Platzhalter in `PlanungsGrid.tsx` (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll), live aus dem aktuellen Entwurf, nur für Erzieher. Die übrigen zehn Zeilen sind für die spätere `AuswertungsPage` vorbereitet, aber noch nicht angezeigt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt11-kennzahlen-berechnen.md`](./ablaufplaene/schritt11-kennzahlen-berechnen.md).
+
+- [ ] Rundungshilfsfunktion vereinheitlichen (`rundeAufVolleMinute` nach `shared/`)
+- [ ] Anzahl Arbeitstage im Monat inkl. Unit-Tests
+- [ ] Tagesbezogene Zählungen je Mitarbeiter (SN/F-Dienste, Freie Tage/Samstage/Sonntage+Feiertage, Sonntag/Feiertag-Stunden, Rufbereitschaften)
+- [ ] Monatssummen und abgeleitete Werte (Arbeitszeit-Summen, Zuschläge, Ist/Soll/Differenz)
+- [ ] Formatierung Δ Soll/Ist mit Vorzeichen
+- [ ] `PlanungsGrid` verdrahten (live, nur Erzieher, „n/A" für andere Rollen)
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
-- [ ] Planungsansicht – berechnete Kennzahlen (u. a. Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) — UI-Platzhalter dafür bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik, in eigenem Ablaufplan getrennt von den obigen Setz-Funktionen
-- [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt
+- [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt — die restlichen zehn Kennzahlen-Zeilen aus Schritt 11 stehen dafür schon als reine Funktionen bereit
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
 - [ ] PDF-Export/Druck-Funktion: Schaltfläche auf der verkürzten Ansicht (dient zugleich als Druckvorschau in der App), öffnet den Windows-Dialog für PDF-Export bzw. Drucken
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
