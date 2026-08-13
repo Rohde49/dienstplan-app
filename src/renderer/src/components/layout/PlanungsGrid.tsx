@@ -1,7 +1,15 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import type { Kalendertag } from '../../../../shared/kalendertage'
 import { cn } from '@/lib/utils'
-import type { Dienstplantag, TeamMember } from '../../../../shared/types'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
+import { planeintragSchluessel } from '@/lib/planeintragSchluessel'
+import type {
+  Dienstplantag,
+  Eintragsdefinition,
+  PlaneintragSnapshot,
+  TeamMember
+} from '../../../../shared/types'
 
 const FEIERTAG_FARBE = 'bg-[color-mix(in_oklch,var(--destructive)_12%,var(--card))]'
 const WOCHENENDE_FARBE = 'bg-muted'
@@ -15,16 +23,92 @@ interface PlanungsGridProps {
   members: TeamMember[]
   tage: Kalendertag[]
   dienstplantage?: Dienstplantag[]
+  planeintraegeEntwurf?: Record<string, PlaneintragSnapshot>
+  veraenderteZellen?: Set<string>
+  onEintragChange?: (
+    dienstplantagId: number,
+    teamMemberId: number,
+    eintragsdefinition: Eintragsdefinition | null
+  ) => void
 }
 
 function formatTagUndMonat(datum: string): string {
   return `${datum.slice(8, 10)}.${datum.slice(5, 7)}.`
 }
 
+interface PlaneintragZellengruppeProps {
+  istInteraktiv: boolean
+  eintrag: PlaneintragSnapshot | undefined
+  hatAbweichung: boolean
+  onSelect: (eintragsdefinition: Eintragsdefinition | null) => void
+}
+
+function PlaneintragZellengruppe({
+  istInteraktiv,
+  eintrag,
+  hatAbweichung,
+  onSelect
+}: PlaneintragZellengruppeProps): React.JSX.Element {
+  const [offen, setOffen] = useState(false)
+
+  if (!istInteraktiv) {
+    return (
+      <>
+        <td className="text-muted-foreground border-b border-l px-2 py-2 text-center">–</td>
+        <td className="text-muted-foreground border-b px-2 py-2 text-center">–</td>
+        <td className="text-muted-foreground border-b px-2 py-2 text-center">–</td>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <td className="relative border-b border-l p-0 text-center">
+        <Popover open={offen} onOpenChange={setOffen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="hover:bg-accent/50 flex h-full w-full items-center justify-center px-2 py-2"
+            >
+              {eintrag?.kuerzel ?? '–'}
+              {hatAbweichung && (
+                <span className="bg-primary absolute top-1 right-1 size-1.5 rounded-full" />
+              )}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start">
+            <EintragsdefinitionAuswahl
+              onSelect={(eintragsdefinition) => {
+                onSelect(eintragsdefinition)
+                setOffen(false)
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      </td>
+      <td
+        className="text-muted-foreground hover:bg-accent/50 cursor-pointer border-b px-2 py-2 text-center"
+        onClick={() => setOffen(true)}
+      >
+        {eintrag?.beginn ?? '–'}
+      </td>
+      <td
+        className="text-muted-foreground hover:bg-accent/50 cursor-pointer border-b px-2 py-2 text-center"
+        onClick={() => setOffen(true)}
+      >
+        {eintrag?.ende ?? '–'}
+      </td>
+    </>
+  )
+}
+
 function PlanungsGrid({
   members,
   tage,
-  dienstplantage = []
+  dienstplantage = [],
+  planeintraegeEntwurf = {},
+  veraenderteZellen = new Set(),
+  onEintragChange = () => {}
 }: PlanungsGridProps): React.JSX.Element {
   const dienstplantagIdProDatum = new Map(dienstplantage.map((tag) => [tag.datum, tag.id]))
   const istVorschau = dienstplantage.length === 0
@@ -134,10 +218,11 @@ function PlanungsGrid({
                 : tag.istWochenende
                   ? WOCHENENDE_FARBE
                   : undefined
+              const dienstplantagId = dienstplantagIdProDatum.get(tag.datum)
               return (
                 <tr
                   key={tag.datum}
-                  data-dienstplantag-id={dienstplantagIdProDatum.get(tag.datum) ?? ''}
+                  data-dienstplantag-id={dienstplantagId ?? ''}
                   className={cn(zeilenFarbe)}
                 >
                   <td
@@ -156,15 +241,25 @@ function PlanungsGrid({
                       </div>
                     )}
                   </td>
-                  {members.map((member) => (
-                    <Fragment key={member.id}>
-                      <td className="text-muted-foreground border-b border-l px-2 py-2 text-center">
-                        –
-                      </td>
-                      <td className="text-muted-foreground border-b px-2 py-2 text-center">–</td>
-                      <td className="text-muted-foreground border-b px-2 py-2 text-center">–</td>
-                    </Fragment>
-                  ))}
+                  {members.map((member) => {
+                    const schluessel =
+                      dienstplantagId !== undefined
+                        ? planeintragSchluessel(dienstplantagId, member.id)
+                        : null
+                    return (
+                      <Fragment key={member.id}>
+                        <PlaneintragZellengruppe
+                          istInteraktiv={dienstplantagId !== undefined}
+                          eintrag={schluessel ? planeintraegeEntwurf[schluessel] : undefined}
+                          hatAbweichung={schluessel ? veraenderteZellen.has(schluessel) : false}
+                          onSelect={(eintragsdefinition) => {
+                            if (dienstplantagId === undefined) return
+                            onEintragChange(dienstplantagId, member.id, eintragsdefinition)
+                          }}
+                        />
+                      </Fragment>
+                    )
+                  })}
                   <td className="border-b border-l px-2 py-2" />
                   <td className="border-b border-l px-2 py-2" />
                 </tr>

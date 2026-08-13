@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { runDbSmokeTest } from './db'
 import { registerDienstplanHandlers } from './ipc/dienstplanHandlers'
 import { registerEintragsdefinitionHandlers } from './ipc/eintragsdefinitionHandlers'
+import { registerPlaneintragHandlers } from './ipc/planeintragHandlers'
 import { registerTeamHandlers } from './ipc/teamHandlers'
 
 function createWindow(): void {
@@ -63,6 +64,7 @@ app.whenReady().then(() => {
   registerTeamHandlers()
   registerEintragsdefinitionHandlers()
   registerDienstplanHandlers()
+  registerPlaneintragHandlers()
 
   createWindow()
 

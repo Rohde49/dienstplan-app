@@ -93,21 +93,21 @@ Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (93 Tests, 15 davon neu für `dienstplanRepository`), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (Titel „Persistenz-Test SQLite (final)" und aktualisiertes `geaendertAm` nach Neustart weiterhin in der SQLite-Datei vorhanden, `erstelltAm` unverändert), Warnhinweis-Flow (Laden/Neu anlegen, Abbrechen/Fortfahren) im laufenden Fenster durchgespielt
 
-## Schritt 8: Planeintrag – Setzen und Bearbeiten
+## Schritt 8: Planeintrag – Setzen und Bearbeiten (abgeschlossen)
 
 Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover je Zellengruppe, persistiert gemeinsam mit dem Titel über den bestehenden „Speichern"-Button aus Schritt 7. Noch kein `Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt8-planeintrag-setzen.md`](./ablaufplaene/schritt8-planeintrag-setzen.md).
 
-- [ ] `Planeintrag`-Typ in `shared/types.ts`
-- [ ] Berechnungsfunktion für mitarbeiterabhängige Arbeitszeit inkl. Unit-Tests
-- [ ] Repository-Funktionssignaturen (`getPlaneintraegeFuerDienstplan`, kombinierte Speicherfunktion), zunächst mit Testdaten
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] Popover-Primitive und Eintragsdefinition-Auswahl-Komponente
-- [ ] Popover ans Grid anbinden, lokaler Entwurf inkl. ungespeichert-Indikator
-- [ ] Laden erweitert Planeinträge in die Baseline
-- [ ] „Speichern" um Planeintrag-Änderungen erweitern
-- [ ] Echte SQLite-Anbindung (Tabelle `planeintraege`, Transaktion)
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+- [x] `Planeintrag`-Typ in `shared/types.ts`
+- [x] Berechnungsfunktion für mitarbeiterabhängige Arbeitszeit inkl. Unit-Tests
+- [x] Repository-Funktionssignaturen (`getPlaneintraegeFuerDienstplan`, kombinierte Speicherfunktion), zunächst mit Testdaten
+- [x] IPC-Handler und typisierte Preload-API
+- [x] Popover-Primitive und Eintragsdefinition-Auswahl-Komponente
+- [x] Popover ans Grid anbinden, lokaler Entwurf inkl. ungespeichert-Indikator
+- [x] Laden erweitert Planeinträge in die Baseline
+- [x] „Speichern" um Planeintrag-Änderungen erweitern
+- [x] Echte SQLite-Anbindung (Tabelle `planeintraege`, Transaktion)
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (113 Tests, 21 davon neu für `planeintragSchluessel`/`planeintragSnapshot`/`mitarbeiterabhaengigeArbeitszeit` sowie `speicherePlanungsstand`/`getPlaneintraegeFuerDienstplan`), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (mehrere Einträge gesetzt, einen mitarbeiterabhängigen geändert, einen entfernt, gespeichert, nach Neustart per „Laden" korrekt wiedergefunden), Warnhinweis-Flow mit offenen Planeintrag-Änderungen (Abbrechen/Fortfahren) im laufenden Fenster durchgespielt
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

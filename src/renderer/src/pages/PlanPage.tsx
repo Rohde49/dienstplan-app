@@ -24,7 +24,16 @@ import {
 import { PlanungsGrid } from '@/components/layout/PlanungsGrid'
 import { DienstplanLadenDialog } from '@/components/DienstplanLadenDialog'
 import { getKalendertageFuerMonat } from '../../../shared/kalendertage'
-import type { Dienstplan, Dienstplantag, TeamMember } from '../../../shared/types'
+import { parsePlaneintragSchluessel, planeintragSchluessel } from '@/lib/planeintragSchluessel'
+import { erzeugePlaneintragSnapshot, planeintraegeAlsEntwurf } from '@/lib/planeintragSnapshot'
+import type {
+  Dienstplan,
+  Dienstplantag,
+  Eintragsdefinition,
+  PlaneintragAenderung,
+  PlaneintragSnapshot,
+  TeamMember
+} from '../../../shared/types'
 
 const MONATE = [
   'Januar',
@@ -56,6 +65,12 @@ function PlanPage(): React.JSX.Element {
 
   const [aktiverDienstplan, setAktiverDienstplan] = useState<Dienstplan | null>(null)
   const [dienstplantage, setDienstplantage] = useState<Dienstplantag[]>([])
+  const [planeintraegeEntwurf, setPlaneintraegeEntwurf] = useState<
+    Record<string, PlaneintragSnapshot>
+  >({})
+  const [planeintraegeBaseline, setPlaneintraegeBaseline] = useState<
+    Record<string, PlaneintragSnapshot>
+  >({})
   const [titelEntwurf, setTitelEntwurf] = useState('')
   const [letzterGespeicherterTitel, setLetzterGespeicherterTitel] = useState('')
   const [titelWirdBearbeitet, setTitelWirdBearbeitet] = useState(false)
@@ -74,8 +89,23 @@ function PlanPage(): React.JSX.Element {
 
   const tage = useMemo(() => getKalendertageFuerMonat(jahr, monat), [jahr, monat])
 
+  const veraenderteZellen = useMemo(() => {
+    const alleSchluessel = new Set([
+      ...Object.keys(planeintraegeEntwurf),
+      ...Object.keys(planeintraegeBaseline)
+    ])
+    const veraendert = new Set<string>()
+    alleSchluessel.forEach((schluessel) => {
+      const aktuell = JSON.stringify(planeintraegeEntwurf[schluessel] ?? null)
+      const gespeichert = JSON.stringify(planeintraegeBaseline[schluessel] ?? null)
+      if (aktuell !== gespeichert) veraendert.add(schluessel)
+    })
+    return veraendert
+  }, [planeintraegeEntwurf, planeintraegeBaseline])
+
   const gibtUngespeicherteAenderung =
-    aktiverDienstplan !== null && titelEntwurf !== letzterGespeicherterTitel
+    aktiverDienstplan !== null &&
+    (titelEntwurf !== letzterGespeicherterTitel || veraenderteZellen.size > 0)
 
   function handleErstellen(): void {
     window.api.dienstplan
@@ -83,6 +113,8 @@ function PlanPage(): React.JSX.Element {
       .then(({ dienstplan, tage: neueTage }) => {
         setAktiverDienstplan(dienstplan)
         setDienstplantage(neueTage)
+        setPlaneintraegeEntwurf({})
+        setPlaneintraegeBaseline({})
         setTitelEntwurf(dienstplan.titel)
         setLetzterGespeicherterTitel(dienstplan.titel)
         setTitelWirdBearbeitet(false)
@@ -92,9 +124,30 @@ function PlanPage(): React.JSX.Element {
   function fuehreNeuAnlegenAus(): void {
     setAktiverDienstplan(null)
     setDienstplantage([])
+    setPlaneintraegeEntwurf({})
+    setPlaneintraegeBaseline({})
     setTitelEntwurf('')
     setLetzterGespeicherterTitel('')
     setTitelWirdBearbeitet(false)
+  }
+
+  function handleEintragChange(
+    dienstplantagId: number,
+    teamMemberId: number,
+    eintragsdefinition: Eintragsdefinition | null
+  ): void {
+    const schluessel = planeintragSchluessel(dienstplantagId, teamMemberId)
+    setPlaneintraegeEntwurf((bisherig) => {
+      const naechster = { ...bisherig }
+      if (eintragsdefinition === null) {
+        delete naechster[schluessel]
+        return naechster
+      }
+      const teamMember = teamMembers.find((m) => m.id === teamMemberId)
+      if (!teamMember) return bisherig
+      naechster[schluessel] = erzeugePlaneintragSnapshot(eintragsdefinition, teamMember)
+      return naechster
+    })
   }
 
   function handleNeuAnlegen(): void {
@@ -108,11 +161,21 @@ function PlanPage(): React.JSX.Element {
   function handleSpeichern(): void {
     if (aktiverDienstplan === null) return
 
-    window.api.dienstplan.updateTitel(aktiverDienstplan.id, titelEntwurf).then((aktualisiert) => {
-      setAktiverDienstplan(aktualisiert)
-      setLetzterGespeicherterTitel(aktualisiert.titel)
-      setTitelWirdBearbeitet(false)
+    const aenderungen: PlaneintragAenderung[] = Array.from(veraenderteZellen).map((schluessel) => {
+      const { dienstplantagId, teamMemberId } = parsePlaneintragSchluessel(schluessel)
+      return { dienstplantagId, teamMemberId, eintrag: planeintraegeEntwurf[schluessel] ?? null }
     })
+
+    window.api.dienstplan
+      .speichernPlanungsstand(aktiverDienstplan.id, titelEntwurf, aenderungen)
+      .then(({ dienstplan, planeintraege }) => {
+        const entwurf = planeintraegeAlsEntwurf(planeintraege)
+        setAktiverDienstplan(dienstplan)
+        setLetzterGespeicherterTitel(dienstplan.titel)
+        setPlaneintraegeEntwurf(entwurf)
+        setPlaneintraegeBaseline(entwurf)
+        setTitelWirdBearbeitet(false)
+      })
   }
 
   function handleLaden(): void {
@@ -143,11 +206,17 @@ function PlanPage(): React.JSX.Element {
   }
 
   function handleDienstplanAuswaehlen(id: number): void {
-    window.api.dienstplan.get(id).then((geladen) => {
+    Promise.all([
+      window.api.dienstplan.get(id),
+      window.api.planeintrag.listFuerDienstplan(id)
+    ]).then(([geladen, planeintraege]) => {
       if (geladen === null) return
 
+      const entwurf = planeintraegeAlsEntwurf(planeintraege)
       setAktiverDienstplan(geladen.dienstplan)
       setDienstplantage(geladen.tage)
+      setPlaneintraegeEntwurf(entwurf)
+      setPlaneintraegeBaseline(entwurf)
       setMonat(geladen.dienstplan.monat)
       setJahr(geladen.dienstplan.jahr)
       setTitelEntwurf(geladen.dienstplan.titel)
@@ -297,7 +366,14 @@ function PlanPage(): React.JSX.Element {
           </CardContent>
         </Card>
 
-        <PlanungsGrid members={teamMembers} tage={tage} dienstplantage={dienstplantage} />
+        <PlanungsGrid
+          members={teamMembers}
+          tage={tage}
+          dienstplantage={dienstplantage}
+          planeintraegeEntwurf={planeintraegeEntwurf}
+          veraenderteZellen={veraenderteZellen}
+          onEintragChange={handleEintragChange}
+        />
       </div>
 
       <DienstplanLadenDialog
@@ -316,8 +392,8 @@ function PlanPage(): React.JSX.Element {
           <AlertDialogHeader>
             <AlertDialogTitle>Ungespeicherte Änderungen</AlertDialogTitle>
             <AlertDialogDescription>
-              Der Titel wurde geändert, ohne dass seitdem gespeichert wurde. Änderungen gehen
-              verloren, wenn du fortfährst.
+              Es gibt Änderungen (Titel oder Einträge), die seitdem nicht gespeichert wurden.
+              Änderungen gehen verloren, wenn du fortfährst.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

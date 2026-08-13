@@ -1,6 +1,12 @@
 import type Database from 'better-sqlite3'
 import { getKalendertageFuerMonat } from '../../shared/kalendertage'
-import type { Dienstplan, Dienstplantag } from '../../shared/types'
+import type {
+  Dienstplan,
+  Dienstplantag,
+  Planeintrag,
+  PlaneintragAenderung
+} from '../../shared/types'
+import { getPlaneintraegeFuerDienstplan } from './planeintragRepository'
 
 type Db = InstanceType<typeof Database>
 
@@ -109,4 +115,49 @@ export function updateDienstplanTitel(id: number, titel: string, database: Db): 
       'SELECT id, monat, jahr, titel, erstelltAm, geaendertAm FROM dienstplaene WHERE id = ?'
     )
     .get(id) as Dienstplan
+}
+
+export function speicherePlanungsstand(
+  dienstplanId: number,
+  titel: string,
+  aenderungen: PlaneintragAenderung[],
+  database: Db
+): { dienstplan: Dienstplan; planeintraege: Planeintrag[] } {
+  const speichern = database.transaction(() => {
+    const dienstplan = updateDienstplanTitel(dienstplanId, titel, database)
+
+    const entfernen = database.prepare(
+      'DELETE FROM planeintraege WHERE dienstplantagId = @dienstplantagId AND teamMemberId = @teamMemberId'
+    )
+    const einfuegen = database.prepare(
+      `INSERT INTO planeintraege
+         (dienstplantagId, teamMemberId, eintragsdefinitionId, kuerzel, beginn, ende,
+          anwesenheitszeitMinuten, arbeitszeitMinuten, arbeitszeitOhneNachtbereitschaftMinuten,
+          nachtbereitschaftMinuten, nachtarbeitMinuten)
+       VALUES
+         (@dienstplantagId, @teamMemberId, @eintragsdefinitionId, @kuerzel, @beginn, @ende,
+          @anwesenheitszeitMinuten, @arbeitszeitMinuten, @arbeitszeitOhneNachtbereitschaftMinuten,
+          @nachtbereitschaftMinuten, @nachtarbeitMinuten)`
+    )
+
+    for (const aenderung of aenderungen) {
+      entfernen.run({
+        dienstplantagId: aenderung.dienstplantagId,
+        teamMemberId: aenderung.teamMemberId
+      })
+      if (aenderung.eintrag !== null) {
+        einfuegen.run({
+          dienstplantagId: aenderung.dienstplantagId,
+          teamMemberId: aenderung.teamMemberId,
+          ...aenderung.eintrag
+        })
+      }
+    }
+
+    return dienstplan
+  })
+
+  const dienstplan = speichern()
+
+  return { dienstplan, planeintraege: getPlaneintraegeFuerDienstplan(dienstplanId, database) }
 }

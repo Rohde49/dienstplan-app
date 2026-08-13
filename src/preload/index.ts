@@ -1,6 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Dienstplan, Dienstplantag, Eintragsdefinition, TeamMember } from '../shared/types'
+import type {
+  Dienstplan,
+  Dienstplantag,
+  Eintragsdefinition,
+  Planeintrag,
+  PlaneintragAenderung,
+  TeamMember
+} from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -28,8 +35,16 @@ const api = {
       titel: string
     }): Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] }> =>
       ipcRenderer.invoke('dienstplan:create', data),
-    updateTitel: (id: number, titel: string): Promise<Dienstplan> =>
-      ipcRenderer.invoke('dienstplan:updateTitel', id, titel)
+    speichernPlanungsstand: (
+      dienstplanId: number,
+      titel: string,
+      aenderungen: PlaneintragAenderung[]
+    ): Promise<{ dienstplan: Dienstplan; planeintraege: Planeintrag[] }> =>
+      ipcRenderer.invoke('dienstplan:speichernPlanungsstand', dienstplanId, titel, aenderungen)
+  },
+  planeintrag: {
+    listFuerDienstplan: (dienstplanId: number): Promise<Planeintrag[]> =>
+      ipcRenderer.invoke('planeintrag:listFuerDienstplan', dienstplanId)
   }
 }
 

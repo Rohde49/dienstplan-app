@@ -1,12 +1,17 @@
 import { ipcMain } from 'electron'
 import { db } from '../db'
-import type { Dienstplan, Dienstplantag } from '../../shared/types'
+import type {
+  Dienstplan,
+  Dienstplantag,
+  Planeintrag,
+  PlaneintragAenderung
+} from '../../shared/types'
 import {
   createDienstplan,
   ensureDienstplanTabellen,
   getDienstplaene,
   getDienstplanMitTagen,
-  updateDienstplanTitel
+  speicherePlanungsstand
 } from '../db/dienstplanRepository'
 
 export function registerDienstplanHandlers(): void {
@@ -28,7 +33,14 @@ export function registerDienstplanHandlers(): void {
     ): { dienstplan: Dienstplan; tage: Dienstplantag[] } => createDienstplan(data, db)
   )
 
-  ipcMain.handle('dienstplan:updateTitel', (_event, id: number, titel: string): Dienstplan =>
-    updateDienstplanTitel(id, titel, db)
+  ipcMain.handle(
+    'dienstplan:speichernPlanungsstand',
+    (
+      _event,
+      dienstplanId: number,
+      titel: string,
+      aenderungen: PlaneintragAenderung[]
+    ): { dienstplan: Dienstplan; planeintraege: Planeintrag[] } =>
+      speicherePlanungsstand(dienstplanId, titel, aenderungen, db)
   )
 }

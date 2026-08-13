@@ -49,3 +49,26 @@ export interface Dienstplantag {
   datum: string // ISO-Datum, z. B. "2026-09-01"
   bemerkung: string | null
 }
+
+export interface Planeintrag {
+  id: number
+  dienstplantagId: number // FK auf Dienstplantag.id
+  teamMemberId: number // FK auf TeamMember.id
+  eintragsdefinitionId: number // FK auf Eintragsdefinition.id, Herkunft des Snapshots
+  kuerzel: string // Snapshot aus Eintragsdefinition.kuerzel zum Zeitpunkt des Setzens
+  beginn: string | null // Uhrzeit "HH:MM", Snapshot, rein darstellend
+  ende: string | null // Uhrzeit "HH:MM", Snapshot, rein darstellend
+  anwesenheitszeitMinuten: number
+  arbeitszeitMinuten: number
+  arbeitszeitOhneNachtbereitschaftMinuten: number
+  nachtbereitschaftMinuten: number
+  nachtarbeitMinuten: number
+}
+
+export type PlaneintragSnapshot = Omit<Planeintrag, 'id' | 'dienstplantagId' | 'teamMemberId'>
+
+export interface PlaneintragAenderung {
+  dienstplantagId: number
+  teamMemberId: number
+  eintrag: PlaneintragSnapshot | null // null = Eintrag entfernen
+}
