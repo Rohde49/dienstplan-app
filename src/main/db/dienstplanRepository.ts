@@ -121,6 +121,29 @@ export function updateDienstplanTitel(id: number, titel: string, database: Db): 
     .get(id) as Dienstplan
 }
 
+export function deleteDienstplan(id: number, database: Db): void {
+  const loeschen = database.transaction((dienstplanId: number) => {
+    database
+      .prepare(
+        `DELETE FROM planeintraege
+         WHERE dienstplantagId IN (SELECT id FROM dienstplantage WHERE dienstplanId = @id)`
+      )
+      .run({ id: dienstplanId })
+    database
+      .prepare(
+        `DELETE FROM rufbereitschaften
+         WHERE dienstplantagId IN (SELECT id FROM dienstplantage WHERE dienstplanId = @id)`
+      )
+      .run({ id: dienstplanId })
+    database
+      .prepare('DELETE FROM dienstplantage WHERE dienstplanId = @id')
+      .run({ id: dienstplanId })
+    database.prepare('DELETE FROM dienstplaene WHERE id = @id').run({ id: dienstplanId })
+  })
+
+  loeschen(id)
+}
+
 export function speicherePlanungsstand(
   dienstplanId: number,
   titel: string,

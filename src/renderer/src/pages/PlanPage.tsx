@@ -487,6 +487,8 @@ function PlanPage(): React.JSX.Element {
         open={ladenDialogOffen}
         onOpenChange={setLadenDialogOffen}
         onSelect={handleDienstplanAuswaehlen}
+        aktiverDienstplanId={aktiverDienstplan?.id ?? null}
+        onAktiverDienstplanGeloescht={fuehreNeuAnlegenAus}
       />
 
       <AlertDialog

@@ -11,6 +11,7 @@ import type {
 } from '../../shared/types'
 import {
   createDienstplan,
+  deleteDienstplan,
   ensureDienstplanTabellen,
   getDienstplaene,
   getDienstplanMitTagen,
@@ -60,4 +61,6 @@ export function registerDienstplanHandlers(): void {
         db
       )
   )
+
+  ipcMain.handle('dienstplan:delete', (_event, id: number): void => deleteDienstplan(id, db))
 }

@@ -45,6 +45,7 @@ interface DienstplanAPI {
     rufbereitschaften: Rufbereitschaft[]
     dienstplantage: Dienstplantag[]
   }>
+  delete: (id: number) => Promise<void>
 }
 
 interface PlaneintragAPI {

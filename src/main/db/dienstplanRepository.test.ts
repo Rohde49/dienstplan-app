@@ -2,6 +2,7 @@ import Database from 'better-sqlite3'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   createDienstplan,
+  deleteDienstplan,
   ensureDienstplanTabellen,
   getDienstplaene,
   getDienstplanMitTagen,
@@ -563,5 +564,73 @@ describe('speicherePlanungsstand – Bemerkung', () => {
     expect(planeintraege).toHaveLength(1)
     expect(rufbereitschaften).toHaveLength(1)
     expect(dienstplantage.find((tag) => tag.id === tage[2].id)?.bemerkung).toBe('Kombiniert')
+  })
+})
+
+describe('deleteDienstplan', () => {
+  it('löscht den Dienstplan sowie alle Dienstplantage-, Planeintrag- und Rufbereitschaft-Zeilen', () => {
+    const erster = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    speicherePlanungsstand(
+      erster.dienstplan.id,
+      erster.dienstplan.titel,
+      [
+        { dienstplantagId: erster.tage[0].id, teamMemberId: 1, eintrag: festerSnapshot },
+        {
+          dienstplantagId: erster.tage[1].id,
+          teamMemberId: 2,
+          eintrag: mitarbeiterabhaengigerSnapshot
+        }
+      ],
+      [{ dienstplantagId: erster.tage[2].id, teamMemberId: 1 }],
+      [],
+      testDb
+    )
+
+    deleteDienstplan(erster.dienstplan.id, testDb)
+
+    expect(getDienstplanMitTagen(erster.dienstplan.id, testDb)).toBeNull()
+    expect(getPlaneintraegeFuerDienstplan(erster.dienstplan.id, testDb)).toEqual([])
+    expect(getRufbereitschaftenFuerDienstplan(erster.dienstplan.id, testDb)).toEqual([])
+
+    const verbleibendeTage = testDb
+      .prepare('SELECT COUNT(*) AS anzahl FROM dienstplantage WHERE dienstplanId = ?')
+      .get(erster.dienstplan.id) as { anzahl: number }
+    expect(verbleibendeTage.anzahl).toBe(0)
+  })
+
+  it('lässt einen zweiten, unabhängigen Dienstplan samt seinen Daten vollständig unberührt', () => {
+    const erster = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    const zweiter = createDienstplan({ monat: 9, jahr: 2026, titel: 'B' }, testDb)
+
+    speicherePlanungsstand(
+      erster.dienstplan.id,
+      erster.dienstplan.titel,
+      [{ dienstplantagId: erster.tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [{ dienstplantagId: erster.tage[1].id, teamMemberId: 2 }],
+      [],
+      testDb
+    )
+    const { dienstplan: zweiterAktualisiert } = speicherePlanungsstand(
+      zweiter.dienstplan.id,
+      zweiter.dienstplan.titel,
+      [
+        {
+          dienstplantagId: zweiter.tage[0].id,
+          teamMemberId: 3,
+          eintrag: mitarbeiterabhaengigerSnapshot
+        }
+      ],
+      [{ dienstplantagId: zweiter.tage[1].id, teamMemberId: 1 }],
+      [],
+      testDb
+    )
+
+    deleteDienstplan(erster.dienstplan.id, testDb)
+
+    const geladenerZweiter = getDienstplanMitTagen(zweiter.dienstplan.id, testDb)
+    expect(geladenerZweiter?.dienstplan).toEqual(zweiterAktualisiert)
+    expect(geladenerZweiter?.tage).toHaveLength(30)
+    expect(getPlaneintraegeFuerDienstplan(zweiter.dienstplan.id, testDb)).toHaveLength(1)
+    expect(getRufbereitschaftenFuerDienstplan(zweiter.dienstplan.id, testDb)).toHaveLength(1)
   })
 })

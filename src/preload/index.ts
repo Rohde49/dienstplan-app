@@ -60,7 +60,8 @@ const api = {
         aenderungen,
         rufbereitschaftAenderungen,
         bemerkungAenderungen
-      )
+      ),
+    delete: (id: number): Promise<void> => ipcRenderer.invoke('dienstplan:delete', id)
   },
   planeintrag: {
     listFuerDienstplan: (dienstplanId: number): Promise<Planeintrag[]> =>

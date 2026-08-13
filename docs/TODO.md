@@ -173,16 +173,16 @@ Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwe
 - [x] Repository-Test gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (161 Tests, 2 davon neu für `deleteEintragsdefinition`), Löschen im laufenden Fenster über CDP-Skript geprüft (Eintragsdefinition „GV" angelegt, in einem Dienstplan als Planeintrag für Max Mustermann am 01.08. gesetzt und gespeichert, danach die Eintragsdefinition gelöscht — Dienstplan neu geladen zeigt den Planeintrag inkl. Snapshot „GV / 08:00–16:00" unverändert im Grid)
 
-## Schritt 14: Dienstplan löschen
+## Schritt 14: Dienstplan löschen (abgeschlossen)
 
 Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskadiert über `dienstplantage`/`planeintraege`/`rufbereitschaften` in einer Transaktion. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt14-dienstplan-loeschen.md`](./ablaufplaene/schritt14-dienstplan-loeschen.md).
 
-- [ ] Repository-Funktion `deleteDienstplan` (kaskadierende Transaktion)
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] `DienstplanLadenDialog` um Löschen-Button pro Zeile erweitern
-- [ ] `PlanPage` auf Löschen des aktiven Dienstplans reagieren lassen
-- [ ] Repository-Test gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+- [x] Repository-Funktion `deleteDienstplan` (kaskadierende Transaktion)
+- [x] IPC-Handler und typisierte Preload-API
+- [x] `DienstplanLadenDialog` um Löschen-Button pro Zeile erweitern
+- [x] `PlanPage` auf Löschen des aktiven Dienstplans reagieren lassen
+- [x] Repository-Test gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (163 Tests, 2 davon neu für `deleteDienstplan`), End-to-End-Test im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit Planeinträgen/Rufbereitschaft angelegt und gespeichert, nicht-aktiven sowie aktiven Dienstplan über den Laden-Dialog gelöscht — bei Löschen des aktiven Plans fällt `PlanPage` sichtbar in den Ausgangszustand zurück —, nach vollständigem App-Neustart per „Laden" bestätigt, dass beide Testpläne wirklich weg sind)
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
