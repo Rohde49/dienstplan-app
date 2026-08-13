@@ -195,9 +195,19 @@ Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelö
 - [x] `PlanPage` verdrahten (Button aktivieren, Dialog einbinden)
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (167 Tests, 4 davon neu für `sollIstFarbe`), manuelle Kontrollrechnung im laufenden Fenster über CDP-Skript bestätigt (drei Erzieher mit unterschiedlichen SN/F-Diensten, freien Tagen, Sonntagsarbeit, Rufbereitschaften und einem gezielt exakt auf die Soll-Arbeitszeit gesetzten Testfall; alle 15 Zeilen je Erzieher stimmten exakt mit der Handrechnung überein, Δ Soll/Ist zeigte dabei sowohl den Grün- als auch den Abweichungsfall im selben Screenshot)
 
+## Schritt 16: Verkürzte Ansicht
+
+Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/„Druckvorschau" im Kopfbereich der `PlanungsPage` und ergänzt eine neue, rein lesende `VerkuerzteAnsicht`-Komponente: eine Spalte je Mitarbeiter (statt drei Unterspalten), Kopfzeile mit Wochenarbeitszeit statt der Kennzahlen-Platzhalter aus `PlanungsGrid`, Rufbereitschaft/Bemerkung bleiben erhalten, alle `TeamMember` sichtbar. Kein PDF-Export/Druckdialog in diesem Schritt (eigener, späterer Schritt), nur ein deaktivierter Platzhalter-Button „Drucken". Detaillierter Ablaufplan siehe [`ablaufplaene/schritt16-verkuerzte-ansicht.md`](./ablaufplaene/schritt16-verkuerzte-ansicht.md).
+
+- [ ] Planform-Umschalter aktivieren (State in `PlanPage`, bedingtes Rendering)
+- [ ] `VerkuerzteAnsicht.tsx`: Grundstruktur (Spalten-/Kopfzeilenlayout, Platzhalterwerte)
+- [ ] Echte Zellinhalte aus dem Entwurf (Planeintrag, Rufbereitschaft, Bemerkung)
+- [ ] Fußzeilen Ist-/Soll-Arbeitszeit je Mitarbeiter, nur für Erzieher
+- [ ] „Drucken"-Platzhalter-Button
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
-- [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15/16. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 - [ ] PDF-Export/Druck-Funktion: Schaltfläche auf der verkürzten Ansicht (dient zugleich als Druckvorschau in der App), öffnet den Windows-Dialog für PDF-Export bzw. Drucken
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
