@@ -125,23 +125,24 @@ Setzen/Ändern/Entfernen von `Rufbereitschaft` in der Rufbereitschaft-Spalte, na
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (122 Tests, 7 davon neu für `speicherePlanungsstand`/`getRufbereitschaftenFuerDienstplan`/UNIQUE-Constraint), Persistenz über vollständigen App-Neustart per Screenshot bestätigt (drei Rufbereitschaften gesetzt, eine geändert, eine entfernt, zusammen mit einem Planeintrag gespeichert, nach Neustart per „Laden" korrekt wiedergefunden), Warnhinweis-Flow mit offenen Rufbereitschaft-Änderungen im laufenden Fenster durchgespielt
 
-## Schritt 10: Bemerkung – Setzen und Bearbeiten
+## Schritt 10: Bemerkung – Setzen und Bearbeiten (abgeschlossen)
 
 Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkung-Spalte (max. 40 Zeichen), persistiert gemeinsam über den bestehenden „Speichern"-Button. Keine neue Entität/Tabelle, keine neue Lade-Logik nötig. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt10-bemerkung-setzen.md`](./ablaufplaene/schritt10-bemerkung-setzen.md).
 
-- [ ] Validierung der Bemerkung-Länge (max. 40 Zeichen) inkl. Unit-Tests
-- [ ] `speicherePlanungsstand` um Bemerkung-Änderungen erweitern, zunächst mit Testdaten
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] Bemerkung-Zelle als Inline-Textfeld im Grid
-- [ ] Lokaler Entwurf und ungespeichert-Indikator
-- [ ] „Speichern" um Bemerkung-Änderungen erweitern
-- [ ] Echte SQLite-Anbindung (UPDATE innerhalb bestehender Transaktion)
-- [ ] Repository-Tests gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update
+- [x] Validierung der Bemerkung-Länge (max. 40 Zeichen) inkl. Unit-Tests
+- [x] `speicherePlanungsstand` um Bemerkung-Änderungen erweitern, zunächst mit Testdaten
+- [x] IPC-Handler und typisierte Preload-API
+- [x] Bemerkung-Zelle als Inline-Textfeld im Grid
+- [x] Lokaler Entwurf und ungespeichert-Indikator
+- [x] „Speichern" um Bemerkung-Änderungen erweitern
+- [x] Echte SQLite-Anbindung (UPDATE innerhalb bestehender Transaktion)
+- [x] Repository-Tests gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test, Persistenz-Check) und Doku-Update — alle drei Checks sauber (131 Tests, 5 davon neu für `speicherePlanungsstand`/Bemerkung), Persistenz über vollständigen Prozess-Neustart per Screenshot bestätigt (mehrere Bemerkungen gesetzt, eine geändert, eine geleert, zusammen mit Planeintrag- und Rufbereitschaft-Änderung gespeichert, nach Neustart per „Laden" korrekt wiedergefunden, geleerte Bemerkung als `null` in der Datenbank bestätigt)
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
 Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+
 - [ ] Planungsansicht – berechnete Kennzahlen (u. a. Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) — UI-Platzhalter dafür bereits in `PlanungsGrid.tsx` angelegt, siehe `entwicklungstagebuch.md`; hier fehlt noch ausschließlich die Berechnungslogik, in eigenem Ablaufplan getrennt von den obigen Setz-Funktionen
 - [ ] AuswertungsPage: Schaltfläche innerhalb der Planungsansicht, die die Planungstabelle in den Hintergrund treten lässt (leicht unscharf) und die Auswertungstabelle im Vordergrund anzeigt
 - [ ] Verkürzte Ansicht: Umschalt-Schaltfläche zwischen Planungsansicht und einer kompakten Dienstplan-Ansicht (in beide Richtungen); genaue Ausgestaltung folgt später

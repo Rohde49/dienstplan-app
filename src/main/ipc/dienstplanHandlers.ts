@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import { db } from '../db'
 import type {
+  BemerkungAenderung,
   Dienstplan,
   Dienstplantag,
   Planeintrag,
@@ -42,11 +43,21 @@ export function registerDienstplanHandlers(): void {
       dienstplanId: number,
       titel: string,
       aenderungen: PlaneintragAenderung[],
-      rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+      rufbereitschaftAenderungen: RufbereitschaftAenderung[],
+      bemerkungAenderungen: BemerkungAenderung[]
     ): {
       dienstplan: Dienstplan
       planeintraege: Planeintrag[]
       rufbereitschaften: Rufbereitschaft[]
-    } => speicherePlanungsstand(dienstplanId, titel, aenderungen, rufbereitschaftAenderungen, db)
+      dienstplantage: Dienstplantag[]
+    } =>
+      speicherePlanungsstand(
+        dienstplanId,
+        titel,
+        aenderungen,
+        rufbereitschaftAenderungen,
+        bemerkungAenderungen,
+        db
+      )
   )
 }

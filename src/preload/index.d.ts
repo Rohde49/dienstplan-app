@@ -1,5 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import type {
+  BemerkungAenderung,
   Dienstplan,
   Dienstplantag,
   Eintragsdefinition,
@@ -34,11 +35,13 @@ interface DienstplanAPI {
     dienstplanId: number,
     titel: string,
     aenderungen: PlaneintragAenderung[],
-    rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+    rufbereitschaftAenderungen: RufbereitschaftAenderung[],
+    bemerkungAenderungen: BemerkungAenderung[]
   ) => Promise<{
     dienstplan: Dienstplan
     planeintraege: Planeintrag[]
     rufbereitschaften: Rufbereitschaft[]
+    dienstplantage: Dienstplantag[]
   }>
 }
 

@@ -83,3 +83,8 @@ export interface RufbereitschaftAenderung {
   dienstplantagId: number
   teamMemberId: number | null // null = Rufbereitschaft entfernen
 }
+
+export interface BemerkungAenderung {
+  dienstplantagId: number
+  bemerkung: string | null
+}

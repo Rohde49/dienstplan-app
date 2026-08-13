@@ -168,6 +168,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
       [],
+      [],
       testDb
     )
 
@@ -188,6 +189,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.titel,
       [{ ...aenderung, eintrag: festerSnapshot }],
       [],
+      [],
       testDb
     )
     const alteId = erstesSpeichern.planeintraege[0].id
@@ -196,6 +198,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: mitarbeiterabhaengigerSnapshot }],
+      [],
       [],
       testDb
     )
@@ -218,12 +221,14 @@ describe('speicherePlanungsstand', () => {
       dienstplan.titel,
       [{ ...aenderung, eintrag: festerSnapshot }],
       [],
+      [],
       testDb
     )
     const { planeintraege } = speicherePlanungsstand(
       dienstplan.id,
       dienstplan.titel,
       [{ ...aenderung, eintrag: null }],
+      [],
       [],
       testDb
     )
@@ -239,6 +244,7 @@ describe('speicherePlanungsstand', () => {
       'Neu',
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
       [],
+      [],
       testDb
     )
 
@@ -253,6 +259,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: mitarbeiterabhaengigerSnapshot }],
+      [],
       [],
       testDb
     )
@@ -273,6 +280,7 @@ describe('speicherePlanungsstand', () => {
         { dienstplantagId: tage[1].id, teamMemberId: 2, eintrag: mitarbeiterabhaengigerSnapshot }
       ],
       [],
+      [],
       testDb
     )
 
@@ -280,6 +288,7 @@ describe('speicherePlanungsstand', () => {
       dienstplan.id,
       dienstplan.titel,
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: null }],
+      [],
       [],
       testDb
     )
@@ -304,6 +313,7 @@ describe('getPlaneintraegeFuerDienstplan (über speicherePlanungsstand)', () => 
       ersterPlan.dienstplan.titel,
       [{ dienstplantagId: ersterPlan.tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
       [],
+      [],
       testDb
     )
 
@@ -321,6 +331,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       dienstplan.titel,
       [],
       [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      [],
       testDb
     )
 
@@ -336,6 +347,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       dienstplan.titel,
       [],
       [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      [],
       testDb
     )
     const alteId = erstesSpeichern.rufbereitschaften[0].id
@@ -345,6 +357,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       dienstplan.titel,
       [],
       [{ dienstplantagId: tage[0].id, teamMemberId: 2 }],
+      [],
       testDb
     )
 
@@ -361,6 +374,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       dienstplan.titel,
       [],
       [{ dienstplantagId: tage[0].id, teamMemberId: 1 }],
+      [],
       testDb
     )
     const { rufbereitschaften } = speicherePlanungsstand(
@@ -368,6 +382,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       dienstplan.titel,
       [],
       [{ dienstplantagId: tage[0].id, teamMemberId: null }],
+      [],
       testDb
     )
 
@@ -386,6 +401,7 @@ describe('speicherePlanungsstand – Rufbereitschaft', () => {
       'Neu',
       [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
       [{ dienstplantagId: tage[1].id, teamMemberId: 2 }],
+      [],
       testDb
     )
 
@@ -411,6 +427,7 @@ describe('getRufbereitschaftenFuerDienstplan (über speicherePlanungsstand)', ()
       ersterPlan.dienstplan.titel,
       [],
       [{ dienstplantagId: ersterPlan.tage[0].id, teamMemberId: 1 }],
+      [],
       testDb
     )
 
@@ -432,5 +449,119 @@ describe('rufbereitschaften – UNIQUE-Constraint auf dienstplantagId', () => {
         .prepare('INSERT INTO rufbereitschaften (dienstplantagId, teamMemberId) VALUES (?, ?)')
         .run(tage[0].id, 2)
     ).toThrow()
+  })
+})
+
+describe('speicherePlanungsstand – Bemerkung', () => {
+  it('setzt eine Bemerkung auf einem Dienstplantag', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    const { dienstplantage } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: 'Urlaub' }],
+      testDb
+    )
+
+    expect(dienstplantage.find((tag) => tag.id === tage[0].id)?.bemerkung).toBe('Urlaub')
+  })
+
+  it('ändert eine bestehende Bemerkung', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: 'Alt' }],
+      testDb
+    )
+    const { dienstplantage } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: 'Neu' }],
+      testDb
+    )
+
+    expect(dienstplantage.find((tag) => tag.id === tage[0].id)?.bemerkung).toBe('Neu')
+  })
+
+  it('setzt eine Bemerkung als null in der Datenbank zurück, wenn sie geleert wird', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: 'Text' }],
+      testDb
+    )
+    const { dienstplantage } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: null }],
+      testDb
+    )
+
+    expect(dienstplantage.find((tag) => tag.id === tage[0].id)?.bemerkung).toBeNull()
+  })
+
+  it('lässt Bemerkungen unveränderter Tage unangetastet', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [
+        { dienstplantagId: tage[0].id, bemerkung: 'Tag 1' },
+        { dienstplantagId: tage[1].id, bemerkung: 'Tag 2' }
+      ],
+      testDb
+    )
+    const { dienstplantage } = speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [],
+      [],
+      [{ dienstplantagId: tage[0].id, bemerkung: 'Tag 1 geändert' }],
+      testDb
+    )
+
+    expect(dienstplantage.find((tag) => tag.id === tage[0].id)?.bemerkung).toBe('Tag 1 geändert')
+    expect(dienstplantage.find((tag) => tag.id === tage[1].id)?.bemerkung).toBe('Tag 2')
+    expect(dienstplantage.find((tag) => tag.id === tage[2].id)?.bemerkung).toBeNull()
+  })
+
+  it('speichert Titel-, Planeintrag-, Rufbereitschaft- und Bemerkung-Änderungen gemeinsam in einem Aufruf', () => {
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'Alt' }, testDb)
+
+    const {
+      dienstplan: aktualisiert,
+      planeintraege,
+      rufbereitschaften,
+      dienstplantage
+    } = speicherePlanungsstand(
+      dienstplan.id,
+      'Neu',
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: festerSnapshot }],
+      [{ dienstplantagId: tage[1].id, teamMemberId: 2 }],
+      [{ dienstplantagId: tage[2].id, bemerkung: 'Kombiniert' }],
+      testDb
+    )
+
+    expect(aktualisiert.titel).toBe('Neu')
+    expect(planeintraege).toHaveLength(1)
+    expect(rufbereitschaften).toHaveLength(1)
+    expect(dienstplantage.find((tag) => tag.id === tage[2].id)?.bemerkung).toBe('Kombiniert')
   })
 })

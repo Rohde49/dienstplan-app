@@ -1,10 +1,12 @@
 import { Fragment, useState } from 'react'
 import type { Kalendertag } from '../../../../shared/kalendertage'
 import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
 import { RufbereitschaftAuswahl } from '@/components/RufbereitschaftAuswahl'
 import { planeintragSchluessel } from '@/lib/planeintragSchluessel'
+import { MAX_BEMERKUNG_LAENGE } from '@/lib/validateBemerkung'
 import type {
   Dienstplantag,
   Eintragsdefinition,
@@ -34,6 +36,9 @@ interface PlanungsGridProps {
   rufbereitschaftEntwurf?: Record<string, number>
   veraenderteRufbereitschaftZellen?: Set<string>
   onRufbereitschaftChange?: (dienstplantagId: number, teamMember: TeamMember | null) => void
+  bemerkungEntwurf?: Record<string, string>
+  veraenderteBemerkungZellen?: Set<string>
+  onBemerkungChange?: (dienstplantagId: number, wert: string) => void
 }
 
 function formatTagUndMonat(datum: string): string {
@@ -152,6 +157,38 @@ function RufbereitschaftZelle({
   )
 }
 
+interface BemerkungZelleProps {
+  istInteraktiv: boolean
+  wert: string
+  hatAbweichung: boolean
+  onChange: (wert: string) => void
+}
+
+function BemerkungZelle({
+  istInteraktiv,
+  wert,
+  hatAbweichung,
+  onChange
+}: BemerkungZelleProps): React.JSX.Element {
+  if (!istInteraktiv) {
+    return <td className="border-b border-l px-2 py-2" />
+  }
+
+  return (
+    <td className="relative border-b border-l p-0">
+      <Input
+        value={wert}
+        onChange={(e) => onChange(e.target.value)}
+        maxLength={MAX_BEMERKUNG_LAENGE}
+        className="h-full w-full rounded-none border-none bg-transparent px-2 py-2 text-sm shadow-none focus-visible:ring-1"
+      />
+      {hatAbweichung && (
+        <span className="bg-primary absolute top-1 right-1 size-1.5 rounded-full" />
+      )}
+    </td>
+  )
+}
+
 function PlanungsGrid({
   members,
   tage,
@@ -161,7 +198,10 @@ function PlanungsGrid({
   onEintragChange = () => {},
   rufbereitschaftEntwurf = {},
   veraenderteRufbereitschaftZellen = new Set(),
-  onRufbereitschaftChange = () => {}
+  onRufbereitschaftChange = () => {},
+  bemerkungEntwurf = {},
+  veraenderteBemerkungZellen = new Set(),
+  onBemerkungChange = () => {}
 }: PlanungsGridProps): React.JSX.Element {
   const dienstplantagIdProDatum = new Map(dienstplantage.map((tag) => [tag.datum, tag.id]))
   const istVorschau = dienstplantage.length === 0
@@ -333,7 +373,23 @@ function PlanungsGrid({
                       onRufbereitschaftChange(dienstplantagId, teamMember)
                     }}
                   />
-                  <td className="border-b border-l px-2 py-2" />
+                  <BemerkungZelle
+                    istInteraktiv={dienstplantagId !== undefined}
+                    wert={
+                      dienstplantagId !== undefined
+                        ? (bemerkungEntwurf[String(dienstplantagId)] ?? '')
+                        : ''
+                    }
+                    hatAbweichung={
+                      dienstplantagId !== undefined
+                        ? veraenderteBemerkungZellen.has(String(dienstplantagId))
+                        : false
+                    }
+                    onChange={(wert) => {
+                      if (dienstplantagId === undefined) return
+                      onBemerkungChange(dienstplantagId, wert)
+                    }}
+                  />
                 </tr>
               )
             })}

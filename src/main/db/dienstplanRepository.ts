@@ -1,6 +1,7 @@
 import type Database from 'better-sqlite3'
 import { getKalendertageFuerMonat } from '../../shared/kalendertage'
 import type {
+  BemerkungAenderung,
   Dienstplan,
   Dienstplantag,
   Planeintrag,
@@ -125,8 +126,14 @@ export function speicherePlanungsstand(
   titel: string,
   aenderungen: PlaneintragAenderung[],
   rufbereitschaftAenderungen: RufbereitschaftAenderung[],
+  bemerkungAenderungen: BemerkungAenderung[],
   database: Db
-): { dienstplan: Dienstplan; planeintraege: Planeintrag[]; rufbereitschaften: Rufbereitschaft[] } {
+): {
+  dienstplan: Dienstplan
+  planeintraege: Planeintrag[]
+  rufbereitschaften: Rufbereitschaft[]
+  dienstplantage: Dienstplantag[]
+} {
   const speichern = database.transaction(() => {
     const dienstplan = updateDienstplanTitel(dienstplanId, titel, database)
 
@@ -175,14 +182,29 @@ export function speicherePlanungsstand(
       }
     }
 
+    const aktualisiereBemerkung = database.prepare(
+      'UPDATE dienstplantage SET bemerkung = @bemerkung WHERE id = @id'
+    )
+
+    for (const aenderung of bemerkungAenderungen) {
+      aktualisiereBemerkung.run({ id: aenderung.dienstplantagId, bemerkung: aenderung.bemerkung })
+    }
+
     return dienstplan
   })
 
   const dienstplan = speichern()
 
+  const dienstplantage = database
+    .prepare(
+      'SELECT id, dienstplanId, datum, bemerkung FROM dienstplantage WHERE dienstplanId = ? ORDER BY datum'
+    )
+    .all(dienstplanId) as Dienstplantag[]
+
   return {
     dienstplan,
     planeintraege: getPlaneintraegeFuerDienstplan(dienstplanId, database),
-    rufbereitschaften: getRufbereitschaftenFuerDienstplan(dienstplanId, database)
+    rufbereitschaften: getRufbereitschaftenFuerDienstplan(dienstplanId, database),
+    dienstplantage
   }
 }

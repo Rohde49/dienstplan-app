@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import type {
+  BemerkungAenderung,
   Dienstplan,
   Dienstplantag,
   Eintragsdefinition,
@@ -41,18 +42,21 @@ const api = {
       dienstplanId: number,
       titel: string,
       aenderungen: PlaneintragAenderung[],
-      rufbereitschaftAenderungen: RufbereitschaftAenderung[]
+      rufbereitschaftAenderungen: RufbereitschaftAenderung[],
+      bemerkungAenderungen: BemerkungAenderung[]
     ): Promise<{
       dienstplan: Dienstplan
       planeintraege: Planeintrag[]
       rufbereitschaften: Rufbereitschaft[]
+      dienstplantage: Dienstplantag[]
     }> =>
       ipcRenderer.invoke(
         'dienstplan:speichernPlanungsstand',
         dienstplanId,
         titel,
         aenderungen,
-        rufbereitschaftAenderungen
+        rufbereitschaftAenderungen,
+        bemerkungAenderungen
       )
   },
   planeintrag: {
