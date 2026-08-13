@@ -1,12 +1,20 @@
 import Database from 'better-sqlite3'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  createDienstplan,
+  ensureDienstplanTabellen,
+  speicherePlanungsstand
+} from './dienstplanRepository'
+import {
   addEintragsdefinition,
+  deleteEintragsdefinition,
   ensureEintragsdefinitionenTable,
   getEintragsdefinitionen,
   updateEintragsdefinition
 } from './eintragsdefinitionRepository'
-import type { Eintragsdefinition } from '../../shared/types'
+import { ensurePlaneintraegeTabelle, getPlaneintraegeFuerDienstplan } from './planeintragRepository'
+import { ensureRufbereitschaftenTabelle } from './rufbereitschaftRepository'
+import type { Eintragsdefinition, PlaneintragSnapshot } from '../../shared/types'
 
 let testDb: InstanceType<typeof Database>
 
@@ -49,6 +57,9 @@ function neueMitarbeiterabhaengigeEintragsdefinition(
 beforeEach(() => {
   testDb = new Database(':memory:')
   ensureEintragsdefinitionenTable(testDb)
+  ensureDienstplanTabellen(testDb)
+  ensurePlaneintraegeTabelle(testDb)
+  ensureRufbereitschaftenTabelle(testDb)
 })
 
 describe('getEintragsdefinitionen', () => {
@@ -157,5 +168,46 @@ describe('updateEintragsdefinition', () => {
     const eintraege = getEintragsdefinitionen(testDb)
     expect(eintraege.find((e) => e.id === first.id)?.name).toBe('Frühdienst-Updated')
     expect(eintraege.find((e) => e.id === second.id)?.kuerzel).toBe('U')
+  })
+})
+
+describe('deleteEintragsdefinition', () => {
+  it('löscht eine bestehende Eintragsdefinition', () => {
+    const created = addEintragsdefinition(neueFesteEintragsdefinition(), testDb)
+
+    deleteEintragsdefinition(created.id, testDb)
+
+    expect(getEintragsdefinitionen(testDb)).toHaveLength(0)
+  })
+
+  it('entfernt die Eintragsdefinition auch wenn sie bereits in einem Planeintrag referenziert wurde, ohne den bestehenden Planeintrag samt Snapshot zu verändern', () => {
+    const created = addEintragsdefinition(neueFesteEintragsdefinition(), testDb)
+    const { dienstplan, tage } = createDienstplan({ monat: 8, jahr: 2026, titel: 'A' }, testDb)
+    const snapshot: PlaneintragSnapshot = {
+      eintragsdefinitionId: created.id,
+      kuerzel: created.kuerzel,
+      beginn: created.beginn,
+      ende: created.ende,
+      anwesenheitszeitMinuten: created.anwesenheitszeitMinuten,
+      arbeitszeitMinuten: created.arbeitszeitMinuten,
+      arbeitszeitOhneNachtbereitschaftMinuten: created.arbeitszeitOhneNachtbereitschaftMinuten,
+      nachtbereitschaftMinuten: created.nachtbereitschaftMinuten,
+      nachtarbeitMinuten: created.nachtarbeitMinuten
+    }
+    speicherePlanungsstand(
+      dienstplan.id,
+      dienstplan.titel,
+      [{ dienstplantagId: tage[0].id, teamMemberId: 1, eintrag: snapshot }],
+      [],
+      [],
+      testDb
+    )
+
+    deleteEintragsdefinition(created.id, testDb)
+
+    expect(getEintragsdefinitionen(testDb)).toHaveLength(0)
+    const planeintraege = getPlaneintraegeFuerDienstplan(dienstplan.id, testDb)
+    expect(planeintraege).toHaveLength(1)
+    expect(planeintraege[0]).toMatchObject(snapshot)
   })
 })

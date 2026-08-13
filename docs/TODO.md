@@ -162,16 +162,16 @@ Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn 
 - [x] Repository-Tests gegen In-Memory-SQLite
 - [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (159 Tests, 3 davon neu für `deleteTeamMember`), Löschen im laufenden Fenster über CDP-Skript geprüft (unbenutzten Mitarbeiter „Frau Müller" gelöscht, verschwindet aus der Liste; Löschversuch bei „Max Mustermann" — verwendet in Planeintrag und Rufbereitschaft — zeigt die Fehlermeldung im Formular, Mitarbeiter bleibt erhalten)
 
-## Schritt 13: Eintragsdefinition löschen
+## Schritt 13: Eintragsdefinition löschen (abgeschlossen)
 
 Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwendungsprüfung (bereits gesetzte Planeinträge sind laut Datenmodell als Snapshot unabhängig von der Eintragsdefinition). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt13-eintragsdefinition-loeschen.md`](./ablaufplaene/schritt13-eintragsdefinition-loeschen.md).
 
-- [ ] Repository-Funktion `deleteEintragsdefinition`
-- [ ] IPC-Handler und typisierte Preload-API
-- [ ] `EintragsdefinitionForm` um Löschen-Button erweitern
-- [ ] `EintraegePage` verdrahten
-- [ ] Repository-Test gegen In-Memory-SQLite
-- [ ] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update
+- [x] Repository-Funktion `deleteEintragsdefinition`
+- [x] IPC-Handler und typisierte Preload-API
+- [x] `EintragsdefinitionForm` um Löschen-Button erweitern
+- [x] `EintraegePage` verdrahten
+- [x] Repository-Test gegen In-Memory-SQLite
+- [x] Gesamtverifikation (Typecheck/Lint/Test) und Doku-Update — alle drei Checks sauber (161 Tests, 2 davon neu für `deleteEintragsdefinition`), Löschen im laufenden Fenster über CDP-Skript geprüft (Eintragsdefinition „GV" angelegt, in einem Dienstplan als Planeintrag für Max Mustermann am 01.08. gesetzt und gespeichert, danach die Eintragsdefinition gelöscht — Dienstplan neu geladen zeigt den Planeintrag inkl. Snapshot „GV / 08:00–16:00" unverändert im Grid)
 
 ## Schritt 14: Dienstplan löschen
 

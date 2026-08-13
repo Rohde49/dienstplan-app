@@ -22,6 +22,7 @@ interface EintragsdefinitionAPI {
   list: () => Promise<Eintragsdefinition[]>
   add: (data: Omit<Eintragsdefinition, 'id'>) => Promise<Eintragsdefinition>
   update: (id: number, data: Omit<Eintragsdefinition, 'id'>) => Promise<Eintragsdefinition>
+  delete: (id: number) => Promise<void>
 }
 
 interface DienstplanAPI {

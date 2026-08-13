@@ -1,5 +1,15 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { ChevronDown } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -36,6 +46,7 @@ interface EintragsdefinitionFormProps {
   onChange: (patch: Partial<EintragsdefinitionFormValues>) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onCancel: () => void
+  onDelete: () => void
 }
 
 function EintragsdefinitionForm({
@@ -46,9 +57,11 @@ function EintragsdefinitionForm({
   errors,
   onChange,
   onSubmit,
-  onCancel
+  onCancel,
+  onDelete
 }: EintragsdefinitionFormProps): React.JSX.Element {
   const istMitarbeiterabhaengig = values.berechnungsart === 'mitarbeiterabhaengig'
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
     <Card>
@@ -197,11 +210,45 @@ function EintragsdefinitionForm({
                 <Button type="button" variant="outline" onClick={onCancel}>
                   Abbrechen
                 </Button>
+                {mode === 'edit' && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="ml-auto"
+                    onClick={() => setDeleteDialogOpen(true)}
+                  >
+                    Löschen
+                  </Button>
+                )}
               </div>
             </form>
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eintragsdefinition löschen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Soll die Eintragsdefinition „{values.kuerzel} – {values.name}&rdquo; wirklich gelöscht
+              werden? Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-white hover:bg-destructive/90"
+              onClick={() => {
+                setDeleteDialogOpen(false)
+                onDelete()
+              }}
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }

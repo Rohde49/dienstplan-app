@@ -3,6 +3,7 @@ import { db } from '../db'
 import type { Eintragsdefinition } from '../../shared/types'
 import {
   addEintragsdefinition,
+  deleteEintragsdefinition,
   ensureEintragsdefinitionenTable,
   getEintragsdefinitionen,
   updateEintragsdefinition
@@ -23,5 +24,9 @@ export function registerEintragsdefinitionHandlers(): void {
     'eintragsdefinition:update',
     (_event, id: number, data: Omit<Eintragsdefinition, 'id'>): Eintragsdefinition =>
       updateEintragsdefinition(id, data, db)
+  )
+
+  ipcMain.handle('eintragsdefinition:delete', (_event, id: number): void =>
+    deleteEintragsdefinition(id, db)
   )
 }

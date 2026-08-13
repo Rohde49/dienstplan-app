@@ -28,7 +28,8 @@ const api = {
     add: (data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
       ipcRenderer.invoke('eintragsdefinition:add', data),
     update: (id: number, data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
-      ipcRenderer.invoke('eintragsdefinition:update', id, data)
+      ipcRenderer.invoke('eintragsdefinition:update', id, data),
+    delete: (id: number): Promise<void> => ipcRenderer.invoke('eintragsdefinition:delete', id)
   },
   dienstplan: {
     list: (): Promise<Dienstplan[]> => ipcRenderer.invoke('dienstplan:list'),

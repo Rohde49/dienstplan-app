@@ -156,6 +156,16 @@ function EintraegePage(): React.JSX.Element {
     })
   }
 
+  function handleDelete(): void {
+    if (selectedId === null) return
+
+    window.api.eintragsdefinition.delete(selectedId).then(() => {
+      handleNewEintrag()
+      setIsFormOpen(false)
+      loadEintraege()
+    })
+  }
+
   return (
     <div className="p-6 pt-12">
       <StackedManagementLayout
@@ -193,6 +203,7 @@ function EintraegePage(): React.JSX.Element {
             onChange={handleFormChange}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
+            onDelete={handleDelete}
           />
         }
       />

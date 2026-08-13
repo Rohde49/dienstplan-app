@@ -74,3 +74,7 @@ export function updateEintragsdefinition(
 
   return { id, ...data }
 }
+
+export function deleteEintragsdefinition(id: number, database: Db): void {
+  database.prepare('DELETE FROM eintragsdefinitionen WHERE id = ?').run(id)
+}
