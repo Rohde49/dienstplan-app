@@ -206,9 +206,19 @@ Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/
 - [x] „Drucken"-Platzhalter-Button
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (167 Tests, unverändert, da rein UI-seitige Wiederverwendung bestehender reiner Funktionen ohne neue Testfälle), Screenshot-Serie im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit vier Erziehern und einer Wirtschaftskraft, festen und mitarbeiterabhängigen Planeinträgen, zwei Rufbereitschaften und zwei Bemerkungen aufgebaut, mehrfach zwischen „Planung" und „Druckvorschau" hin- und hergeschaltet — alle Werte inkl. Fußzeilen stimmten in jeder Runde exakt mit `PlanungsGrid` überein, keine Daten gingen beim Umschalten verloren)
 
+## Schritt 17: Druckvorschau/Drucken
+
+Baut `VerkuerzteAnsicht.tsx` aus Schritt 16 grundlegend zu `DruckAnsicht.tsx` um: statt einer scrollbaren Kompakttabelle zeigt sie dauerhaft eine live skalierte, exakte A4-Hochformat-Vorschau (zwei getrennte Skalierungsebenen: Inhalts-Skalierung auf eine physische A4-Seite, unabhängig davon ein rein optischer Außen-Zoom fürs App-Panel), inklusive Dienstplan-Titel als Kopfzeile. Der bestehende „Drucken"-Button löst darauf `window.print()` aus (nativer Windows-Druckdialog, „Microsoft Print to PDF" oder echter Drucker, kein neuer IPC-Kanal). Kein Signaturblock in diesem Schritt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt17-druckvorschau-drucken.md`](./ablaufplaene/schritt17-druckvorschau-drucken.md).
+
+- [ ] Umbenennung `VerkuerzteAnsicht.tsx` → `DruckAnsicht.tsx`, A4-Flächen-Grundgerüst, Titel-Kopfzeile
+- [ ] Reine Skalierungsfunktion (`berechneDruckSkalierungsfaktor`) inkl. Unit-Tests
+- [ ] Live Inhalts-Skalierung verdrahten (auf eine A4-Seite, unabhängig von Fenstergröße)
+- [ ] Live Außen-Zoom verdrahten (Panel-Anpassung per `ResizeObserver`, rein optisch)
+- [ ] Print-Stylesheet und „Drucken"-Button aktivieren
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, manueller PDF-Export-Vergleich) und Doku-Update
+
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15/16. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15/16/17. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
 
-- [ ] PDF-Export Funktion für verkürzte Ansicht
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
