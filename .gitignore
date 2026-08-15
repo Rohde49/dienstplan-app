@@ -6,3 +6,6 @@ out
 *.log*
 coverage
 .claude/settings.local.json
+
+# Arbeitsdateien der Doku (Zwischenablage, nicht Teil der Projektdokumentation)
+docs/temp/
