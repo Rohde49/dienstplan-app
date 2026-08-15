@@ -56,7 +56,9 @@ interface RufbereitschaftAPI {
   listFuerDienstplan: (dienstplanId: number) => Promise<Rufbereitschaft[]>
 }
 
-interface API {
+// Exportiert, damit das Test-Fake in src/test/apiFake.ts gegen exakt diesen Typ
+// geprüft werden kann — ändert sich eine Signatur, bricht das Fake beim Typecheck.
+export interface API {
   team: TeamAPI
   eintragsdefinition: EintragsdefinitionAPI
   dienstplan: DienstplanAPI

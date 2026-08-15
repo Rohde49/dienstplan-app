@@ -23,9 +23,13 @@ Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.m
 - `npm run typecheck` — TypeScript-Prüfung (Node- und Web-Teil getrennt: `typecheck:node`, `typecheck:web`)
 - `npm run lint` — ESLint
 - `npm run format` — Prettier (schreibt Änderungen)
-- `npm run test` — Vitest (reine Funktionen + Repository-Tests gegen In-Memory-SQLite, siehe [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md))
+- `npm run test` — Vitest, Ebenen 1–4 (reine Funktionen, Repository gegen In-Memory-SQLite, Komponenten in jsdom, IPC-Vertrag), läuft in unter 20 Sekunden
+- `npm run test:e2e` — Ebene 5: Playwright gegen die gebaute App, setzt `npm run build` voraus
+- `npm run test:coverage` — Coverage-Bericht (Signal zum Finden blinder Flecken, kein Zielwert)
 - `npm run build` — Typecheck + Produktions-Build
 - `npm run build:win` — Windows-Installer via `electron-builder` (einziges relevantes Build-Target laut `docs/TODO.md`)
+
+Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht getestet wird: [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md) — vor dem Schreiben neuer Tests lesen.
 
 ### Projektstruktur
 
@@ -35,6 +39,9 @@ Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.m
 - `src/preload/index.ts` (+ `index.d.ts`) — Preload-Skript, Brücke zwischen Main und Renderer
 - `src/shared/types.ts` — Entitäten, die Main und Renderer gemeinsam nutzen (einziger „Wahrheitsort" für Datenstrukturen)
 - `src/renderer/src/` — React-App: `pages/` (eine Datei je Route), `components/ui/` (shadcn-Primitives), `components/layout/` (seitenübergreifende, fachlich unwissende Layout-Bausteine), `components/` direkt (fachspezifische Komponenten), `lib/` (reine Funktionen), `assets/`
+- `src/shared/ipcKanaele.ts` — einzige Quelle der IPC-Kanalnamen; Preload und Handler greifen beide darauf zu, ein Vertragstest prüft die Vollständigkeit
+- `src/test/` — Testhilfen für alle Ebenen: `apiFake.ts` (typisierter `window.api`-Ersatz), `datenbank.ts`, `factories.ts`, `setup.renderer.ts`
+- `e2e/` — Playwright-Tests gegen die gebaute App, inklusive automatisierter Druckprüfung über `printToPDF`
 - `docs/` — Projektdokumentation, siehe [`docs/README.md`](./docs/README.md) für die Übersicht. Vor UI-Arbeit [`docs/architektur/design-system.md`](./docs/architektur/design-system.md) lesen: Tokens, Skalen, Zustände und Barrierefreiheits-Mindestanforderungen sind dort verbindlich festgehalten
 - `electron.vite.config.ts` — Build-Konfiguration für alle drei Prozesse
 - `electron-builder.yml` — Packaging-Konfiguration
@@ -57,5 +64,6 @@ Begründung und Details zur Ordnerstruktur siehe [`docs/architektur/projektstruk
 - Aufträge konkret formulieren: Datei/Bereich benennen, gewünschtes Verhalten beschreiben, auf bestehende Muster im Code verweisen statt vager Anweisungen
 - Nach zwei erfolglosen Korrekturversuchen am selben Problem: `/clear` und Auftrag präziser neu formulieren, statt weiter zu flicken
 - `/clear` zwischen thematisch unabhängigen Aufgaben, um den Kontext sauber zu halten
-- Wo möglich eine Prüfmöglichkeit schaffen (Tests, TypeScript-Compiler, Screenshot-Vergleich der UI) — ohne Prüfsignal wird kaputter Code nicht selbst erkannt
+- Wo möglich eine Prüfmöglichkeit schaffen (Tests, TypeScript-Compiler) — ohne Prüfsignal wird kaputter Code nicht selbst erkannt. Die passende Ebene dafür ergibt sich aus [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md); ein Screenshot ist Sichtprüfung, kein Prüfsignal
+- Nach einem neuen Test, der eine bisher ungeprüfte Fehlerklasse abdeckt: einmal die geprüfte Eigenschaft absichtlich verletzen, Rotwerden bestätigen, Verletzung zurücknehmen — ein Test, der nie fehlschlägt, ist wertlos
 - Kommunikation in diesem Projekt erfolgt auf Deutsch

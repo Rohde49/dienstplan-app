@@ -206,6 +206,21 @@ Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/
 - [x] „Drucken"-Platzhalter-Button
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (167 Tests, unverändert, da rein UI-seitige Wiederverwendung bestehender reiner Funktionen ohne neue Testfälle), Screenshot-Serie im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit vier Erziehern und einer Wirtschaftskraft, festen und mitarbeiterabhängigen Planeinträgen, zwei Rufbereitschaften und zwei Bemerkungen aufgebaut, mehrfach zwischen „Planung" und „Druckvorschau" hin- und hergeschaltet — alle Werte inkl. Fußzeilen stimmten in jeder Runde exakt mit `PlanungsGrid` überein, keine Daten gingen beim Umschalten verloren)
 
+## Zwischenschritt: Teststrategie überarbeitet (abgeschlossen)
+
+Kein nummerierter Fachschritt, sondern eine Überarbeitung der Testinfrastruktur vor Schritt 17. Die bisherige Strategie hatte drei Ebenen, von denen nur zwei existierten — die UI-Schicht und die IPC-Verdrahtung waren vollständig ungeprüft, und die dritte Ebene bestand aus nicht eingecheckten Screenshot-Skripten. Neue Fassung siehe [`architektur/teststrategie.md`](./architektur/teststrategie.md).
+
+- [x] `vitest.config.ts` auf zwei Projekte umgestellt (Node und jsdom, Aufteilung über die Dateiendung — Laufzeit dadurch bei 1,9 s statt 42,8 s)
+- [x] Testhilfen unter `src/test/`: typisiertes `window.api`-Fake, In-Memory-Datenbank, Testdaten-Fabriken, jsdom-Setup inkl. Radix-Polyfills
+- [x] Ebene 4 neu: `src/shared/ipcKanaele.ts` als einzige Quelle der Kanalnamen, Preload und alle 15 Handler darauf umgestellt, Vertragstest mit beidseitiger Prüfung
+- [x] Ebene 3 neu: Komponententests mit Testing Library, Muster in `TeamPage.test.tsx` (vier Fälle über zugängliche Rollen/Beschriftungen)
+- [x] Ebene 5 neu: Playwright-Smoke-Suite unter `e2e/` gegen die gebaute App mit isoliertem Benutzerdatenverzeichnis — Start, Prozessgrenze, Durchstich mit Neustart-Persistenz
+- [x] Automatisierte Druckprüfung über `webContents.printToPDF` plus `pdfjs-dist`-Auswertung (Seitenzahl und Textinhalt) — ersetzt den Screenshot-Vergleich für die Druckausgabe
+- [x] Gegenproben für die Ebenen 3 und 4 durchgeführt (Prüfeigenschaft absichtlich verletzt, Rotwerden bestätigt, Verletzung zurückgenommen)
+- [x] Verifikation: 174 Tests in 19 Dateien grün, E2E 5 grün plus 1 bewusst als `it.fails` markierter Mangel, Typecheck und Lint sauber
+
+**Dabei aufgedeckter Mangel**: Die Druckausgabe verliert heute den letzten Tag des Monats — die Ansicht aus Schritt 16 ist ein Scrollcontainer, gedruckt wird nur der sichtbare Ausschnitt. Als `it.fails` in `e2e/druckausgabe.e2e.test.ts` festgehalten; wird von Schritt 17 behoben, danach ist die Markierung zu entfernen.
+
 ## Schritt 17: Druckvorschau/Drucken
 
 Baut `VerkuerzteAnsicht.tsx` aus Schritt 16 grundlegend zu `DruckAnsicht.tsx` um: statt einer scrollbaren Kompakttabelle zeigt sie dauerhaft eine live skalierte, exakte A4-Hochformat-Vorschau (zwei getrennte Skalierungsebenen: Inhalts-Skalierung auf eine physische A4-Seite, unabhängig davon ein rein optischer Außen-Zoom fürs App-Panel), inklusive Dienstplan-Titel als Kopfzeile. Der bestehende „Drucken"-Button löst darauf `window.print()` aus (nativer Windows-Druckdialog, „Microsoft Print to PDF" oder echter Drucker, kein neuer IPC-Kanal). Kein Signaturblock in diesem Schritt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt17-druckvorschau-drucken.md`](./ablaufplaene/schritt17-druckvorschau-drucken.md).
@@ -215,7 +230,7 @@ Baut `VerkuerzteAnsicht.tsx` aus Schritt 16 grundlegend zu `DruckAnsicht.tsx` um
 - [ ] Live Inhalts-Skalierung verdrahten (auf eine A4-Seite, unabhängig von Fenstergröße)
 - [ ] Live Außen-Zoom verdrahten (Panel-Anpassung per `ResizeObserver`, rein optisch)
 - [ ] Print-Stylesheet und „Drucken"-Button aktivieren
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, manueller PDF-Export-Vergleich) und Doku-Update
+- [ ] Gesamtverifikation (Typecheck/Lint/Test, `npm run test:e2e`) und Doku-Update — der Abnahmetest existiert bereits: `it.fails('legt alle Tage des Monats auf die Seite')` in `e2e/druckausgabe.e2e.test.ts` muss nach diesem Schritt bestehen, dann `.fails` entfernen. Zusätzlich einmal manuell über „Drucken" als PDF exportieren (nur der native Dialog bleibt unautomatisierbar).
 
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 

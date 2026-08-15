@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { IPC_KANAELE } from '../shared/ipcKanaele'
 import type {
   BemerkungAenderung,
   Dienstplan,
@@ -15,32 +16,34 @@ import type {
 // Custom APIs for renderer
 const api = {
   team: {
-    list: (): Promise<TeamMember[]> => ipcRenderer.invoke('team:list'),
+    list: (): Promise<TeamMember[]> => ipcRenderer.invoke(IPC_KANAELE.team.list),
     add: (data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
-      ipcRenderer.invoke('team:add', data),
+      ipcRenderer.invoke(IPC_KANAELE.team.add, data),
     update: (id: number, data: Omit<TeamMember, 'id'>): Promise<TeamMember> =>
-      ipcRenderer.invoke('team:update', id, data),
+      ipcRenderer.invoke(IPC_KANAELE.team.update, id, data),
     delete: (id: number): Promise<{ geloescht: boolean; grund?: string }> =>
-      ipcRenderer.invoke('team:delete', id)
+      ipcRenderer.invoke(IPC_KANAELE.team.delete, id)
   },
   eintragsdefinition: {
-    list: (): Promise<Eintragsdefinition[]> => ipcRenderer.invoke('eintragsdefinition:list'),
+    list: (): Promise<Eintragsdefinition[]> =>
+      ipcRenderer.invoke(IPC_KANAELE.eintragsdefinition.list),
     add: (data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
-      ipcRenderer.invoke('eintragsdefinition:add', data),
+      ipcRenderer.invoke(IPC_KANAELE.eintragsdefinition.add, data),
     update: (id: number, data: Omit<Eintragsdefinition, 'id'>): Promise<Eintragsdefinition> =>
-      ipcRenderer.invoke('eintragsdefinition:update', id, data),
-    delete: (id: number): Promise<void> => ipcRenderer.invoke('eintragsdefinition:delete', id)
+      ipcRenderer.invoke(IPC_KANAELE.eintragsdefinition.update, id, data),
+    delete: (id: number): Promise<void> =>
+      ipcRenderer.invoke(IPC_KANAELE.eintragsdefinition.delete, id)
   },
   dienstplan: {
-    list: (): Promise<Dienstplan[]> => ipcRenderer.invoke('dienstplan:list'),
+    list: (): Promise<Dienstplan[]> => ipcRenderer.invoke(IPC_KANAELE.dienstplan.list),
     get: (id: number): Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] } | null> =>
-      ipcRenderer.invoke('dienstplan:get', id),
+      ipcRenderer.invoke(IPC_KANAELE.dienstplan.get, id),
     create: (data: {
       monat: number
       jahr: number
       titel: string
     }): Promise<{ dienstplan: Dienstplan; tage: Dienstplantag[] }> =>
-      ipcRenderer.invoke('dienstplan:create', data),
+      ipcRenderer.invoke(IPC_KANAELE.dienstplan.create, data),
     speichernPlanungsstand: (
       dienstplanId: number,
       titel: string,
@@ -54,22 +57,22 @@ const api = {
       dienstplantage: Dienstplantag[]
     }> =>
       ipcRenderer.invoke(
-        'dienstplan:speichernPlanungsstand',
+        IPC_KANAELE.dienstplan.speichernPlanungsstand,
         dienstplanId,
         titel,
         aenderungen,
         rufbereitschaftAenderungen,
         bemerkungAenderungen
       ),
-    delete: (id: number): Promise<void> => ipcRenderer.invoke('dienstplan:delete', id)
+    delete: (id: number): Promise<void> => ipcRenderer.invoke(IPC_KANAELE.dienstplan.delete, id)
   },
   planeintrag: {
     listFuerDienstplan: (dienstplanId: number): Promise<Planeintrag[]> =>
-      ipcRenderer.invoke('planeintrag:listFuerDienstplan', dienstplanId)
+      ipcRenderer.invoke(IPC_KANAELE.planeintrag.listFuerDienstplan, dienstplanId)
   },
   rufbereitschaft: {
     listFuerDienstplan: (dienstplanId: number): Promise<Rufbereitschaft[]> =>
-      ipcRenderer.invoke('rufbereitschaft:listFuerDienstplan', dienstplanId)
+      ipcRenderer.invoke(IPC_KANAELE.rufbereitschaft.listFuerDienstplan, dienstplanId)
   }
 }
 

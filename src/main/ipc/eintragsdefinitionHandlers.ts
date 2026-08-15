@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron'
 import { db } from '../db'
+import { IPC_KANAELE } from '../../shared/ipcKanaele'
 import type { Eintragsdefinition } from '../../shared/types'
 import {
   addEintragsdefinition,
@@ -12,21 +13,23 @@ import {
 export function registerEintragsdefinitionHandlers(): void {
   ensureEintragsdefinitionenTable(db)
 
-  ipcMain.handle('eintragsdefinition:list', (): Eintragsdefinition[] => getEintragsdefinitionen(db))
+  ipcMain.handle(IPC_KANAELE.eintragsdefinition.list, (): Eintragsdefinition[] =>
+    getEintragsdefinitionen(db)
+  )
 
   ipcMain.handle(
-    'eintragsdefinition:add',
+    IPC_KANAELE.eintragsdefinition.add,
     (_event, data: Omit<Eintragsdefinition, 'id'>): Eintragsdefinition =>
       addEintragsdefinition(data, db)
   )
 
   ipcMain.handle(
-    'eintragsdefinition:update',
+    IPC_KANAELE.eintragsdefinition.update,
     (_event, id: number, data: Omit<Eintragsdefinition, 'id'>): Eintragsdefinition =>
       updateEintragsdefinition(id, data, db)
   )
 
-  ipcMain.handle('eintragsdefinition:delete', (_event, id: number): void =>
+  ipcMain.handle(IPC_KANAELE.eintragsdefinition.delete, (_event, id: number): void =>
     deleteEintragsdefinition(id, db)
   )
 }

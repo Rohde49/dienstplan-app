@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron'
 import { db } from '../db'
+import { IPC_KANAELE } from '../../shared/ipcKanaele'
 import type {
   BemerkungAenderung,
   Dienstplan,
@@ -21,16 +22,16 @@ import {
 export function registerDienstplanHandlers(): void {
   ensureDienstplanTabellen(db)
 
-  ipcMain.handle('dienstplan:list', (): Dienstplan[] => getDienstplaene(db))
+  ipcMain.handle(IPC_KANAELE.dienstplan.list, (): Dienstplan[] => getDienstplaene(db))
 
   ipcMain.handle(
-    'dienstplan:get',
+    IPC_KANAELE.dienstplan.get,
     (_event, id: number): { dienstplan: Dienstplan; tage: Dienstplantag[] } | null =>
       getDienstplanMitTagen(id, db)
   )
 
   ipcMain.handle(
-    'dienstplan:create',
+    IPC_KANAELE.dienstplan.create,
     (
       _event,
       data: { monat: number; jahr: number; titel: string }
@@ -38,7 +39,7 @@ export function registerDienstplanHandlers(): void {
   )
 
   ipcMain.handle(
-    'dienstplan:speichernPlanungsstand',
+    IPC_KANAELE.dienstplan.speichernPlanungsstand,
     (
       _event,
       dienstplanId: number,
@@ -62,5 +63,7 @@ export function registerDienstplanHandlers(): void {
       )
   )
 
-  ipcMain.handle('dienstplan:delete', (_event, id: number): void => deleteDienstplan(id, db))
+  ipcMain.handle(IPC_KANAELE.dienstplan.delete, (_event, id: number): void =>
+    deleteDienstplan(id, db)
+  )
 }
