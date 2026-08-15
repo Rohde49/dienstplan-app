@@ -17,12 +17,17 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>): Reac
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<'tr'>): React.JSX.Element {
-  return <tr className={cn('border-b transition-colors hover:bg-muted/50', className)} {...props} />
+  return <tr className={cn('border-b transition-colors hover:bg-muted', className)} {...props} />
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<'th'>): React.JSX.Element {
+function TableHead({
+  className,
+  scope = 'col',
+  ...props
+}: React.ComponentProps<'th'>): React.JSX.Element {
   return (
     <th
+      scope={scope}
       className={cn(
         'text-muted-foreground h-10 px-4 text-left align-middle text-xs font-medium tracking-wide uppercase',
         className

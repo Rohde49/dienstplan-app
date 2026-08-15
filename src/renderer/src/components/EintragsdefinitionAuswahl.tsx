@@ -5,6 +5,10 @@ function formatZeitpunkt(value: string | null): string {
   return value ?? '–'
 }
 
+const ZEILEN_RASTER = 'grid grid-cols-[1fr_auto_auto] items-center gap-2'
+const ZEILEN_BASIS =
+  'hover:bg-accent focus-visible:bg-accent focus-visible:ring-ring w-full cursor-pointer rounded-sm px-2 py-1.5 text-left outline-none focus-visible:ring-2'
+
 interface EintragsdefinitionAuswahlProps {
   onSelect: (eintragsdefinition: Eintragsdefinition | null) => void
 }
@@ -20,36 +24,28 @@ function EintragsdefinitionAuswahl({
 
   return (
     <div className="max-h-80 overflow-y-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-muted-foreground text-xs">
-            <th className="px-2 py-1 text-left font-medium">Kürzel</th>
-            <th className="px-2 py-1 text-left font-medium">Beginn</th>
-            <th className="px-2 py-1 text-left font-medium">Ende</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            className="hover:bg-accent/60 cursor-pointer rounded-sm"
-            onClick={() => onSelect(null)}
+      <div className={`${ZEILEN_RASTER} text-muted-foreground px-2 py-1 text-xs font-medium`}>
+        <span>Kürzel</span>
+        <span>Beginn</span>
+        <span>Ende</span>
+      </div>
+      <div role="group" aria-label="Eintrag auswählen" className="flex flex-col text-sm">
+        <button type="button" className={ZEILEN_BASIS} onClick={() => onSelect(null)}>
+          <span className="text-muted-foreground italic">Kein Eintrag</span>
+        </button>
+        {eintraege.map((eintrag) => (
+          <button
+            key={eintrag.id}
+            type="button"
+            className={`${ZEILEN_BASIS} ${ZEILEN_RASTER}`}
+            onClick={() => onSelect(eintrag)}
           >
-            <td colSpan={3} className="text-muted-foreground px-2 py-1.5 italic">
-              Kein Eintrag
-            </td>
-          </tr>
-          {eintraege.map((eintrag) => (
-            <tr
-              key={eintrag.id}
-              className="hover:bg-accent/60 cursor-pointer rounded-sm"
-              onClick={() => onSelect(eintrag)}
-            >
-              <td className="px-2 py-1.5 font-medium">{eintrag.kuerzel}</td>
-              <td className="px-2 py-1.5">{formatZeitpunkt(eintrag.beginn)}</td>
-              <td className="px-2 py-1.5">{formatZeitpunkt(eintrag.ende)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            <span className="font-medium">{eintrag.kuerzel}</span>
+            <span>{formatZeitpunkt(eintrag.beginn)}</span>
+            <span>{formatZeitpunkt(eintrag.ende)}</span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { sollIstFarbe } from '@/lib/sollIstFarbe'
+import { mitarbeiterSpaltenStil } from '@/lib/planAnsicht'
 import type { Kalendertag } from '../../../shared/kalendertage'
 import {
   berechneArbeitstageFuerMonat,
@@ -135,8 +136,9 @@ function AuswertungDialog({
                 {erzieher.map((member) => (
                   <th
                     key={member.id}
-                    className="sticky top-0 z-10 h-10 border-b border-l px-2 text-center align-middle text-sm font-semibold text-white"
-                    style={{ backgroundColor: member.farbe }}
+                    scope="col"
+                    className="sticky top-0 z-10 h-10 border-b border-l border-t-[3px] px-2 text-center align-middle text-sm font-semibold"
+                    style={mitarbeiterSpaltenStil(member.farbe)}
                   >
                     {member.vorname} {member.name}
                   </th>

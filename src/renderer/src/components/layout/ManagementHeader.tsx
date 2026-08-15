@@ -15,14 +15,14 @@ function ManagementHeader({
 }: ManagementHeaderProps): React.JSX.Element {
   return (
     <Card>
-      <CardContent className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 p-8">
+      <CardContent className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 p-5">
         <div className="justify-self-start">{backAction}</div>
         <div className="text-center">
-          <CardTitle className="text-3xl font-bold tracking-tight">{title}</CardTitle>
+          <CardTitle as="h1" className="text-xl font-semibold tracking-tight">
+            {title}
+          </CardTitle>
           {description && (
-            <CardDescription className="mt-1 text-base leading-relaxed">
-              {description}
-            </CardDescription>
+            <CardDescription className="mt-0.5 text-sm">{description}</CardDescription>
           )}
         </div>
         <div className="justify-self-end">{primaryAction}</div>

@@ -7,18 +7,27 @@ export interface TeamMember {
   farbe: string
 }
 
-export const TEAM_MEMBER_COLORS = [
-  '#3A8DFF', // Blau
-  '#34B37A', // Grün
-  '#F2994A', // Orange
-  '#9B6BDE', // Violett
-  '#2FB6C4', // Türkis
-  '#E15A97', // Pink
-  '#C9A227', // Oliv-Gelb
-  '#5C6BC0', // Indigo
-  '#C1662F', // Terrakotta
-  '#7FB236' // Lindgrün
+// Farbname gehört zur Datenstruktur, nicht in einen Kommentar: die Farbauswahl
+// muss ihn als Beschriftung ausgeben können, sonst sagt der Screenreader den
+// Hex-Code an und die Auswahl ist rein farblich erkennbar.
+export const TEAM_MEMBER_FARBEN = [
+  { wert: '#3A8DFF', name: 'Blau' },
+  { wert: '#34B37A', name: 'Grün' },
+  { wert: '#F2994A', name: 'Orange' },
+  { wert: '#9B6BDE', name: 'Violett' },
+  { wert: '#2FB6C4', name: 'Türkis' },
+  { wert: '#E15A97', name: 'Pink' },
+  { wert: '#C9A227', name: 'Oliv-Gelb' },
+  { wert: '#5C6BC0', name: 'Indigo' },
+  { wert: '#C1662F', name: 'Terrakotta' },
+  { wert: '#7FB236', name: 'Lindgrün' }
 ] as const
+
+export const TEAM_MEMBER_COLORS = TEAM_MEMBER_FARBEN.map((farbe) => farbe.wert)
+
+export function teamMemberFarbName(wert: string): string {
+  return TEAM_MEMBER_FARBEN.find((farbe) => farbe.wert === wert)?.name ?? wert
+}
 
 export interface Eintragsdefinition {
   id: number

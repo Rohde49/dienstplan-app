@@ -123,7 +123,7 @@ function DienstplanLadenDialog({
               {sortiert.map((plan) => (
                 <TableRow
                   key={plan.id}
-                  className="hover:bg-accent/40 cursor-pointer"
+                  className="hover:bg-muted cursor-pointer"
                   onClick={() => onSelect(plan.id)}
                 >
                   <TableCell>{plan.id}</TableCell>
@@ -168,10 +168,7 @@ function DienstplanLadenDialog({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
-              onClick={handleLoeschenBestaetigen}
-            >
+            <AlertDialogAction variant="destructive" onClick={handleLoeschenBestaetigen}>
               Löschen
             </AlertDialogAction>
           </AlertDialogFooter>

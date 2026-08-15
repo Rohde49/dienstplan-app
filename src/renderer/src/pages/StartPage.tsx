@@ -32,14 +32,14 @@ const navCards: NavCard[] = [
 
 function StartPage(): React.JSX.Element {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 sm:p-8 lg:p-10">
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 sm:p-8 lg:p-10">
       <div className="mx-auto w-full max-w-5xl">
-        <Card className="mb-12">
+        <Card className="mb-10">
           <CardHeader className="items-center text-center">
-            <CardTitle className="text-3xl font-bold tracking-tight">
+            <CardTitle as="h1" className="text-2xl font-semibold tracking-tight">
               Planung der Dienstpläne
             </CardTitle>
-            <CardDescription className="text-base leading-relaxed">
+            <CardDescription className="text-sm">
               Team, Einträge und Dienstpläne an einem Ort verwalten
             </CardDescription>
           </CardHeader>
@@ -51,22 +51,20 @@ function StartPage(): React.JSX.Element {
               to={navCard.to}
               className="block rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Card className="h-full bg-muted/60">
+              <Card className="h-full bg-muted">
                 <CardHeader>
                   <div className="mb-2 w-fit rounded-md bg-primary/10 p-2 text-primary">
                     <navCard.icon className="size-5" />
                   </div>
-                  <CardTitle className="text-lg tracking-tight">{navCard.title}</CardTitle>
-                  <CardDescription className="leading-relaxed">
-                    {navCard.description}
-                  </CardDescription>
+                  <CardTitle className="tracking-tight">{navCard.title}</CardTitle>
+                  <CardDescription>{navCard.description}</CardDescription>
                 </CardHeader>
               </Card>
             </Link>
           ))}
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

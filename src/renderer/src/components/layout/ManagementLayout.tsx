@@ -18,18 +18,18 @@ function ManagementLayout({
   detail
 }: ManagementLayoutProps): React.JSX.Element {
   return (
-    <div className="mx-auto w-full max-w-7xl">
+    <main className="mx-auto w-full max-w-7xl">
       <ManagementHeader
         title={title}
         description={description}
         backAction={backAction}
         primaryAction={primaryAction}
       />
-      <div className="mt-10 grid gap-6 md:grid-cols-[1fr_380px]">
+      <div className="mt-6 grid gap-5 md:grid-cols-[1fr_380px]">
         <div>{list}</div>
         <div>{detail}</div>
       </div>
-    </div>
+    </main>
   )
 }
 

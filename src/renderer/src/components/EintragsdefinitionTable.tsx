@@ -65,9 +65,7 @@ function EintragsdefinitionTable({
             {eintraege.map((eintrag) => (
               <TableRow
                 key={eintrag.id}
-                className={cn(
-                  eintrag.id === selectedId && 'border-l-primary bg-accent/40 border-l-2'
-                )}
+                className={cn(eintrag.id === selectedId && 'border-l-primary bg-accent border-l-2')}
               >
                 <TableCell>{eintrag.kuerzel}</TableCell>
                 <TableCell>{eintrag.name}</TableCell>
@@ -82,7 +80,12 @@ function EintragsdefinitionTable({
                 <TableCell>{formatMinutesToHHMM(eintrag.nachtbereitschaftMinuten)}</TableCell>
                 <TableCell>{formatMinutesToHHMM(eintrag.nachtarbeitMinuten)}</TableCell>
                 <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => onEdit(eintrag)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`${eintrag.kuerzel} – ${eintrag.name} bearbeiten`}
+                    onClick={() => onEdit(eintrag)}
+                  >
                     Bearbeiten
                   </Button>
                 </TableCell>

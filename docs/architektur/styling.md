@@ -1,5 +1,12 @@
 # Styling-Fundament
 
+> **Hinweis:** Diese Datei hält die ursprüngliche Begründung der Grundsatzentscheidungen fest
+> (warum Tailwind, warum shadcn, wie die Palette entstanden ist). Für den **aktuell gültigen**
+> Stand — Token-Werte, Typo-/Abstands-/Elevation-Skalen, Zustände, Komponenten-Inventar und
+> Barrierefreiheits-Vorgaben — siehe [`design-system.md`](./design-system.md). Bei Widersprüchen
+> gilt `design-system.md`; die konkreten Farbwerte und Kontraste unten wurden dort nach einer
+> WCAG-Prüfung überarbeitet.
+
 Entscheidung zu Schritt 2 aus [`TODO.md`](../TODO.md). Eigene Datei, weil Begründung und Detailtiefe vergleichbar mit den anderen Architekturentscheidungen sind, siehe [`technologieentscheidungen.md`](./technologieentscheidungen.md) und [`projektstruktur.md`](./projektstruktur.md).
 
 ## Referenzprojekt

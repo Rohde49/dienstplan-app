@@ -20,19 +20,19 @@ function StackedManagementLayout({
   detailPosition = 'bottom'
 }: StackedManagementLayoutProps): React.JSX.Element {
   return (
-    <div className="mx-auto w-full max-w-7xl">
+    <main className="mx-auto w-full max-w-7xl">
       <ManagementHeader
         title={title}
         description={description}
         backAction={backAction}
         primaryAction={primaryAction}
       />
-      <div className="mt-10 flex flex-col gap-6">
+      <div className="mt-6 flex flex-col gap-5">
         {detailPosition === 'top' && <div>{detail}</div>}
         <div>{list}</div>
         {detailPosition === 'bottom' && <div>{detail}</div>}
       </div>
-    </div>
+    </main>
   )
 }
 

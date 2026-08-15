@@ -35,7 +35,7 @@ Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.m
 - `src/preload/index.ts` (+ `index.d.ts`) — Preload-Skript, Brücke zwischen Main und Renderer
 - `src/shared/types.ts` — Entitäten, die Main und Renderer gemeinsam nutzen (einziger „Wahrheitsort" für Datenstrukturen)
 - `src/renderer/src/` — React-App: `pages/` (eine Datei je Route), `components/ui/` (shadcn-Primitives), `components/layout/` (seitenübergreifende, fachlich unwissende Layout-Bausteine), `components/` direkt (fachspezifische Komponenten), `lib/` (reine Funktionen), `assets/`
-- `docs/` — Projektdokumentation, siehe [`docs/README.md`](./docs/README.md) für die Übersicht
+- `docs/` — Projektdokumentation, siehe [`docs/README.md`](./docs/README.md) für die Übersicht. Vor UI-Arbeit [`docs/architektur/design-system.md`](./docs/architektur/design-system.md) lesen: Tokens, Skalen, Zustände und Barrierefreiheits-Mindestanforderungen sind dort verbindlich festgehalten
 - `electron.vite.config.ts` — Build-Konfiguration für alle drei Prozesse
 - `electron-builder.yml` — Packaging-Konfiguration
 - `tsconfig.node.json` / `tsconfig.web.json` — getrennte TS-Konfiguration für Main/Preload vs. Renderer

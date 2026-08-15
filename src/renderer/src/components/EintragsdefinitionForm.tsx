@@ -198,7 +198,7 @@ function EintragsdefinitionForm({
               </div>
 
               {errors.length > 0 && (
-                <ul className="text-destructive list-inside list-disc text-sm">
+                <ul role="alert" className="text-destructive list-inside list-disc text-sm">
                   {errors.map((error) => (
                     <li key={error}>{error}</li>
                   ))}
@@ -238,7 +238,7 @@ function EintragsdefinitionForm({
           <AlertDialogFooter>
             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              variant="destructive"
               onClick={() => {
                 setDeleteDialogOpen(false)
                 onDelete()

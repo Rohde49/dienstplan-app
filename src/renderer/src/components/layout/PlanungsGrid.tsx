@@ -6,6 +6,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { EintragsdefinitionAuswahl } from '@/components/EintragsdefinitionAuswahl'
 import { RufbereitschaftAuswahl } from '@/components/RufbereitschaftAuswahl'
 import { sollIstFarbe } from '@/lib/sollIstFarbe'
+import {
+  DATUM_SPALTE_BREITE,
+  FEIERTAG_FARBE,
+  RUFBEREITSCHAFT_SPALTE_BREITE,
+  WOCHENENDE_FARBE,
+  formatTagUndMonat,
+  mitarbeiterSpaltenStil
+} from '@/lib/planAnsicht'
 import { planeintragSchluessel } from '../../../../shared/planeintragSchluessel'
 import {
   berechneKennzahlenFuerMitarbeiter,
@@ -21,13 +29,11 @@ import type {
   TeamMember
 } from '../../../../shared/types'
 
-const FEIERTAG_FARBE = 'bg-[color-mix(in_oklch,var(--destructive)_12%,var(--card))]'
-const WOCHENENDE_FARBE = 'bg-muted'
-
-const DATUM_SPALTE_BREITE = '8.5rem'
 const UNTERSPALTE_BREITE = '5.5rem'
-const RUFBEREITSCHAFT_SPALTE_BREITE = '9rem'
 const BEMERKUNG_SPALTE_BREITE = '9rem'
+
+const ZEITZELLE_BUTTON =
+  'hover:bg-accent focus-visible:bg-accent focus-visible:ring-ring h-full w-full px-2 py-2 text-center outline-none focus-visible:ring-2 focus-visible:ring-inset'
 
 interface PlanungsGridProps {
   members: TeamMember[]
@@ -46,10 +52,6 @@ interface PlanungsGridProps {
   bemerkungEntwurf?: Record<string, string>
   veraenderteBemerkungZellen?: Set<string>
   onBemerkungChange?: (dienstplantagId: number, wert: string) => void
-}
-
-function formatTagUndMonat(datum: string): string {
-  return `${datum.slice(8, 10)}.${datum.slice(5, 7)}.`
 }
 
 interface PlaneintragZellengruppeProps {
@@ -84,7 +86,7 @@ function PlaneintragZellengruppe({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="hover:bg-accent/50 flex h-full w-full items-center justify-center px-2 py-2"
+              className="hover:bg-accent focus-visible:bg-accent focus-visible:ring-ring flex h-full w-full items-center justify-center px-2 py-2 outline-none focus-visible:ring-2 focus-visible:ring-inset"
             >
               {eintrag?.kuerzel ?? '–'}
               {hatAbweichung && (
@@ -102,17 +104,25 @@ function PlaneintragZellengruppe({
           </PopoverContent>
         </Popover>
       </td>
-      <td
-        className="text-muted-foreground hover:bg-accent/50 cursor-pointer border-b px-2 py-2 text-center"
-        onClick={() => setOffen(true)}
-      >
-        {eintrag?.beginn ?? '–'}
+      <td className="text-muted-foreground border-b p-0 text-center">
+        <button
+          type="button"
+          aria-label={`Beginn ${eintrag?.beginn ?? 'nicht gesetzt'}, Eintrag ändern`}
+          className={ZEITZELLE_BUTTON}
+          onClick={() => setOffen(true)}
+        >
+          {eintrag?.beginn ?? '–'}
+        </button>
       </td>
-      <td
-        className="text-muted-foreground hover:bg-accent/50 cursor-pointer border-b px-2 py-2 text-center"
-        onClick={() => setOffen(true)}
-      >
-        {eintrag?.ende ?? '–'}
+      <td className="text-muted-foreground border-b p-0 text-center">
+        <button
+          type="button"
+          aria-label={`Ende ${eintrag?.ende ?? 'nicht gesetzt'}, Eintrag ändern`}
+          className={ZEITZELLE_BUTTON}
+          onClick={() => setOffen(true)}
+        >
+          {eintrag?.ende ?? '–'}
+        </button>
       </td>
     </>
   )
@@ -143,7 +153,7 @@ function RufbereitschaftZelle({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="hover:bg-accent/50 flex h-full w-full items-center justify-center px-2 py-2"
+            className="hover:bg-accent focus-visible:bg-accent focus-visible:ring-ring flex h-full w-full items-center justify-center px-2 py-2 outline-none focus-visible:ring-2 focus-visible:ring-inset"
           >
             {teamMember?.name ?? '–'}
             {hatAbweichung && (
@@ -323,8 +333,9 @@ function PlanungsGrid({
                 <th
                   key={member.id}
                   colSpan={3}
-                  className="sticky top-12 z-20 h-8 border-b border-l px-2 align-middle text-sm font-semibold text-white"
-                  style={{ backgroundColor: member.farbe }}
+                  scope="colgroup"
+                  className="sticky top-12 z-20 h-8 border-b border-l border-t-[3px] px-2 align-middle text-sm font-semibold"
+                  style={mitarbeiterSpaltenStil(member.farbe)}
                 >
                   {member.vorname} {member.name}
                 </th>

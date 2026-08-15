@@ -46,9 +46,7 @@ function TeamMemberTable({ members, selectedId, onEdit }: TeamMemberTableProps):
             {members.map((member) => (
               <TableRow
                 key={member.id}
-                className={cn(
-                  member.id === selectedId && 'border-l-primary bg-accent/40 border-l-2'
-                )}
+                className={cn(member.id === selectedId && 'border-l-primary bg-accent border-l-2')}
               >
                 <TableCell>
                   <span
@@ -63,7 +61,12 @@ function TeamMemberTable({ members, selectedId, onEdit }: TeamMemberTableProps):
                 <TableCell>{member.rolle}</TableCell>
                 <TableCell>{formatMinutesToHHMM(member.wochenarbeitszeitMinuten)}</TableCell>
                 <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => onEdit(member)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`${member.vorname} ${member.name} bearbeiten`}
+                    onClick={() => onEdit(member)}
+                  >
                     Bearbeiten
                   </Button>
                 </TableCell>

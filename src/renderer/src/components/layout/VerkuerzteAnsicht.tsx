@@ -4,14 +4,17 @@ import type { Kalendertag } from '../../../../shared/kalendertage'
 import { planeintragSchluessel } from '../../../../shared/planeintragSchluessel'
 import { berechneKennzahlenFuerMitarbeiter, type Kennzahlen } from '../../../../shared/auswertung'
 import { formatMinutesToHHMM } from '../../../../shared/time'
+import {
+  DATUM_SPALTE_BREITE,
+  FEIERTAG_FARBE,
+  RUFBEREITSCHAFT_SPALTE_BREITE,
+  WOCHENENDE_FARBE,
+  formatTagUndMonat,
+  mitarbeiterSpaltenStil
+} from '@/lib/planAnsicht'
 import type { Dienstplantag, PlaneintragSnapshot, TeamMember } from '../../../../shared/types'
 
-const FEIERTAG_FARBE = 'bg-[color-mix(in_oklch,var(--destructive)_12%,var(--card))]'
-const WOCHENENDE_FARBE = 'bg-muted'
-
-const DATUM_SPALTE_BREITE = '8.5rem'
 const MITARBEITER_SPALTE_BREITE = '8rem'
-const RUFBEREITSCHAFT_SPALTE_BREITE = '9rem'
 const BEMERKUNG_SPALTE_MINDESTBREITE = '12rem'
 
 interface VerkuerzteAnsichtProps {
@@ -21,10 +24,6 @@ interface VerkuerzteAnsichtProps {
   planeintraegeEntwurf?: Record<string, PlaneintragSnapshot>
   rufbereitschaftEntwurf?: Record<string, number>
   bemerkungEntwurf?: Record<string, string>
-}
-
-function formatTagUndMonat(datum: string): string {
-  return `${datum.slice(8, 10)}.${datum.slice(5, 7)}.`
 }
 
 function formatPlaneintragZelle(eintrag: PlaneintragSnapshot | undefined): string {
@@ -109,8 +108,9 @@ function VerkuerzteAnsicht({
               {members.map((member) => (
                 <th
                   key={member.id}
-                  className="sticky top-12 z-20 h-8 border-b border-l px-2 align-middle text-sm font-semibold text-white"
-                  style={{ backgroundColor: member.farbe }}
+                  scope="col"
+                  className="sticky top-12 z-20 h-8 border-b border-l border-t-[3px] px-2 align-middle text-sm font-semibold"
+                  style={mitarbeiterSpaltenStil(member.farbe)}
                 >
                   {member.vorname} {member.name}
                 </th>

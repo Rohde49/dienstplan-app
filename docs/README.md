@@ -14,4 +14,5 @@ Zentrale Dokumentation der Dienstplan-Desktop-App, gesammelt außerhalb des Root
   - [`teststrategie.md`](./architektur/teststrategie.md) — welche Testebenen wo und wie
   - [`technologieentscheidungen.md`](./architektur/technologieentscheidungen.md) — Begründung für Electron, SQLite, Zielplattform
   - [`styling.md`](./architektur/styling.md) — Styling-Fundament (Tailwind, shadcn, lucide-react, Typografie), Referenzprojekt und Übertragung auf electron-vite
+  - [`design-system.md`](./architektur/design-system.md) — aktueller Stand der visuellen Sprache: Tokens, Typo-/Abstands-/Elevation-Skalen, Komponenten-Inventar, Barrierefreiheits-Mindestanforderungen, bekannte Abweichungen
 - [`ablaufplaene/`](./ablaufplaene) — je Entwicklungsschritt eine Abfolge einzelner Claude-Code-Prompts (Plan Mode → Umsetzung → Prüfung)
