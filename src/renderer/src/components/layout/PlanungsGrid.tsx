@@ -27,7 +27,7 @@ const WOCHENENDE_FARBE = 'bg-muted'
 const DATUM_SPALTE_BREITE = '8.5rem'
 const UNTERSPALTE_BREITE = '5.5rem'
 const RUFBEREITSCHAFT_SPALTE_BREITE = '9rem'
-const BEMERKUNG_SPALTE_MINDESTBREITE = '12rem'
+const BEMERKUNG_SPALTE_BREITE = '9rem'
 
 interface PlanungsGridProps {
   members: TeamMember[]
@@ -251,7 +251,7 @@ function PlanungsGrid({
               </Fragment>
             ))}
             <col style={{ width: RUFBEREITSCHAFT_SPALTE_BREITE }} />
-            <col style={{ minWidth: BEMERKUNG_SPALTE_MINDESTBREITE }} />
+            <col style={{ width: BEMERKUNG_SPALTE_BREITE }} />
           </colgroup>
           <thead>
             <tr>

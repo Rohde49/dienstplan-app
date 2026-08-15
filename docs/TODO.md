@@ -206,17 +206,9 @@ Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/
 - [x] „Drucken"-Platzhalter-Button
 - [x] Gesamtverifikation (Typecheck/Lint/Test, Screenshot-Vergleich) und Doku-Update — alle drei Checks sauber (167 Tests, unverändert, da rein UI-seitige Wiederverwendung bestehender reiner Funktionen ohne neue Testfälle), Screenshot-Serie im laufenden Fenster über CDP-Skript bestätigt (Dienstplan mit vier Erziehern und einer Wirtschaftskraft, festen und mitarbeiterabhängigen Planeinträgen, zwei Rufbereitschaften und zwei Bemerkungen aufgebaut, mehrfach zwischen „Planung" und „Druckvorschau" hin- und hergeschaltet — alle Werte inkl. Fußzeilen stimmten in jeder Runde exakt mit `PlanungsGrid` überein, keine Daten gingen beim Umschalten verloren)
 
-## Schritt 17: PDF-Export/Druck-Funktion
-
-Aktiviert den bestehenden „Drucken"-Button aus Schritt 16 über den nativen Windows-Druckdialog (`window.print()`), ergänzt die `VerkuerzteAnsicht` um einen dauerhaften Papier-Rahmen, den Dienstplan-Titel und einen Signaturblock „Freigabe und Unterschrift", und sorgt über eine dynamisch bei Druckbeginn berechnete Skalierung dafür, dass der gesamte Dienstplan unabhängig von Mitarbeiter-/Tagesanzahl auf eine A4-Seite im Hochformat passt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt17-pdf-export-druck.md`](./ablaufplaene/schritt17-pdf-export-druck.md).
-
-- [ ] Papier-Rahmen, Titel und Signaturblock in `VerkuerzteAnsicht`
-- [ ] Reine Skalierungsfunktion (`berechneDruckSkalierungsfaktor`) inkl. Unit-Tests
-- [ ] Print-Stylesheet und dynamische Skalierung verdrahten (`beforeprint`/`afterprint`)
-- [ ] „Drucken"-Button aktivieren
-- [ ] Gesamtverifikation (Typecheck/Lint/Test, manueller PDF-Export-Vergleich) und Doku-Update
-
 ## Geplante nächste Schritte (grober Fahrplan, noch nicht im Detail geplant)
 
-Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15/16/17. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+Werden nacheinander aufgebaut, jeweils mit eigenem Ablaufplan (siehe `ablaufplaene/`), analog zu Schritt 4/5/6/7/8/9/10/11/12/13/14/15/16. Reihenfolge und Zuschnitt können sich beim Detailplanen des jeweiligen Schritts noch verschieben.
+
+- [ ] PDF-Export Funktion für verkürzte Ansicht
 - [ ] Packaging mit `electron-builder` (Windows-Installer)
