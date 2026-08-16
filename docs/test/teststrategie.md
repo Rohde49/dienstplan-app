@@ -1,5 +1,7 @@
 # Teststrategie
 
+**Welche Ebene wofür zuständig ist.** Wie ein Test in diesem Projekt konkret geschrieben wird, steht in [`testpraxis.md`](./testpraxis.md); bekannte, absichtlich rot markierte Mängel stehen in [`offene-maengel.md`](./offene-maengel.md).
+
 Fünf Ebenen, von unten nach oben immer weniger Fälle. Jede Ebene hat genau eine Zuständigkeit — wenn eine Frage auf einer unteren Ebene beantwortet werden kann, gehört sie auch dorthin, weil die Tests dort schneller, stabiler und aussagekräftiger sind.
 
 | Ebene | Zuständig für                                         | Werkzeug                            | Ausführung         | Fälle     |
@@ -40,13 +42,9 @@ Gerendert wird die echte Seite mit ihren echten Kindkomponenten; ersetzt wird au
 
 **Das `window.api`-Fake** ([`src/test/apiFake.ts`](../../src/test/apiFake.ts)) hält die Daten im Speicher und verhält sich fachlich wie die echten Handler. Sein Rückgabetyp ist der aus [`src/preload/index.d.ts`](../../src/preload/index.d.ts) exportierte Typ `API`: Ändert sich dort eine Signatur, schlägt `npm run typecheck` im Fake fehl. Der Vertrag zwischen Renderer und Main wird damit vom Compiler bewacht statt von Disziplin. (Grenze: Ein rein zusätzlicher hinterer Parameter fällt nicht auf, weil TypeScript Funktionen mit weniger Parametern zulässt — diesen Fall fängt der aufrufende Anwendungscode ab.)
 
-**Bedienung ausschließlich über zugängliche Rollen und Beschriftungen**, nie über CSS-Klassen oder Testids. Das ist keine Stilfrage: Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht — die Barrierefreiheits-Mindestanforderungen aus [`design-system.md`](./design-system.md) werden dadurch nebenbei mitgeprüft.
-
-**Testdaten** kommen aus den Fabriken in [`src/test/factories.ts`](../../src/test/factories.ts) (sinnvoller Standardfall plus punktuelle Overrides). Ein Test nennt damit nur die Felder, um die es ihm geht; kommt ein Pflichtfeld zur Entität hinzu, ist genau eine Stelle anzupassen.
+**Bedienung ausschließlich über zugängliche Rollen und Beschriftungen**, nie über CSS-Klassen oder Testids. Das ist keine Stilfrage: Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht — die Mindestanforderungen aus [`../style/barrierefreiheit.md`](../style/barrierefreiheit.md) werden dadurch nebenbei mitgeprüft.
 
 **Dateiendungen entscheiden über die Umgebung**: `.test.tsx` und `.dom.test.ts` laufen in jsdom, alles andere in Node. Ein DOM kostet pro Testdatei spürbar Startzeit — deshalb nur dort, wo er gebraucht wird. Die reinen Funktionen unter `renderer/src/lib/` bleiben bewusst auf Ebene 1.
-
-**jsdom-Lücken**: Pointer-Capture-API und `scrollIntoView` fehlen in jsdom; die Radix-Primitives rufen beides beim Öffnen auf. [`src/test/setup.renderer.ts`](../../src/test/setup.renderer.ts) füllt das zentral auf — eine Lücke der Testumgebung, kein Mangel der Komponenten.
 
 **Gehört nicht hierher**: Fachregeln (Ebene 1) und SQL (Ebene 2). Ein Komponententest prüft, ob die Oberfläche das Ergebnis richtig anzeigt und weiterreicht, nicht ob das Ergebnis stimmt.
 
@@ -94,33 +92,6 @@ Manuell bleibt danach nur noch, dass der Dialog überhaupt aufgeht und ein reale
 
 ---
 
-## Konventionen
-
-| Thema           | Regel                                                                                                        |
-| --------------- | ------------------------------------------------------------------------------------------------------------ |
-| Ablage          | Testdatei liegt neben dem geprüften Modul (`x.ts` ↔ `x.test.ts`), E2E getrennt unter `e2e/`                  |
-| Benennung       | Deutsch, beschreibt das Verhalten: „gibt eine leere Liste zurück, wenn noch kein Mitarbeiter angelegt wurde" |
-| Aufbau          | Arrange/Act/Assert, ohne die Abschnitte zu kommentieren                                                      |
-| Testdaten       | Fabriken statt Objektliteralen, nur die relevanten Felder nennen                                             |
-| Imports         | `describe`/`it`/`expect` explizit aus `vitest` (kein `globals: true`)                                        |
-| Bekannte Mängel | `it.fails` mit Begründung und Verweis auf den behebenden Schritt — nie ein auskommentierter Test             |
-
-### Gegenproben
-
-Ein Test, der nie fehlschlägt, ist kein Prüfsignal. Nach dem Schreiben eines Tests, der eine neue Fehlerklasse abdecken soll, wird die geprüfte Eigenschaft einmal absichtlich verletzt und bestätigt, dass der Test rot wird — danach wird die Verletzung zurückgenommen. Für die Ebenen 3 und 4 ist das beim Aufbau geschehen und in den jeweiligen Testdateien vermerkt.
-
-### `it.fails` für bekannte Mängel
-
-`it.fails` kehrt die Erwartung um: Der Test gilt als bestanden, solange er fehlschlägt, und **schlägt fehl, sobald er bestehen würde**. Das ist der richtige Platz für einen Mangel, der bekannt ist und dessen Behebung geplant ist: Die Suite bleibt grün, der Mangel ist dokumentiert statt vergessen, und der Test kann nicht stillschweigend veralten — sobald die Behebung greift, erzwingt der Fehlschlag das Entfernen der Markierung.
-
-Aktuell so markiert: die Vollständigkeit der Druckseite (der letzte Tag des Monats fehlt heute in der Ausgabe, weil die Ansicht aus Schritt 16 ein Scrollcontainer ist). Wird mit Schritt 17 behoben.
-
-### Coverage
-
-`npm run test:coverage` erzeugt einen Bericht. Er dient dem Auffinden blinder Flecken, **nicht** als Zielwert — eine Prozentzahl sagt nichts darüber, ob die richtigen Dinge geprüft werden. Die shadcn-Primitives unter `components/ui/` sind ausgenommen, sie sind übernommener Fremdcode.
-
----
-
 ## Bewusst nicht getestet
 
 | Bereich                      | Begründung                                                                            |
@@ -134,14 +105,10 @@ Aktuell so markiert: die Vollständigkeit der Druckseite (der letzte Tag des Mon
 
 ---
 
-## Vorgeschichte: Screenshot-Vergleich
+## Ein Screenshot ist kein Test
 
-Bis zur Einführung von Ebene 3 und 5 gab es keine automatisierten UI-Tests. Stattdessen wurde die Oberfläche über Screenshots geprüft, in drei Ausbaustufen:
+Bis zur Einführung von Ebene 3 und 5 wurde die Oberfläche über Screenshots geprüft, in drei aufeinanderfolgenden Ausbaustufen (von Hand, dann `playwright-core --no-save`, zuletzt ein CDP-Skript gegen `--remoteDebuggingPort`; Verlauf im [Tagebuch](../tagebuch/2026-kw33.md)).
 
-1. **Schritt 1**: Screenshots von Hand (Fenster- und IPC-Test bestätigt)
-2. **Schritte 4/5**: `playwright-core` temporär per `npm install --no-save` installiert, die gebaute App über die `_electron`-API bedient, danach wieder deinstalliert
-3. **Ab Schritt 6**: `electron-vite dev --remoteDebuggingPort 9222` plus ein Node-Skript gegen das Chrome-DevTools-Protocol (`Runtime.evaluate`, `Page.captureScreenshot`), ohne zusätzliche Abhängigkeit
+Alle drei sind **abgelöst**, und der Grund gilt weiterhin: Keines der Verfahren lag im Repository, keines lief wiederholbar, keines schlug fehl, wenn etwas kaputtging. Es waren Hilfsmittel zur Sichtprüfung, kein Testtyp. Wenn eine Prüfung nur bemerkt wird, solange jemand hinsieht, ist sie keine.
 
-Diese Verfahren sind **abgelöst**. Keines lag im Repository, keines lief wiederholbar, keines schlug fehl, wenn etwas kaputtging — es waren Hilfsmittel zur Sichtprüfung, kein Testtyp. Ebene 5 leistet dasselbe dauerhaft und prüfbar, insbesondere für die Druckausgabe.
-
-Für eine schnelle Sichtprüfung während der Entwicklung bleibt der Weg über die laufende Dev-Instanz weiter sinnvoll. Dabei gilt unverändert: **nicht bei jeder Prüfung eine neue Dev-Instanz starten**, sondern die ohnehin laufende weiterverwenden — beim Aufräumen mehrerer paralleler Instanzen besteht sonst das reale Risiko, die Instanz des Nutzers mit zu beenden (`Get-Process electron | Select Id, StartTime` hilft bei der Zuordnung). Für reine Renderer-Änderungen ohne Layout-Risiko genügt oft `npm run typecheck`/`npm run lint` plus Sichtprüfung im ohnehin offenen Fenster, da Vite-HMR automatisch aktualisiert.
+Für die schnelle Sichtprüfung während der Entwicklung bleibt der Weg über die laufende Dev-Instanz richtig — die Regeln dafür stehen in [`testpraxis.md`](./testpraxis.md).

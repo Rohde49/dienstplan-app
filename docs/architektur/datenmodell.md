@@ -1,19 +1,25 @@
 # Datenmodell
 
-Entitäten liegen in `shared/types.ts`, siehe [`projektstruktur.md`](./projektstruktur.md). Dieses Dokument hält die inhaltlichen Entscheidungen zu den einzelnen Entitäten fest, nicht nur die Struktur.
+Die inhaltlichen Entscheidungen zu den einzelnen Entitäten: warum ein Feld so aussieht, wie es aussieht. Die Typen selbst liegen in [`src/shared/types.ts`](../../src/shared/types.ts), ihre Einordnung in die Ordnerstruktur in [`projektstruktur.md`](./projektstruktur.md).
 
-## Geplante Entitäten
+## Entitäten im Überblick
 
-Die App bildet nur ein einzelnes Team ab, deshalb gibt es keine eigene `Team`-Entität. Geplant sind aktuell:
+Die App bildet nur ein einzelnes Team ab, deshalb gibt es keine eigene `Team`-Entität. Alle sechs Entitäten sind inzwischen als Typ **und** als SQLite-Tabelle umgesetzt:
 
-- `TeamMember` (umgesetzt, siehe unten)
-- `Eintragsdefinition` (entworfen, siehe unten, ehemals als `ShiftType` bezeichnet)
-- `Dienstplan` (entworfen, siehe unten)
-- `Dienstplantag` (entworfen, siehe unten)
-- `Planeintrag` (entworfen, siehe unten, ehemals als `PlanEntry` bezeichnet)
-- `Rufbereitschaft` (entworfen, siehe unten)
+| Entität              | Tabelle                | Eindeutig über                               | Früherer Name |
+| -------------------- | ---------------------- | -------------------------------------------- | ------------- |
+| `TeamMember`         | `team_members`         | `id`                                         | —             |
+| `Eintragsdefinition` | `eintragsdefinitionen` | `id` (`kuerzel` bewusst **nicht** eindeutig) | `ShiftType`   |
+| `Dienstplan`         | `dienstplaene`         | `id` (mehrere Pläne je Monat zulässig)       | —             |
+| `Dienstplantag`      | `dienstplantage`       | `id`                                         | —             |
+| `Planeintrag`        | `planeintraege`        | `UNIQUE (dienstplantagId, teamMemberId)`     | `PlanEntry`   |
+| `Rufbereitschaft`    | `rufbereitschaften`    | `UNIQUE (dienstplantagId)`                   | —             |
 
 Weitere Entitäten sind bewusst zurückgestellt und werden erst bei Bedarf ergänzt. Zusätzlich zu den Entitäten gibt es fachliche Regeln, die mehrere Entitäten verbinden (siehe [„Fachliche Regeln"](#fachliche-regeln)), sowie durchgängige Darstellungs- und Speicherkonventionen (siehe [„Konventionen"](#konventionen)).
+
+Neben den Entitäten stehen in `shared/types.ts` vier abgeleitete Hilfstypen, die keine eigene Tabelle haben und nur den Weg durch die IPC-Grenze beschreiben: `PlaneintragSnapshot` (ein `Planeintrag` ohne `id` und Fremdschlüssel) sowie `PlaneintragAenderung`, `RufbereitschaftAenderung` und `BemerkungAenderung` — die drei Änderungslisten, die der Renderer beim Speichern übergibt (`null` bedeutet jeweils „entfernen").
+
+**Fremdschlüssel sind dokumentiert, aber nicht erzwungen.** Die `REFERENCES`-Klauseln stehen im Schema, `PRAGMA foreign_keys` ist jedoch nicht eingeschaltet — SQLite prüft sie deshalb nicht. Referenzielle Integrität stellt ausschließlich der Anwendungscode her (Verwendungsprüfung beim Löschen eines `TeamMember`, kaskadierende Transaktion beim Löschen eines `Dienstplan`). Wer eine dieser Regeln ändert, kann sich nicht auf die Datenbank als zweites Netz verlassen.
 
 ## TeamMember
 
@@ -36,24 +42,29 @@ interface TeamMember {
 
 **`wochenarbeitszeitMinuten` als Zahl in Minuten**: Zeitwerte werden in der gesamten App im Format HH:MM dargestellt und eingegeben, das betrifft aber nur Anzeige und Eingabe. Intern wird die Wochenarbeitszeit als Minutenzahl gespeichert (z. B. 39h = 2340), weil spätere Berechnungen (Soll-/Ist-Vergleich, Summenbildung über einen Monat) mit einer Zahl fehlerfrei möglich sind, während ein String wie `"39:00"` bei jeder Rechnung neu geparst werden müsste. Die Umrechnung HH:MM ↔ Minuten erfolgt an der UI-Grenze (Renderer).
 
-**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Palette in Schritt 2 zusammen mit der Theme-Farbpalette entschieden (siehe [`styling.md`](./styling.md)): zehn kräftige, gut unterscheidbare Farbtöne, bewusst getrennt vom neutralen Theme-Akzent — kein Grauton (für UI-Chrome reserviert) und keine zu große Nähe zum `--destructive`-Rotton (um Verwechslung mit Fehler-/Lösch-Zuständen zu vermeiden):
+**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Zehn kräftige, gut unterscheidbare Farbtöne, bewusst getrennt vom Theme-Akzent — kein Grauton (für UI-Chrome reserviert) und keine zu große Nähe zum `--destructive`-Rotton (um Verwechslung mit Fehler-/Lösch-Zuständen zu vermeiden). Herleitung der Palette siehe [`../style/grundlagen.md`](../style/grundlagen.md), ihre Darstellung im Raster siehe [`../style/design-system.md`](../style/design-system.md).
+
+**Der Farbname gehört zur Datenstruktur, nicht in einen Kommentar.** Die Palette liegt deshalb als Objektliste vor, nicht als Liste von Hex-Werten — die Farbauswahl braucht den Namen als Beschriftung, sonst sagt der Screenreader den Hex-Code an und die Auswahl ist rein farblich erkennbar:
 
 ```typescript
-export const TEAM_MEMBER_COLORS = [
-  '#3A8DFF', // Blau
-  '#34B37A', // Grün
-  '#F2994A', // Orange
-  '#9B6BDE', // Violett
-  '#2FB6C4', // Türkis
-  '#E15A97', // Pink
-  '#C9A227', // Oliv-Gelb
-  '#5C6BC0', // Indigo
-  '#C1662F', // Terrakotta
-  '#7FB236' // Lindgrün
+export const TEAM_MEMBER_FARBEN = [
+  { wert: '#3A8DFF', name: 'Blau' },
+  { wert: '#34B37A', name: 'Grün' },
+  { wert: '#F2994A', name: 'Orange' },
+  { wert: '#9B6BDE', name: 'Violett' },
+  { wert: '#2FB6C4', name: 'Türkis' },
+  { wert: '#E15A97', name: 'Pink' },
+  { wert: '#C9A227', name: 'Oliv-Gelb' },
+  { wert: '#5C6BC0', name: 'Indigo' },
+  { wert: '#C1662F', name: 'Terrakotta' },
+  { wert: '#7FB236', name: 'Lindgrün' }
 ] as const
+
+export const TEAM_MEMBER_COLORS = TEAM_MEMBER_FARBEN.map((farbe) => farbe.wert)
+export function teamMemberFarbName(wert: string): string
 ```
 
-Die Werte sind hiermit final. Der Code-Ort (`shared/types.ts`, als exportierte Konstante, die Main und Renderer gemeinsam nutzen) folgt dem in [`projektstruktur.md`](./projektstruktur.md) festgelegten Ablauf: `shared/types.ts` und die `TeamMember`-Entität werden erst bei der tatsächlichen Umsetzung der Team-Verwaltung angelegt, nicht vorab auf Vorrat.
+`TEAM_MEMBER_COLORS` ist die daraus abgeleitete reine Wertliste und bleibt der Prüfwert für die Validierung; `teamMemberFarbName()` liefert den Namen zu einem Wert. Die zehn Werte selbst sind final.
 
 ## Eintragsdefinition
 
@@ -189,7 +200,9 @@ interface Rufbereitschaft {
 
 **Keine eigenen fachlichen Attribute außer den Fremdschlüsseln**: Der Tag und die eingeteilte Person ergeben sich vollständig aus `dienstplantagId` und `teamMemberId`. Eine leere/keine Zuordnung bedeutet „keine Rufbereitschaft an diesem Tag" und wird durch das Fehlen einer Zeile abgebildet, nicht durch einen Nullwert in einer Spalte.
 
-**Nur `TeamMember` mit `rolle: 'Erzieher'` zulässig**: Fachliche Regel, die über die reine Typstruktur (`teamMemberId: number`) hinausgeht. Muss sowohl in der Auswahl-UI (Dropdown nur mit Erziehern) als auch bei der Verarbeitung im Main-Prozess geprüft werden, nicht nur clientseitig, siehe [`projektstruktur.md`](./projektstruktur.md) zur Trennung von Fachlogik und Darstellungslogik.
+**Nur `TeamMember` mit `rolle: 'Erzieher'` zulässig**: Fachliche Regel, die über die reine Typstruktur (`teamMemberId: number`) hinausgeht.
+
+> ⚠️ Zu prüfen: Diese Regel ist nur in der Auswahl-UI umgesetzt (`RufbereitschaftAuswahl` filtert die Liste auf Erzieher). Der Main-Prozess prüft sie nicht — ursprünglich stand hier, sie „muss auch bei der Verarbeitung im Main-Prozess geprüft werden", was den Code nie beschrieben hat. Praktisch folgenlos, solange die UI die einzige Eingabequelle ist; festgehalten in [`../test/offene-maengel.md`](../test/offene-maengel.md).
 
 **Höchstens eine Rufbereitschaft pro Kalendertag**: Anders als bei `Planeintrag` ist hier `dienstplantagId` allein eindeutig (`UNIQUE`), nicht die Kombination mit `teamMemberId` — pro Tag ist unabhängig von der Person nur eine einzige Rufbereitschaft zulässig.
 
@@ -217,7 +230,8 @@ Regeln, die mehrere Entitäten verbinden und sich nicht allein als Kardinalität
 Durchgängige Regeln für die Darstellung und Speicherung, die für mehrere Entitäten gleichermaßen gelten:
 
 - **Zeitpunkte** (z. B. `beginn`/`ende` bei `Eintragsdefinition` und `Planeintrag`) werden als Uhrzeit im Format `"HH:MM"` geführt, auch intern — keine Umrechnung in Minuten.
-- **Zeitdauern** (z. B. `wochenarbeitszeitMinuten`, `anwesenheitszeitMinuten`, `arbeitszeitMinuten`) werden intern durchgängig in Minuten geführt. Das Format Stunden:Minuten (z. B. `"6:30"` für sechseinhalb Stunden) wird nur für Darstellung und Eingabe verwendet, über die in Schritt 4 angelegten Funktionen `parseHHMMToMinutes`/`formatMinutesToHHMM`.
+- **Zeitdauern** (z. B. `wochenarbeitszeitMinuten`, `anwesenheitszeitMinuten`, `arbeitszeitMinuten`) werden intern durchgängig in Minuten geführt. Das Format Stunden:Minuten (z. B. `"6:30"` für sechseinhalb Stunden) wird nur für Darstellung und Eingabe verwendet, über `parseHHMMToMinutes`/`formatMinutesToHHMM` aus [`src/shared/time.ts`](../../src/shared/time.ts).
+- **Rundung an einer Stelle**: `rundeAufVolleMinute()` in [`src/shared/rundeAufVolleMinute.ts`](../../src/shared/rundeAufVolleMinute.ts) ist die einzige Umsetzung der Rundungsregel unten und wird von der mitarbeiterabhängigen Arbeitszeit, der Soll-Arbeitszeit und beiden Zuschlägen gemeinsam genutzt.
 - **Rundung**: Berechnete Zeitdauern (z. B. `arbeitszeitMinuten` bei mitarbeiterabhängigen Einträgen, Soll-Arbeitszeit) werden auf die nächstgelegene volle Minute gerundet, eine exakte halbe Minute wird aufgerundet.
 - **Datumsangaben** (z. B. `Dienstplantag.datum`) werden im Format `"JJJJ-MM-TT"` geführt.
 - **Zeitstempel** (z. B. `Dienstplan.erstelltAm`/`geaendertAm`) werden als ISO-Zeichenkette geführt.
@@ -226,4 +240,9 @@ Durchgängige Regeln für die Darstellung und Speicherung, die für mehrere Enti
 
 ## Offen
 
-Keine offenen Modellierungsfragen mehr für `TeamMember`, `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag` und `Rufbereitschaft`. Die aus früheren Notizen übernommene „Berechnete Kennzahlen"-Auswertung ist bewusst nicht Teil dieses Dokuments, da sie keine eigene Entität einführt, sondern eine abgeleitete Auswertung über die bestehenden Entitäten ist, siehe [`auswertung.md`](./auswertung.md).
+Keine offenen Modellierungsfragen. Alle sechs Entitäten sind entworfen, als Typ angelegt und an SQLite angebunden.
+
+Zwei Punkte sind bewusst **nicht** Teil dieses Dokuments:
+
+- Die **berechneten Kennzahlen** führen keine eigene Entität ein, sondern leiten alles aus den bestehenden Datensätzen ab — siehe [`auswertung.md`](./auswertung.md).
+- Ein **„inaktiv"-Status** für ausgeschiedene Mitarbeiter existiert nicht. Da das Löschen eines `TeamMember` blockiert wird, sobald er in einem `Planeintrag` oder einer `Rufbereitschaft` vorkommt, lässt sich praktisch nur entfernen, wer nie eingeteilt war. Diese Nebenwirkung ist bekannt und wurde beim Entwurf der Löschfunktion offen benannt; ein Status-Feld wäre das passendere Werkzeug, ist aber nie beauftragt worden.

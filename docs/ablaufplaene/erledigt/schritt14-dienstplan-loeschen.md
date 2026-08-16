@@ -1,5 +1,7 @@
 # Ablaufplan Schritt 14: Dienstplan löschen
 
+> **Abgeschlossen am 13.08.2026** (Commit `a349637`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+
 Annahme zum Umfang: Löschen eines `Dienstplan` inklusive aller zugehörigen `Dienstplantag`-, `Planeintrag`- und `Rufbereitschaft`-Datensätze, ausschließlich über die bestehende Laden-Liste (`DienstplanLadenDialog`), nicht über einen Button im Kopfbereich der `PlanungsPage`. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Design-Entscheidungen (Referenz für alle Punkte unten)

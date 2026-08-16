@@ -1,55 +1,71 @@
 # Projektstruktur
 
-Grundprinzip: Die Trennung zwischen Main-Prozess (Node.js, Zugriff auf Dateisystem/SQLite) und Renderer (React, reine UI) gibt Electron bereits architektonisch vor. Die Frage ist nur, wie der Main-Prozess intern gegliedert wird.
+Wo welcher Code liegt und warum. Die Trennung zwischen Main-Prozess (Node.js, Dateisystem und SQLite) und Renderer (React, reine Darstellung) gibt Electron architektonisch vor — die Regeln für diese Grenze stehen in [`prozessgrenzen.md`](./prozessgrenzen.md). Hier geht es um die Gliederung innerhalb der Prozesse.
 
-## Geplante Ordnerstruktur
+Diese Datei ist zweimal hinter dem Code zurückgeblieben, weil sie den Stand in Prosa beschrieb. Sie führt deshalb bewusst nur noch **Ordner und Zuständigkeiten**, keine Dateilisten, die mit jedem Schritt altern.
 
-Ursprüngliche Skizze vor der Umsetzung von Schritt 4, unten unter „Aktueller Stand" mit den tatsächlichen Abweichungen:
+## Ordner und ihre Zuständigkeit
 
-```
-src/
-  main/
-    db/
-      index.ts           # Connection, Schema/Migrationen
-      teamRepository.ts   # Fachlogik + Zugriff für Team-Entitäten
-      planRepository.ts   # Fachlogik + Zugriff für Plan-Entitäten
-    ipc/
-      teamHandlers.ts     # ipcMain.handle(...) registriert Repository-Funktionen
-      planHandlers.ts
-  preload/
-    index.ts              # exponiert typisierte API Richtung Renderer
-  renderer/src/
-    pages/                # StartPage, TeamPage, PlanPage
-    components/           # wiederverwendbare UI-Bausteine
-  shared/
-    types.ts              # Entitäten: TeamMember, ShiftType, PlanEntry, IPC-Vertrag
-```
+| Ordner                                | Zuständig für                                                    | Darf importieren                          |
+| ------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------- |
+| `src/main/`                           | Main-Prozess: Fenster, App-Lebenszyklus, DB-Verbindung           | `electron`, `better-sqlite3`, `shared/`   |
+| `src/main/db/`                        | ein Repository je Fachbereich, gesamter SQL-Zugriff              | `shared/`, **nicht** `../db`              |
+| `src/main/ipc/`                       | ein Handler-Modul je Fachbereich, Verdrahtung Repository ↔ Kanal | `electron`, `../db`, `../db/*`, `shared/` |
+| `src/preload/`                        | Brücke: `index.ts` exponiert, `index.d.ts` typisiert den Vertrag | `electron`, `shared/`                     |
+| `src/shared/`                         | Entitäten und **plattformunabhängige** reine Funktionen          | nichts Prozessgebundenes                  |
+| `src/renderer/src/pages/`             | eine Datei je Route, hält den Seitenzustand                      | alles im Renderer, `shared/`              |
+| `src/renderer/src/components/ui/`     | shadcn-Primitives, fachlich unwissend                            | nur `lib/utils`, Radix                    |
+| `src/renderer/src/components/layout/` | seitenübergreifende Layout-Bausteine                             | siehe Abweichung unten                    |
+| `src/renderer/src/components/`        | fachspezifische Komponenten eines einzelnen Bereichs             | alles im Renderer, `shared/`              |
+| `src/renderer/src/lib/`               | reine Funktionen, die **nur** der Renderer braucht               | `shared/`                                 |
+| `src/renderer/src/assets/`            | globale CSS-Dateien und Bilder                                   | —                                         |
+| `src/test/`                           | Testhilfen für alle Ebenen (kein Produktivcode)                  | alles                                     |
+| `e2e/`                                | Playwright-Tests gegen die **gebaute** App                       | `playwright`, `pdfjs-dist`                |
 
-### Aktueller Stand (nach Schritt 6)
+Die Dreiteilung von `components/` (`ui/` – `layout/` – fachspezifisch) hat sich ab dem zweiten Fachbereich als tragfähig erwiesen und gilt seitdem als Muster für weitere Bereiche.
 
-- `src/main/db.ts` blieb als eigenständige Datei bestehen (Connection, Schema-Smoke-Test), wurde nicht nach `db/index.ts` verschoben. `src/main/db/teamRepository.ts` und `src/main/db/eintragsdefinitionRepository.ts` existieren daneben, je ein IPC-Handler-Modul in `src/main/ipc/` (`teamHandlers.ts`, `eintragsdefinitionHandlers.ts`). Kein Umbau vorgesehen, nur zur Klarstellung, dass sich die Skizze und die Umsetzung hier unterscheiden.
-- `renderer/src/pages/` enthält zusätzlich `EintraegePage` — seit Schritt 5 vollständig umgesetzt (Liste, Anlegen, Bearbeiten), kein Platzhalter mehr. Die ursprüngliche Skizze kannte ohnehin nur drei Seiten, siehe `entwicklungstagebuch.md`. Seit Schritt 6 ist auch `PlanPage` kein leerer Platzhalter mehr, sondern das Gerüst der Planungsansicht (Kopfbereich, Kalendertage-Grid) — Setzen von `Planeintrag`/`Rufbereitschaft` folgt erst in einem späteren Schritt (siehe `TODO.md`).
-- `renderer/src/components/` hat sich in drei Kategorien ausdifferenziert, die sich mit Schritt 5 (zweiter Fachbereich) als tragfähig bestätigt haben: `components/ui/` für shadcn-Primitives (aktueller Stand: `Card`, `Button`, `Input`, `Label`, `Select`, `Table`, `Collapsible`), `components/layout/` für seitenübergreifende, fachlich unwissende Layout-Bausteine (`ManagementHeader`, `ManagementLayout` für Team-Verwaltung, `StackedManagementLayout` für Eintrag-Verwaltung, seit Schritt 6 zusätzlich `PlanungsGrid` für die Planungstabelle — Details und Abgrenzung siehe `entwicklungstagebuch.md`), und fachspezifische Komponenten direkt unter `components/` (`TeamMemberForm.tsx`/`TeamMemberTable.tsx`, `EintragsdefinitionForm.tsx`/`EintragsdefinitionTable.tsx`). Diese Dreiteilung gilt damit als etabliertes Muster für künftige Fachbereiche, nicht mehr nur als einmalige Beobachtung aus Schritt 4.
-- `renderer/src/lib/` enthält seit Schritt 6 zusätzlich `kalendertage.ts` (`getKalendertageFuerMonat`, reine Funktion inkl. Feiertagsberechnung nach Brandenburgischem Feiertagsgesetz, unit-getestet).
-- `shared/types.ts` enthält weiterhin nur `TeamMember`/`TEAM_MEMBER_COLORS` und `Eintragsdefinition` (Code) — die übrigen entworfenen Entitäten `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft` (siehe [`datenmodell.md`](./datenmodell.md)) sind weiterhin nur dokumentiert, noch nicht als Code angelegt. Schritt 6 baute bewusst nur das Anzeige-Gerüst der Planungsansicht (inkl. UI-Platzhalter für spätere Monats-Kennzahlen in `PlanungsGrid`), ohne diese Entitäten anzulegen — folgt erst beim Setzen von `Planeintrag`/`Rufbereitschaft` (siehe „Geplante nächste Schritte" in `TODO.md`). Der „IPC-Vertrag" aus der ursprünglichen Skizze liegt in der Praxis nicht in `shared/types.ts`, sondern in `preload/index.d.ts` (typisierte `window.api`-Deklaration, `api.team` und `api.eintragsdefinition` als Beispiele) — `shared/types.ts` enthält nur die reinen Entitäten/Konstanten.
+## `shared/` oder `renderer/src/lib/`?
 
-## Wo was hingehört
+Beides sind Ordner für reine Funktionen; sie unterscheiden sich nur darin, wer sie braucht.
 
-**Fachlogik** (Validierung, Berechnung, Regeln wie "keine Nachtschicht nach Spätschicht") gehört in den Main-Prozess, dicht bei den Repositories, nicht in die React-Komponenten.
+| Frage                                            | Ablage                   |
+| ------------------------------------------------ | ------------------------ |
+| Braucht der Main-Prozess die Funktion auch?      | `src/shared/`            |
+| Nur der Renderer, und sie kennt keine React-API? | `src/renderer/src/lib/`  |
+| Sie liest oder rendert DOM?                      | gehört in die Komponente |
 
-**Darstellungslogik** (Renderer) sollte möglichst "dumm" bleiben: Daten über die Preload-API abrufen, anzeigen, Formulareingaben zurückschicken. Wenn eine React-Komponente anfängt, fachliche Regeln selbst zu prüfen statt nur Anzeigezustand zu verwalten, ist das ein Signal, die Logik zurück in den Main-Prozess bzw. eine gemeinsame Funktion zu ziehen.
+Ein Import aus `shared/` zurück nach `renderer/src/lib/` ist ausgeschlossen: Der `typecheck:node`-Lauf schließt `renderer/` bewusst nicht ein und würde brechen. Die Richtung ist deshalb immer `renderer → shared`, nie umgekehrt. Aus genau diesem Grund sind mehrere Funktionen im Lauf des Projekts von `lib/` nach `shared/` gewandert (Kalendertage, Zeitformatierung, Planeintrag-Schlüssel, Rundung) — jeweils per `git mv`, sobald der Main-Prozess sie ebenfalls brauchte.
 
-**Entitäten** gehören in `shared/types.ts`: zentrale Interfaces (`TeamMember`, `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft`, siehe [`datenmodell.md`](./datenmodell.md)), die sowohl Main als auch Renderer importieren. Das ist der einzige "Wahrheitsort" für die Datenstruktur, verhindert, dass Main und Renderer mit leicht unterschiedlichen Annahmen über dieselbe Sache arbeiten.
+`shared/types.ts` ist ausschließlich für Entitäten und Konstanten da. Plattformunabhängige Funktionen bekommen eine eigene Datei daneben, sie werden nicht in `types.ts` angehängt.
 
-## Inkrementelles Vorgehen ohne SQLite zu verwerfen
+## Wo Fachlogik liegt
 
-Die SQLite-Anbindung ist bereits fertig, getestet und funktioniert (siehe TODO.md, Schritt 1). Sie gegen eine JSON-/Property-Datei auszutauschen, um sie später zurückzubauen, wäre doppelte Arbeit ohne echten Gewinn.
+**Fachlogik gehört in reine Funktionen, nicht in Komponenten.** Sobald eine React-Komponente anfängt, fachliche Regeln selbst zu prüfen statt nur Anzeigezustand zu verwalten, gehört die Regel in eine Funktion unter `shared/` oder `lib/`. Das ist die Voraussetzung dafür, dass Ebene 1 der [Teststrategie](../test/teststrategie.md) überhaupt so tragfähig ist.
 
-Stattdessen: Repository-Funktionen als schmale Schnittstelle definieren (z. B. `getTeamMembers(): TeamMember[]`, `addTeamMember(data): void`) und diese Funktionen anfangs mit fest codierten Testdaten im Speicher zurückgeben lassen, bevor die echte SQL-Abfrage dahintersteht. Die UI wird gegen diese Funktionssignatur gebaut, nicht gegen die Datenbank direkt. Wenn die Repository-Funktion später auf echtes SQL umgestellt wird, ändert sich für den Renderer nichts.
+**Der Renderer bleibt trotzdem „dumm" gegenüber Daten**: Er ruft über die Preload-API ab, zeigt an und schickt Formulareingaben zurück. Er baut keine SQL-Abfragen und kennt `better-sqlite3` nicht.
 
-Damit ergibt sich folgende Reihenfolge für neue Fachbereiche:
+> ⚠️ Zu prüfen: Eine frühere Fassung dieser Datei verlangte, Fachlogik gehöre „in den Main-Prozess, dicht bei den Repositories". Das beschreibt den Code nicht: Sämtliche Validierung (`validateTeamMember`, `validateEintragsdefinition`, `validateBemerkung`) liegt im Renderer, die Berechnungen liegen in `shared/`, und der Main-Prozess validiert **nichts**. Für die Kennzahlen ist das eine bewusste Entscheidung (sie müssen live aus dem noch ungespeicherten Entwurf rechnen, den der Main-Prozess nicht kennt). Für die Eingabevalidierung ist es keine Entscheidung, sondern gewachsen — siehe den Eintrag in [`../test/offene-maengel.md`](../test/offene-maengel.md).
+
+## Reihenfolge für einen neuen Fachbereich
+
+Die Repository-Funktionen sind die Naht, an der die UI vom SQL entkoppelt wird: Die UI wird gegen die Funktionssignatur gebaut, nicht gegen die Datenbank. Wird die Funktion später auf echtes SQL umgestellt, ändert sich für den Renderer nichts.
 
 1. Entität(en) in `shared/types.ts` entwerfen
-2. Repository-Funktionssignaturen festlegen, zunächst mit Testdaten gefüllt
-3. UI gegen die Repository-Funktionen bauen
-4. Repository-Funktionen an die echte SQLite-Anbindung anschließen
+2. Reine Funktionen (Validierung, Berechnung) anlegen — mit Tests, bevor irgendeine UI existiert
+3. Repository-Funktionssignaturen festlegen, zunächst mit Testdaten im Speicher gefüllt
+4. Kanalnamen in `shared/ipcKanaele.ts` ergänzen, IPC-Handler und Preload-API nachziehen
+5. UI gegen die Repository-Funktionen bauen
+6. Repository auf echte SQLite-Anbindung umstellen
+7. Repository-Tests gegen In-Memory-SQLite
+8. Gesamtverifikation
+
+Schritt 3 und 6 getrennt zu halten, hat sich mehrfach bewährt: Solange Testdaten im Speicher liegen, beweist ein App-Neustart nichts über Persistenz. Der Neustart-Test gehört deshalb hinter Schritt 6, nicht davor.
+
+## Bekannte Abweichungen
+
+- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Sie importieren `TeamMember`, `Kalendertag` und die Kennzahlen-Berechnung und widersprechen damit der Definition von `layout/` als „fachlich unwissend". Ein Verschieben wurde zurückgestellt, weil Schritt 17 `VerkuerzteAnsicht` ohnehin umbaut — die Einordnung wird dort mitentschieden.
+- **`src/main/db.ts` blieb eine eigenständige Datei** neben dem Ordner `src/main/db/`, statt zu `db/index.ts` zu werden. Kein Umbau geplant; die Trennung „Verbindung hier, Repositories dort" ist eindeutig genug.
+
+> ⚠️ Zu prüfen: Drei Reste des `electron-vite`-Templates sind nirgends importiert und damit toter Code — `components/Versions.tsx`, `assets/electron.svg` und `assets/wavy-lines.svg`. Auch `runDbSmokeTest()` in `src/main/db.ts` stammt aus Schritt 1 und schreibt bei **jedem** App-Start eine Zeile in eine Tabelle `smoke_test`, die fachlich niemand liest. Beides ließe sich gefahrlos entfernen, ist aber nie beauftragt worden.
+
+Die ursprüngliche Ordner-Skizze von vor Schritt 4 (noch mit den Altnamen `ShiftType`/`PlanEntry` und einem gemeinsamen `planRepository.ts`) ist nur noch historisch und steht im [Tagebuch](../tagebuch/2026-kw33.md), Eintrag vom 11.08.2026.

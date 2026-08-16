@@ -1,5 +1,7 @@
 # Ablaufplan Schritt 7: Dienstplan/Dienstplantag – Anlegen & Speichern
 
+> **Abgeschlossen am 13.08.2026** (Commit `435ecc2`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+
 Annahme zum Umfang: Dieser Schritt behandelt ausschließlich das Anlegen, Laden und Speichern von `Dienstplan` und den dazugehörigen `Dienstplantag`-Zeilen (siehe [`architektur/datenmodell.md`](../architektur/datenmodell.md)). Das Setzen von `Planeintrag`/`Rufbereitschaft`, die Bemerkung-Spalte und alle berechneten Kennzahlen (Soll-/Ist-Arbeitszeit, Δ Soll/Ist, Dienste-Zähler) sind ausdrücklich nicht Teil dieses Schritts, siehe [`temp/temp-PlanungPage.md`](../temp/temp-PlanungPage.md) für die zurückgestellten Fragen dazu. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Zustandsmodell der `PlanungsPage` (Referenz für alle Punkte unten)

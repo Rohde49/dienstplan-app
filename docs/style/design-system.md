@@ -1,237 +1,173 @@
 # Design-System
 
-Nachschlagewerk für den **aktuellen** Stand der visuellen Sprache. Ergänzt
-[`styling.md`](./styling.md) und ersetzt sie nicht: `styling.md` bleibt die historische
-Begründung der Grundsatzentscheidungen (warum Tailwind, warum shadcn, warum Mint), diese Datei
-beschreibt, was heute tatsächlich gilt und woran neue UI sich zu halten hat.
+Der **verbindliche** Stand der visuellen Sprache: Woran neue UI sich zu halten hat. Zwei Nachbardateien ergänzen ihn:
 
-Entstanden aus einer Konsolidierung nach Schritt 16 (Audit, visuelle Überprüfung,
-WCAG-2.1-AA-Prüfung, Umsetzung), Verlauf siehe [`entwicklungstagebuch.md`](../entwicklungstagebuch.md).
+| Datei                                          | Enthält                                                                             |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`grundlagen.md`](./grundlagen.md)             | die historische Begründung — warum Tailwind, warum shadcn, wie die Palette entstand |
+| [`barrierefreiheit.md`](./barrierefreiheit.md) | Mindestanforderungen und alle gemessenen Kontrastwerte                              |
+
+Bei Widersprüchen gilt diese Datei. Entstanden aus einer Konsolidierung nach Schritt 16 (Audit, visuelle Überprüfung, WCAG-2.1-AA-Prüfung, Umsetzung); der Verlauf steht im [Tagebuch](../tagebuch/2026-kw33.md).
 
 ## Leitgedanke: Werkzeug, nicht Dashboard
 
-Die App hat eine einzige Kernaufgabe: einen Monat Dienstplan für ein kleines Team aufbauen,
-die Kennzahlen prüfen und das Ergebnis auf einer A4-Seite ausgeben. Alles andere
-(Team-Verwaltung, Eintrag-Verwaltung) ist Vorbereitung dafür.
+Die App hat eine einzige Kernaufgabe: einen Monat Dienstplan für ein kleines Team aufbauen, die Kennzahlen prüfen und das Ergebnis auf einer A4-Seite ausgeben. Alles andere (Team-Verwaltung, Eintrag-Verwaltung) ist Vorbereitung dafür.
 
-Daraus folgen drei Vorgaben, die den vier Grundprinzipien aus `styling.md` übergeordnet sind,
-wenn es zum Konflikt kommt:
+1. **Das Raster hat Vorrang vor der Umrahmung.** Kopfbereiche, Polsterungen und Titelgrößen bleiben knapp, damit möglichst viele Tage sichtbar sind.
+2. **Mint bedeutet Interaktion.** `--primary`, `--accent` und `--ring` markieren ausschließlich Bedienbarkeit und Zustand. Flächen (`--background`, `--card`, `--muted`, `--secondary`) sind neutral, damit die Tönung nicht mit den zehn Mitarbeiterfarben im Raster konkurriert.
+3. **Zahlen sind Daten, keine Typografie.** Uhrzeiten und Dauern stehen in Tabellenziffern und fluchten spaltenweise.
 
-1. **Das Raster hat Vorrang vor der Umrahmung.** Kopfbereiche, Polsterungen und Titelgrößen
-   bleiben knapp, damit im Standardfenster (900 × 670 px, siehe `src/main/index.ts`) möglichst
-   viele Tage sichtbar sind.
-2. **Mint bedeutet Interaktion.** `--primary`, `--accent` und `--ring` markieren ausschließlich
-   Bedienbarkeit und Zustand. Flächen (`--background`, `--card`, `--muted`, `--secondary`) sind
-   neutral, damit die Tönung nicht mit den zehn Mitarbeiterfarben im Raster konkurriert.
-3. **Zahlen sind Daten, keine Typografie.** Uhrzeiten und Dauern stehen in Tabellenziffern
-   und fluchten spaltenweise.
+## Vier Grundprinzipien
+
+Gelten für die gesamte App, nicht nur für einzelne Bereiche. Bei Konflikt gehen die drei Leitgedanken oben vor.
+
+| Prinzip                       | Konkret                                                                                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Responsiv**                 | Über den ganzen sinnvollen Fenstergrößenbereich funktionsfähig, nicht nur bei einer angenommenen Zielgröße. Breakpoints gegen die echten Fenstergrößen prüfen (siehe unten). |
+| **Zentral statt dupliziert**  | Wiederkehrende Bausteine einmal anlegen und von dort verwenden. Die Kategorie ergibt sich aus [`../architektur/projektstruktur.md`](../architektur/projektstruktur.md).      |
+| **Konsequente Farbbedeutung** | Jede Farbe behält im gesamten Frontend dieselbe Bedeutung. Vor einem neuen Farbwert prüfen, ob ein bestehendes Token semantisch passt.                                       |
+| **Sichtbares Feedback**       | Jede Aktion, die fehlschlagen kann, gibt unmittelbar Rückmeldung — Validierung vor dem Absenden, Fehler am Feld, keine stillen Fehlschläge.                                  |
 
 ## Design-Tokens
 
-Definiert in [`src/renderer/src/assets/base.css`](../../src/renderer/src/assets/base.css),
-über `@theme inline` an Tailwind durchgereicht. Alle Kontrastwerte gemessen (sRGB, WCAG-Formel).
+Definiert in [`src/renderer/src/assets/base.css`](../../src/renderer/src/assets/base.css), über `@theme inline` an Tailwind durchgereicht. Kontrastwerte siehe [`barrierefreiheit.md`](./barrierefreiheit.md).
 
-| Token | Wert | Bedeutung | Kontrast |
-|---|---|---|---|
-| `--background` | `#f1f5f9` | Seitenfläche hinter allen Cards | Text darauf 17,4:1 |
-| `--foreground` | `#0e1011` | Fließtext | — |
-| `--card` | `#ffffff` | Erhabene Fläche: Card, Dialog, Popover, Rasterhintergrund | Text darauf 19,1:1 |
-| `--card-foreground` | `#0e1011` | Text auf Card | — |
-| `--primary` | `#317f61` | Aktions-Buttons, Icon-Badges, aktive Markierung | 4,84:1 auf Card |
-| `--primary-foreground` | `#f8fdfb` | Beschriftung auf `--primary` | 4,71:1 |
-| `--secondary` | `#f3f5f7` | Zurückhaltende Button-Variante | — |
-| `--muted` | `#eef0f3` | Wochenendzeilen, Kachel-Tönung, Zeilen-Hover in Tabellen | Sekundärtext 6,0:1 |
-| `--muted-foreground` | `#575b5f` | Sekundärtext, Spaltenüberschriften | 6,85:1 auf Card |
-| `--accent` | `#d3f0e2` | Hover und Fokus auf Listen-, Menü- und Rasterzellen | `--accent-foreground` 11,9:1 |
-| `--accent-foreground` | `#142f24` | Text auf `--accent` | — |
-| `--destructive` | `#e7000b` | Ausschließlich Löschen und Fehler | 4,77:1 auf Card |
-| `--destructive-foreground` | `#ffffff` | Beschriftung auf `--destructive` | 4,77:1 |
-| `--border` | `#dbdee1` | Trennlinien, Card-Kontur (dekorativ) | — |
-| `--input` | `#798a8b` | **Nur** Begrenzung von Eingabefeldern | 3,61:1 auf Card |
-| `--ring` | `#4b9779` | Fokusindikator | 3,19:1 auf Seitenfläche |
-| `--radius` | `0.5rem` | Basis für `--radius-sm/md/lg` | — |
+| Token                      | Wert      | Bedeutung                                                 |
+| -------------------------- | --------- | --------------------------------------------------------- |
+| `--background`             | `#f1f5f9` | Seitenfläche hinter allen Cards                           |
+| `--foreground`             | `#0e1011` | Fließtext                                                 |
+| `--card`                   | `#ffffff` | Erhabene Fläche: Card, Dialog, Popover, Rasterhintergrund |
+| `--card-foreground`        | `#0e1011` | Text auf Card                                             |
+| `--primary`                | `#317f61` | Aktions-Buttons, Icon-Badges, aktive Markierung           |
+| `--primary-foreground`     | `#f8fdfb` | Beschriftung auf `--primary`                              |
+| `--secondary`              | `#f3f5f7` | Zurückhaltende Button-Variante                            |
+| `--muted`                  | `#eef0f3` | Wochenendzeilen, Kachel-Tönung, Zeilen-Hover in Tabellen  |
+| `--muted-foreground`       | `#575b5f` | Sekundärtext, Spaltenüberschriften                        |
+| `--accent`                 | `#d3f0e2` | Hover und Fokus auf Listen-, Menü- und Rasterzellen       |
+| `--accent-foreground`      | `#142f24` | Text auf `--accent`                                       |
+| `--destructive`            | `#e7000b` | Ausschließlich Löschen und Fehler                         |
+| `--destructive-foreground` | `#ffffff` | Beschriftung auf `--destructive`                          |
+| `--border`                 | `#dbdee1` | Trennlinien, Card-Kontur (dekorativ)                      |
+| `--input`                  | `#798a8b` | **Nur** Begrenzung von Eingabefeldern                     |
+| `--ring`                   | `#4b9779` | Fokusindikator                                            |
+| `--radius`                 | `0.5rem`  | Basis für `--radius-sm/md/lg`                             |
 
-**Warum `--border` und `--input` auseinanderfallen:** WCAG 1.4.11 verlangt 3:1 für die
-Begrenzung eines Bedienelements, wenn sie das einzige Erkennungsmerkmal ist — das gilt für
-Eingabefelder, nicht für dekorative Trennlinien. Beide Tokens auf denselben Wert zu legen
-(wie zuvor) zwingt entweder die Trennlinien zu unnötiger Härte oder die Feldrahmen unter die
-Schwelle. Getrennt lösen sie beides.
+**Warum `--border` und `--input` auseinanderfallen:** WCAG 1.4.11 verlangt 3:1 für die Begrenzung eines Bedienelements, wenn sie das einzige Erkennungsmerkmal ist — das gilt für Eingabefelder, nicht für dekorative Trennlinien. Beide Tokens auf denselben Wert zu legen zwingt entweder die Trennlinien zu unnötiger Härte oder die Feldrahmen unter die Schwelle. Getrennt lösen sie beides.
 
-**Regel für neue Farbwerte:** zuerst prüfen, ob ein bestehendes Token semantisch passt.
-Erst wenn keines passt, ein neues Token in `base.css` anlegen — nie einen rohen Farbwert oder
-eine Tailwind-Standardfarbe (`bg-slate-500` o. ä.) in eine Komponente schreiben.
+**Regel für neue Farbwerte:** zuerst prüfen, ob ein bestehendes Token semantisch passt. Erst wenn keines passt, ein neues Token in `base.css` anlegen — nie einen rohen Farbwert oder eine Tailwind-Standardfarbe (`bg-slate-500` o. ä.) in eine Komponente schreiben.
 
 ### Mitarbeiterfarben
 
-`TEAM_MEMBER_FARBEN` in [`src/shared/types.ts`](../../src/shared/types.ts) — zehn Werte, jeweils
-mit deutschem Namen. Der Name gehört zur Datenstruktur, nicht in einen Kommentar: die Farbauswahl
-braucht ihn als Beschriftung, sonst sagt der Screenreader den Hex-Code an.
+`TEAM_MEMBER_FARBEN` in [`src/shared/types.ts`](../../src/shared/types.ts) — zehn Werte, jeweils mit deutschem Namen. Der Name gehört zur Datenstruktur, nicht in einen Kommentar: die Farbauswahl braucht ihn als Beschriftung, sonst sagt der Screenreader den Hex-Code an.
 
-Diese Palette ist **Datenvisualisierung** und strikt getrennt vom Theme: sie unterscheidet
-Personen, nie Bedienzustände.
+Diese Palette ist **Datenvisualisierung** und strikt getrennt vom Theme: sie unterscheidet Personen, nie Bedienzustände.
 
-Dargestellt werden sie über `mitarbeiterSpaltenStil()` in
-[`src/renderer/src/lib/planAnsicht.ts`](../../src/renderer/src/lib/planAnsicht.ts) als
-**Oberkante in Vollton plus 16-%-Tönung mit dunkler Schrift** — nicht als gesättigte Vollfläche
-mit weißer Schrift. Grund: von den zehn Farben erreichte mit Weiß nur eine (Indigo, 4,86:1) das
-AA-Minimum; Orange lag bei 2,23:1. In der jetzigen Darstellung liegen alle zehn zwischen
-7,8:1 und 11,0:1. Nebeneffekt: die hellen Tönungen drucken auf A4 zuverlässiger als Volltonflächen.
+Dargestellt werden sie über `mitarbeiterSpaltenStil()` in [`src/renderer/src/lib/planAnsicht.ts`](../../src/renderer/src/lib/planAnsicht.ts) als **Oberkante in Vollton plus 16-%-Tönung mit dunkler Schrift** — nicht als gesättigte Vollfläche mit weißer Schrift. Der Grund ist ein Kontrastbefund, siehe [`barrierefreiheit.md`](./barrierefreiheit.md). Nebeneffekt: die hellen Tönungen drucken auf A4 zuverlässiger als Volltonflächen.
 
 ## Typografie
 
-`Inter Variable`, selbst gehostet über `@fontsource-variable/inter` (kein CDN, die App muss
-offline laufen). Global in `base.css` gesetzt.
+`Inter Variable`, selbst gehostet über `@fontsource-variable/inter` (kein CDN, die App muss offline laufen). Global in `base.css` gesetzt.
 
-**Tabellenziffern sind global aktiv** (`font-variant-numeric: tabular-nums` auf `body`).
-Ohne sie ist in Inter die „1" 5,70 px und die „4" 9,05 px breit — Uhrzeitspalten fluchten dann
-nie. Mit ihnen sind alle Ziffern 9,08 px breit. In einer App, die fast nur aus Uhrzeiten und
-Dauern besteht, ist das kein Detail.
+**Tabellenziffern sind global aktiv** (`font-variant-numeric: tabular-nums` auf `body`). Ohne sie ist in Inter die „1" 5,70 px und die „4" 9,05 px breit — Uhrzeitspalten fluchten dann nie. Mit ihnen sind alle Ziffern 9,08 px breit. In einer App, die fast nur aus Uhrzeiten und Dauern besteht, ist das kein Detail.
 
-| Rolle | Klassen | Verwendung |
-|---|---|---|
-| Seitentitel | `text-xl font-semibold tracking-tight` | `ManagementHeader`, als `h1` |
-| Startseiten-Titel | `text-2xl font-semibold tracking-tight` | einzige Ausnahme, `StartPage` als `h1` |
-| Card-Titel | `text-base font-semibold` (Default von `CardTitle`) | alle übrigen Cards, als `h2` |
-| Fließtext | `text-sm` | Formulare, Tabellen, Rasterzellen |
-| Sekundärtext | `text-sm text-muted-foreground` | `CardDescription` |
-| Spalten-/Metabeschriftung | `text-xs font-medium tracking-wide uppercase` | Tabellenköpfe |
+| Rolle                     | Klassen                                             | Verwendung                             |
+| ------------------------- | --------------------------------------------------- | -------------------------------------- |
+| Seitentitel               | `text-xl font-semibold tracking-tight`              | `ManagementHeader`, als `h1`           |
+| Startseiten-Titel         | `text-2xl font-semibold tracking-tight`             | einzige Ausnahme, `StartPage` als `h1` |
+| Card-Titel                | `text-base font-semibold` (Default von `CardTitle`) | alle übrigen Cards, als `h2`           |
+| Fließtext                 | `text-sm`                                           | Formulare, Tabellen, Rasterzellen      |
+| Sekundärtext              | `text-sm text-muted-foreground`                     | `CardDescription`                      |
+| Spalten-/Metabeschriftung | `text-xs font-medium tracking-wide uppercase`       | Tabellenköpfe                          |
 
-`CardTitle` bringt seine Größe selbst mit und rendert eine echte Überschrift; die Ebene steuert
-das `as`-Prop (`h1` | `h2` | `h3`, Default `h2`). Vorher war es ein `<div>` ohne Größe — das
-Dokument hatte dadurch keine einzige Überschrift, und jede Aufrufstelle erfand ihre eigene Größe.
+`CardTitle` bringt seine Größe selbst mit und rendert eine echte Überschrift; die Ebene steuert das `as`-Prop (`h1` | `h2` | `h3`, Default `h2`). Vorher war es ein `<div>` ohne Größe — das Dokument hatte dadurch keine einzige Überschrift, und jede Aufrufstelle erfand ihre eigene Größe.
 
-**Achtung beim Ergänzen:** `base.css` setzt `font-weight: normal` auf `*, ::before, ::after`.
-Das ist Absicht (es neutralisiert unter anderem das Standard-Fettgewicht von `<th>`), heißt aber:
-**jede** Betonung muss explizit gesetzt werden, auch bei Überschriften.
+**Achtung beim Ergänzen:** `base.css` setzt `font-weight: normal` auf `*, ::before, ::after`. Das ist Absicht (es neutralisiert unter anderem das Standard-Fettgewicht von `<th>`), heißt aber: **jede** Betonung muss explizit gesetzt werden, auch bei Überschriften.
 
-Größen unterhalb von `text-xs` (12 px) sind nicht Teil der Skala. Die verbleibenden
-`text-[9px]`/`text-[11px]` in `PlanungsGrid` und `VerkuerzteAnsicht` sind bekannte Abweichungen
-(siehe unten).
+Größen unterhalb von `text-xs` (12 px) sind nicht Teil der Skala. Die verbleibenden `text-[9px]`/`text-[11px]` sind bekannte Abweichungen (siehe unten).
 
 ## Abstände, Radius, Elevation
 
-| Skala | Werte | Regel |
-|---|---|---|
-| Card-Polsterung | `p-6` | Standard aller `Card*`-Teile |
-| Kopfbereich | `p-5` | `ManagementHeader` — bewusst knapper als die Card-Norm |
-| Abstand Kopf ↔ Inhalt | `mt-6`, Spalten `gap-5` | beide Management-Layouts |
-| Radius Flächen | `rounded-lg` | Card, Dialog, AlertDialog, Rastercontainer |
-| Radius Bedienelemente | `rounded-md` | Button, Input, SelectTrigger, Popover, SelectContent |
-| Radius Listeneinträge | `rounded-sm` | Einträge innerhalb von Popover und Select |
-| Elevation 1 | `shadow-sm` | Cards und Eingabefelder im Fluss |
-| Elevation 2 | `shadow-md` | schwebende Auswahlflächen: Popover, SelectContent |
-| Elevation 3 | `shadow-lg` | modale Ebenen: Dialog, AlertDialog |
+| Skala                 | Werte                   | Regel                                                  |
+| --------------------- | ----------------------- | ------------------------------------------------------ |
+| Card-Polsterung       | `p-6`                   | Standard aller `Card*`-Teile                           |
+| Kopfbereich           | `p-5`                   | `ManagementHeader` — bewusst knapper als die Card-Norm |
+| Abstand Kopf ↔ Inhalt | `mt-6`, Spalten `gap-5` | beide Management-Layouts                               |
+| Radius Flächen        | `rounded-lg`            | Card, Dialog, AlertDialog, Rastercontainer             |
+| Radius Bedienelemente | `rounded-md`            | Button, Input, SelectTrigger, Popover, SelectContent   |
+| Radius Listeneinträge | `rounded-sm`            | Einträge innerhalb von Popover und Select              |
+| Elevation 1           | `shadow-sm`             | Cards und Eingabefelder im Fluss                       |
+| Elevation 2           | `shadow-md`             | schwebende Auswahlflächen: Popover, SelectContent      |
+| Elevation 3           | `shadow-lg`             | modale Ebenen: Dialog, AlertDialog                     |
 
-Vorher lag `Popover` auf `rounded-lg`/`shadow-lg` und damit optisch auf Modal-Ebene, obwohl es
-ein kleines Dropdown ist.
+Vorher lag `Popover` auf `rounded-lg`/`shadow-lg` und damit optisch auf Modal-Ebene, obwohl es ein kleines Dropdown ist.
 
 ## Zustände
 
-Eine Regel je Zustand — vorher existierten fünf Abstufungen für denselben Hover
-(`bg-accent/40`, `/50`, `/60`, `bg-muted/50`, `/60`).
+Eine Regel je Zustand — vorher existierten fünf Abstufungen für denselben Hover (`bg-accent/40`, `/50`, `/60`, `bg-muted/50`, `/60`).
 
-| Zustand | Klassen | Gilt für |
-|---|---|---|
-| Hover Bedienfläche | `hover:bg-accent` | Listeneinträge, Menüeinträge, Rasterzellen |
-| Hover Datenzeile | `hover:bg-muted` | Zeilen in `Table` |
-| Ausgewählt | `bg-accent border-l-2 border-l-primary` | markierte Zeile in Team-/Eintragstabelle |
-| Fokus | `outline-none focus-visible:ring-2 focus-visible:ring-ring` | **alle** fokussierbaren Elemente |
-| Fokus innenliegend | zusätzlich `focus-visible:ring-inset` | Rasterzellen (Ring darf die Zelle nicht verlassen) |
-| Fehlerhaft | `aria-[invalid=true]:border-destructive aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-destructive/30` | `Input`, `SelectTrigger` |
-| Deaktiviert | `disabled:opacity-50 disabled:pointer-events-none` | Button; Felder zusätzlich `disabled:cursor-not-allowed` |
+| Zustand            | Klassen                                                                                                     | Gilt für                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Hover Bedienfläche | `hover:bg-accent`                                                                                           | Listeneinträge, Menüeinträge, Rasterzellen              |
+| Hover Datenzeile   | `hover:bg-muted`                                                                                            | Zeilen in `Table`                                       |
+| Ausgewählt         | `bg-accent border-l-2 border-l-primary`                                                                     | markierte Zeile in Team-/Eintragstabelle                |
+| Fokus              | `outline-none focus-visible:ring-2 focus-visible:ring-ring`                                                 | **alle** fokussierbaren Elemente                        |
+| Fokus innenliegend | zusätzlich `focus-visible:ring-inset`                                                                       | Rasterzellen (Ring darf die Zelle nicht verlassen)      |
+| Fehlerhaft         | `aria-[invalid=true]:border-destructive aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-destructive/30` | `Input`, `SelectTrigger`                                |
+| Deaktiviert        | `disabled:opacity-50 disabled:pointer-events-none`                                                          | Button; Felder zusätzlich `disabled:cursor-not-allowed` |
 
-Der Fokusring ist überall `ring-2`. Vorher schwankte er zwischen `ring-1` und `ring-2`, und
-`Button` definierte gar keinen — dort griff der Browser-Standardring, der optisch aus der Reihe fiel.
+Der Fokusring ist überall `ring-2`. Vorher schwankte er zwischen `ring-1` und `ring-2`, und `Button` definierte gar keinen — dort griff der Browser-Standardring, der optisch aus der Reihe fiel.
 
-Der Fehler-Zustand ist neu: Validierungsfehler standen zuvor nur als Liste unter dem Formular,
-das betroffene Feld selbst zeigte nichts an. Das Grundprinzip „visuelles Feedback" aus
-`styling.md` war damit nur zur Hälfte umgesetzt.
+Der Fehler-Zustand ist neu: Validierungsfehler standen zuvor nur als Liste unter dem Formular, das betroffene Feld selbst zeigte nichts an. Das Grundprinzip „sichtbares Feedback" war damit nur zur Hälfte umgesetzt.
 
 ## Komponenten-Inventar
 
 Alle unter `src/renderer/src/components/ui/`, jeweils mit `cn()`-Merge und durchgereichten Props.
 
-| Komponente | Varianten / Teile | Besonderheit |
-|---|---|---|
-| `Button` | `default`, `destructive`, `outline`, `secondary`, `ghost`, `link` × `default`, `sm`, `lg`, `icon` | `asChild` für Links; einzige Quelle für Button-Optik |
-| `Card` | `Card`, `Header`, `Title`, `Description`, `Content`, `Footer` | `Title` mit `as`-Prop, Default-Größe `text-base` |
-| `Input` | — | Fehler-Zustand über `aria-invalid` |
-| `Label` | — | reagiert auf `peer-disabled` |
-| `Select` | `Trigger`, `Content`, `Item`, `Value` | nutzt `bg-card` statt eigenem `--popover`-Token |
-| `Table` | `Header`, `Body`, `Row`, `Head`, `Cell` | `TableHead` setzt `scope="col"` selbst |
-| `Dialog` | `Trigger`, `Content`, `Header`, `Title`, `Description` | Schließen-Schaltfläche eingebaut |
-| `AlertDialog` | `Content`, `Header`, `Footer`, `Title`, `Description`, `Action`, `Cancel` | `Action` nimmt `variant` entgegen |
-| `Popover` | `Trigger`, `Content` | Elevation 2 |
-| `Collapsible` | `Trigger`, `Content` | **reiner Durchreicher ohne eigene Optik** (siehe Abweichungen) |
+| Komponente    | Varianten / Teile                                                                                 | Besonderheit                                            |
+| ------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `Button`      | `default`, `destructive`, `outline`, `secondary`, `ghost`, `link` × `default`, `sm`, `lg`, `icon` | `asChild` für Links; einzige Quelle für Button-Optik    |
+| `Card`        | `Card`, `Header`, `Title`, `Description`, `Content`, `Footer`                                     | `Title` mit `as`-Prop, Default-Größe `text-base`        |
+| `Input`       | —                                                                                                 | Fehler-Zustand über `aria-invalid`                      |
+| `Label`       | —                                                                                                 | reagiert auf `peer-disabled`                            |
+| `Select`      | `Trigger`, `Content`, `Item`, `Value`                                                             | nutzt `bg-card` statt eigenem `--popover`-Token         |
+| `Table`       | `Header`, `Body`, `Row`, `Head`, `Cell`                                                           | `TableHead` setzt `scope="col"` selbst                  |
+| `Dialog`      | `Trigger`, `Content`, `Header`, `Title`, `Description`                                            | Schließen-Schaltfläche eingebaut                        |
+| `AlertDialog` | `Content`, `Header`, `Footer`, `Title`, `Description`, `Action`, `Cancel`                         | `Action` nimmt `variant` entgegen                       |
+| `Popover`     | `Trigger`, `Content`                                                                              | Elevation 2                                             |
+| `Collapsible` | `Trigger`, `Content`                                                                              | **reiner Durchreicher ohne eigene Optik** (siehe unten) |
 
-`AlertDialogAction` hat seit der Konsolidierung eine `variant`-Prop. Vorher baute jede der drei
-Aufrufstellen die destruktive Optik identisch inline nach.
+`AlertDialogAction` hat seit der Konsolidierung eine `variant`-Prop. Vorher baute jede der drei Aufrufstellen die destruktive Optik identisch inline nach.
 
 ## Layout-Bausteine
 
 Unter `src/renderer/src/components/layout/`.
 
-| Baustein | Anordnung | Genutzt von | Auswahlkriterium |
-|---|---|---|---|
-| `ManagementHeader` | Zurück / Titel / Aktion | beide Layouts | — |
-| `ManagementLayout` | Liste und Detail nebeneinander (`md:grid-cols-[1fr_380px]`) | `TeamPage` | Detailformular passt in 380 px |
+| Baustein                  | Anordnung                                                               | Genutzt von     | Auswahlkriterium                             |
+| ------------------------- | ----------------------------------------------------------------------- | --------------- | -------------------------------------------- |
+| `ManagementHeader`        | Zurück / Titel / Aktion                                                 | beide Layouts   | —                                            |
+| `ManagementLayout`        | Liste und Detail nebeneinander (`md:grid-cols-[1fr_380px]`)             | `TeamPage`      | Detailformular passt in 380 px               |
 | `StackedManagementLayout` | Liste und Detail übereinander, `detailPosition` steuert die Reihenfolge | `EintraegePage` | Tabelle zu breit für ein festes Seitenraster |
 
-Beide Layouts rendern ein `<main>`-Element und tragen damit die Landmark der Seite.
+Beide Layouts rendern ein `<main>`-Element und tragen damit die Landmark der Seite. `PlanPage` nutzt keines von beiden — sie ist ein Datengrid, kein Liste-plus-Formular.
 
-Der Breakpoint ist `md:` (768 px), nicht `lg:`. Grund: das Fenster startet mit 900 px Breite
-(`src/main/index.ts`) — bei `lg:` wäre das Zwei-Spalten-Layout beim Standardstart nie sichtbar.
-**Jede neue responsive Entscheidung gegen die echten Fenstergrößen prüfen, nicht nur im
-maximierten Fenster.**
+**Der Breakpoint ist `md:` (768 px), nicht `lg:`.** Maßgeblich ist dabei nicht das gestartete Fenster, sondern die **Mindestgröße 640 × 480 px** aus `src/main/index.ts`: Das Fenster wird zwar beim Anzeigen maximiert, lässt sich aber bis auf diese Grenze verkleinern. Jede neue responsive Entscheidung dagegen prüfen, nicht nur im maximierten Fenster.
 
-## Barrierefreiheit — verbindliche Mindestanforderungen
+## Barrierefreiheit
 
-Ziel ist WCAG 2.1 AA. Was beim Ergänzen neuer UI einzuhalten ist:
-
-- **Jedes Klickziel ist ein echtes Bedienelement.** Kein `onClick` auf `<td>`, `<tr>` oder `<div>`.
-  Das war der schwerwiegendste Befund der Prüfung: die Auswahllisten im Plan waren als
-  `<tr onClick>` gebaut und damit per Tastatur nicht auswählbar — Planeinträge und
-  Rufbereitschaften ließen sich ohne Maus nicht setzen.
-- **Kontrast messen, nicht schätzen.** 4,5:1 für Text, 3:1 für Fokusringe und Feldbegrenzungen.
-- **Farbe ist nie das einzige Merkmal.** Mitarbeiterfarben tragen immer den Namen daneben.
-- **Gleichnamige Schaltflächen brauchen Kontext** über `aria-label`
-  (`"Anna Berg bearbeiten"` statt dreimal `"Bearbeiten"`).
-- **Fehlermeldungen** stehen in einem `role="alert"`-Container und sind über `aria-describedby`
-  mit den Feldern verknüpft, die zusätzlich `aria-invalid` tragen.
-- **Tabellenköpfe** setzen `scope` (`col`, `row` oder `colgroup` bei den dreispaltigen
-  Mitarbeitergruppen im Raster).
-- **Überschriften** über `CardTitle as="h1|h2|h3"` statt optisch großer `div`s.
-- Sprache und Titel des Dokuments stehen in `src/renderer/index.html` (`lang="de"`).
+Die verbindlichen Mindestanforderungen stehen in [`barrierefreiheit.md`](./barrierefreiheit.md). Sie sind Teil dieses Design-Systems, nicht ein nachgelagerter Prüfschritt — die kürzeste Zusammenfassung: **jedes Klickziel ist ein echtes Bedienelement, und Kontrast wird gemessen, nicht geschätzt.**
 
 ## Bekannte Abweichungen
 
 Bewusst offen gelassen, jeweils mit Grund:
 
-- **`Collapsible` hat keine eigene Optik.** Reicht die Radix-Primitives ohne `cn()` durch; das
-  Aussehen entsteht vollständig an der einzigen Aufrufstelle (`EintraegePage`). Solange es dabei
-  bleibt, wäre eine Vereinheitlichung Vorratsarbeit. Bei der zweiten Aufrufstelle nachziehen.
-- **Kein `--popover`-Token.** Popover, Select und Dialog nutzen `bg-card`. Solange es nur eine
-  erhabene Flächenfarbe gibt, wäre ein zweites Token ohne Unterschied.
-- **`text-[9px]` und `text-[11px]`** in `PlanungsGrid` (Zeilen 270–290, 374) und
-  `VerkuerzteAnsicht` (Zeile 145). Sie stammen aus der Platznot der Kennzahlen-Kopfzeile.
-  Bei der Umstellung auf die Druckansicht (Schritt 17) prüfen, ob sie noch nötig sind.
-- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.**
-  Sie importieren `TeamMember`, `Kalendertag` und die Kennzahlen-Berechnung und widersprechen
-  damit der Definition von `layout/` als „fachlich unwissend" in `CLAUDE.md`. Ein Verschieben
-  wurde zurückgestellt, weil Schritt 17 `VerkuerzteAnsicht` ohnehin zu `DruckAnsicht` umbaut —
-  die Einordnung wird dort mitentschieden.
-- **Zwei Tabellensysteme.** `Table` für Stammdaten, handgebaute `<table>` für Raster und
-  Auswertung (nötig wegen `colgroup` und `sticky`). Die Kopfzellen-Optik ist in beiden gleich,
-  aber nicht geteilt.
-- **Farbfelder sind 28 × 28 px.** Unter der 44-px-Empfehlung aus WCAG 2.5.5 (Level AAA);
-  die AA-Schwelle von 24 px aus WCAG 2.2 ist erfüllt.
+- **`Collapsible` hat keine eigene Optik.** Reicht die Radix-Primitives ohne `cn()` durch; das Aussehen entsteht vollständig an der einzigen Aufrufstelle (`EintraegePage`). Solange es dabei bleibt, wäre eine Vereinheitlichung Vorratsarbeit. Bei der zweiten Aufrufstelle nachziehen.
+- **Kein `--popover`-Token.** Popover, Select und Dialog nutzen `bg-card`. Solange es nur eine erhabene Flächenfarbe gibt, wäre ein zweites Token ohne Unterschied.
+- **`text-[9px]` und `text-[11px]`** in `PlanungsGrid` (viermal) und `VerkuerzteAnsicht` (einmal). Sie stammen aus der Platznot der Kennzahlen-Kopfzeile. Bei der Umstellung auf die Druckansicht (Schritt 17) prüfen, ob sie noch nötig sind.
+- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Siehe [`../architektur/projektstruktur.md`](../architektur/projektstruktur.md), Abschnitt „Bekannte Abweichungen".
+- **Zwei Tabellensysteme.** `Table` für Stammdaten, handgebaute `<table>` für Raster und Auswertung (nötig wegen `colgroup` und `sticky`). Die Kopfzellen-Optik ist in beiden gleich, aber nicht geteilt.
 
 ## Geteilte Darstellungslogik
 
-[`src/renderer/src/lib/planAnsicht.ts`](../../src/renderer/src/lib/planAnsicht.ts) hält, was
-`PlanungsGrid` und `VerkuerzteAnsicht` gemeinsam brauchen: `FEIERTAG_FARBE`, `WOCHENENDE_FARBE`,
-`DATUM_SPALTE_BREITE`, `RUFBEREITSCHAFT_SPALTE_BREITE`, `formatTagUndMonat()` und
-`mitarbeiterSpaltenStil()`.
+[`src/renderer/src/lib/planAnsicht.ts`](../../src/renderer/src/lib/planAnsicht.ts) hält, was `PlanungsGrid` und `VerkuerzteAnsicht` gemeinsam brauchen: `FEIERTAG_FARBE`, `WOCHENENDE_FARBE`, `DATUM_SPALTE_BREITE`, `RUFBEREITSCHAFT_SPALTE_BREITE`, `formatTagUndMonat()` und `mitarbeiterSpaltenStil()`.
 
-Vorher lag all das wortgleich in beiden Dateien. Zusammengeführt wurde es **vor** Schritt 17,
-weil der Umbau von `VerkuerzteAnsicht` zu `DruckAnsicht` sonst die dritte Kopie erzeugt hätte.
+Vorher lag all das wortgleich in beiden Dateien. Zusammengeführt wurde es **vor** Schritt 17, weil der Umbau von `VerkuerzteAnsicht` zu `DruckAnsicht` sonst die dritte Kopie erzeugt hätte.

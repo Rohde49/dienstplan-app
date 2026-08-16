@@ -1,6 +1,13 @@
 # Auswertungsansicht (Berechnete Kennzahlen)
 
-Dieses Dokument beschreibt eine Auswertung über die in [`datenmodell.md`](./datenmodell.md) definierten Entitäten. Es führt keine eigene, persistierte Entität ein — alle Werte werden aus vorhandenen `TeamMember`-, `Planeintrag`-, `Rufbereitschaft`- und `Dienstplantag`-Datensätzen abgeleitet, deshalb die Trennung von `datenmodell.md`. Umgesetzt in Schritt 15 als `AuswertungDialog` (Dialog-Overlay in der Planungsansicht, siehe `TODO.md`), nicht als eigene Route.
+Eine Auswertung über die in [`datenmodell.md`](./datenmodell.md) definierten Entitäten. Sie führt keine eigene, persistierte Entität ein — alle Werte werden aus vorhandenen `TeamMember`-, `Planeintrag`-, `Rufbereitschaft`- und `Dienstplantag`-Datensätzen abgeleitet; daher die Trennung von `datenmodell.md`.
+
+| Aspekt             | Stand                                                                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| Berechnung         | [`src/shared/auswertung.ts`](../../src/shared/auswertung.ts), reine Funktionen, alle 15 Zeilen      |
+| Anzeige            | `AuswertungDialog` — Dialog-Overlay in der Planungsansicht, keine eigene Route                      |
+| Datenquelle        | der **aktuelle Entwurf**, nicht der gespeicherte Stand — die Werte ändern sich live vor „Speichern" |
+| Wiederverwendet in | `PlanungsGrid` (fünf der Zeilen) und `VerkuerzteAnsicht` (Ist/Soll)                                 |
 
 ## Darstellung
 
@@ -48,10 +55,22 @@ In derselben Reihenfolge wie oben, mit Bezug auf die Feldnamen aus `datenmodell.
 
 **15. Differenz Soll/Ist** = Ist-Arbeitszeit (Zeile 13) − Soll-Arbeitszeit (Zeile 14). Darstellung mit Vorzeichen: positiv mit `+` (Soll überschritten), `0:00` bei Ausgleich, negativ mit `−` (Soll noch nicht erreicht).
 
-## Bezug zu den Kopf-/Fußzeilen-Platzhaltern in der Planungstabelle (seit Schritt 6)
+## Welche Zeilen wo erscheinen
 
-`PlanungsGrid.tsx` (Planungsansicht) hat seit Schritt 6 bereits Platzhalter für eine kleine Auswahl dieser Kennzahlen direkt in der Planungstabelle selbst, unabhängig von dieser separaten `AuswertungsPage`: je Mitarbeiter eine Kopfzeile „SN/F-Dienste" (≈ Zeile 1 oben), „Freie Tage" und „Δ Soll/Ist" (≈ Zeile 15 oben), sowie zwei Fußzeilen „Ist"/„Soll" (≈ Zeile 13/14 oben). Berechnungslogik geplant für Schritt 11, siehe [`ablaufplaene/schritt11-kennzahlen-berechnen.md`](../ablaufplaene/schritt11-kennzahlen-berechnen.md).
+Nicht jede Ansicht zeigt alle 15 Zeilen. Dieselbe Funktion `berechneKennzahlenFuerMitarbeiter()` liefert alle Werte, die Ansichten greifen nur unterschiedlich viel davon ab:
 
-- **„Freie Tage" ist in der Planungstabelle bewusst ein eigener, einfacherer Wert**, nicht die Summe aus „Freie Samstage" (Zeile 2) und „Freie Sonntage und Feiertage" (Zeile 3): Anzahl der `Planeintrag`-Datensätze eines `TeamMember` mit `kuerzel === '/'`, unabhängig vom Wochentag. Die beiden engeren Zeilen (2 und 3) bleiben als eigene Kennzahlen für die spätere `AuswertungsPage` bestehen, nur nicht als Bestandteil der „Freie Tage"-Platzhalterzelle im Grid.
-- Die farbliche Hervorhebung von „Δ Soll/Ist" im ursprünglichen Mockup (grün bei `0:00`, sonst farblich abgesetzt) war in Schritt 11 bewusst zurückgestellt und ist seit Schritt 15 umgesetzt (`lib/sollIstFarbe.ts`, angewendet sowohl auf diese Platzhalterzelle als auch auf die entsprechende Zeile in der `AuswertungsPage`). Die textuelle Vorzeichen-Darstellung (`+`/`0:00`/`−`) wurde bereits in Schritt 11 korrekt umgesetzt.
-- Nur `TeamMember` mit `rolle: 'Erzieher'` sollen in Schritt 11 berechnete Werte in den fünf Platzhalterzellen bekommen, andere Rollen zeigen „n/A", passend zur Beschränkung dieser gesamten Auswertung auf Erzieher (siehe „Darstellung" oben).
+| Zeile                            | `AuswertungDialog` | `PlanungsGrid`         | `VerkuerzteAnsicht` |
+| -------------------------------- | ------------------ | ---------------------- | ------------------- |
+| 1 SN/F-Dienste                   | ja                 | Kopfzeile              | nein                |
+| 2–12                             | ja                 | nein                   | nein                |
+| 13 Ist-Arbeitszeit               | ja                 | Fußzeile „Ist"         | Fußzeile            |
+| 14 Soll-Arbeitszeit              | ja                 | Fußzeile „Soll"        | Fußzeile            |
+| 15 Differenz Soll/Ist            | ja                 | Kopfzeile „Δ Soll/Ist" | nein                |
+| „Freie Tage" (nicht Teil der 15) | nein               | Kopfzeile              | nein                |
+
+Unterschiedlich ist auch, wer überhaupt eine Spalte bekommt: `AuswertungDialog` zeigt **nur** Erzieher, `PlanungsGrid` zeigt alle Rollen und schreibt „n/A" in die Kennzahlenzellen der Nicht-Erzieher, `VerkuerzteAnsicht` zeigt ebenfalls alle Rollen, lässt deren Fußzeilen aber leer.
+
+> ⚠️ Zu prüfen: Schritt 17 baut `VerkuerzteAnsicht` zu `DruckAnsicht` um. Diese Spalte danach umbenennen und nachsehen, ob die Fußzeilen unverändert geblieben sind.
+
+- **„Freie Tage" ist ein eigener, einfacherer Wert** und bewusst nicht die Summe aus „Freie Samstage" (Zeile 2) und „Freie Sonntage und Feiertage" (Zeile 3): Anzahl der `Planeintrag`-Datensätze eines `TeamMember` mit `kuerzel === '/'`, unabhängig vom Wochentag. Er gehört deshalb nicht zu den 15 Zeilen, sondern nur ins Raster. Die beiden engeren Zeilen 2 und 3 bleiben davon unberührt.
+- **Farbliche Hervorhebung von „Δ Soll/Ist"**: `sollIstFarbe()` in [`src/renderer/src/lib/sollIstFarbe.ts`](../../src/renderer/src/lib/sollIstFarbe.ts) — `text-primary` bei exaktem Ausgleich, sonst eine aus `--destructive` abgeleitete Tönung. Dieselbe Funktion in Dialog und Raster, keine zweite Farblogik.
