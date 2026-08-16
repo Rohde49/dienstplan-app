@@ -16,7 +16,7 @@ Abgeschlossene Pläne liegen unter [`erledigt/`](./erledigt) und tragen oben ein
 
 1. **Planen** — Scope klären, Design-Entscheidungen festhalten, Punkte schneiden. Der Plan entsteht _vor_ der Umsetzung und wird als eigener Commit abgelegt.
 2. **Umsetzen** — Punkt für Punkt, jeder mit der im Plan genannten Prüfung.
-3. **Abschließen** — Häkchen in [`../TODO.md`](../TODO.md), Eintrag im [Tagebuch](../tagebuch), Zusammenfassung in [`../erledigt.md`](../erledigt.md).
+3. **Abschließen** — Häkchen in [`TODO.md`](../TODO.md), Eintrag im [Tagebuch](../tagebuch), Zusammenfassung in [`erledigt.md`](../erledigt.md).
 4. **Verschieben** — `git mv` nach `erledigt/`, Abschluss-Banner oben ergänzen.
 
 **Dateinamen werden nicht geändert**, auch wenn sich der Zuschnitt verschiebt: Sie sind in Tagebuch und `erledigt.md` vielfach verlinkt. Ein Plan, der komplett verworfen wird, wird gelöscht statt umbenannt — so geschehen mit dem ersten Anlauf für Schritt 17.
@@ -58,4 +58,4 @@ Zwei Details, die sich bewährt haben:
 - **Die Umfangs-Annahme oben mit der Bitte um Korrektur.** Zwischen Planen und Umsetzen liegen oft Tage; die Annahme macht sichtbar, wovon der Plan ausging.
 - **Die Prüfung steht im Punkt selbst**, nicht gesammelt am Ende. Sonst wird sie verschoben, bis sie nichts mehr aussagt.
 
-Welche Prüfung zu welcher Art Änderung passt, steht in [`../test/teststrategie.md`](../test/teststrategie.md).
+Welche Prüfung zu welcher Art Änderung passt, steht in [`test/teststrategie.md`](../test/teststrategie.md).

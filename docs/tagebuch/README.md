@@ -1,6 +1,6 @@
 # Entwicklungstagebuch
 
-Der **Verlauf** des Projekts: was wann gemacht wurde und warum, einschließlich der Wege, die verworfen wurden. Der aktuelle Stand steht dagegen in den Sachdateien unter [`../architektur/`](../architektur), [`../style/`](../style) und [`../test/`](../test), der Fortschritt in [`../TODO.md`](../TODO.md).
+Der **Verlauf** des Projekts: was wann gemacht wurde und warum, einschließlich der Wege, die verworfen wurden. Der aktuelle Stand steht dagegen in den Sachdateien unter [`../architektur/`](../architektur), [`../style/`](../style) und [`../test/`](../test), der Fortschritt in [`TODO.md`](../TODO.md).
 
 ## Ablage nach Kalenderwochen
 

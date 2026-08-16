@@ -14,7 +14,7 @@ Entwicklung erfolgt mit Claude Code (Electron + Vite + React + TypeScript). Begr
 
 ## Schritt 2: Styling-Fundament (abgeschlossen)
 
-Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.md).
+Details und Begründung siehe [`style/grundlagen.md`](./style/grundlagen.md).
 
 - [x] Tailwind v4 über `@tailwindcss/vite` im Renderer einrichten (kein separates `tailwind.config.js`, Theme über `@theme inline` in der globalen CSS-Datei)
 - [x] shadcn im Style „new-york" einrichten (`components.json`, Pfad-Alias `@/` → `src/renderer/src`), `lucide-react` installieren
@@ -31,7 +31,7 @@ Details und Begründung siehe [`architektur/styling.md`](./architektur/styling.m
 
 ## Schritt 4: Team-Verwaltung (abgeschlossen)
 
-Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md)). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/schritt4-team-verwaltung.md`](./ablaufplaene/schritt4-team-verwaltung.md), Reihenfolge folgt [`architektur/projektstruktur.md`](./architektur/projektstruktur.md).
+Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md)). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/erledigt/schritt4-team-verwaltung.md`](./ablaufplaene/erledigt/schritt4-team-verwaltung.md), Reihenfolge folgt [`architektur/projektstruktur.md`](./architektur/projektstruktur.md).
 
 - [x] Vitest-Testinfrastruktur einrichten (Dependencies, `vitest.config.ts`, npm-Script „test", Platzhalter-Test)
 - [x] `TeamMember`-Typ und `TEAM_MEMBER_COLORS`-Palette in `shared/types.ts` anlegen
@@ -50,7 +50,7 @@ Entität `TeamMember` bereits entworfen (siehe [`architektur/datenmodell.md`](./
 
 ## Schritt 5: Eintrag-Verwaltung (abgeschlossen)
 
-Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md); Auswertungslogik separat in [`architektur/auswertung.md`](./architektur/auswertung.md)). Dieser Schritt verwaltet nur die `Eintragsdefinition`-Stammdaten, die übrigen vier Entitäten gehören zur Planungsansicht (nächster Schritt). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/schritt5-eintrag-verwaltung.md`](./ablaufplaene/schritt5-eintrag-verwaltung.md).
+Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `Rufbereitschaft` bereits entworfen (siehe [`architektur/datenmodell.md`](./architektur/datenmodell.md); Auswertungslogik separat in [`architektur/auswertung.md`](./architektur/auswertung.md)). Dieser Schritt verwaltet nur die `Eintragsdefinition`-Stammdaten, die übrigen vier Entitäten gehören zur Planungsansicht (nächster Schritt). Detaillierter Ablaufplan mit den einzelnen Claude-Code-Prompts siehe [`ablaufplaene/erledigt/schritt5-eintrag-verwaltung.md`](./ablaufplaene/erledigt/schritt5-eintrag-verwaltung.md).
 
 - [x] `Eintragsdefinition`-Typ in `shared/types.ts` anlegen
 - [x] Validierungsfunktion für Uhrzeiten (Zeitpunkte, `"HH:MM"` 00–23) inkl. Unit-Tests
@@ -68,7 +68,7 @@ Entitäten `Eintragsdefinition`, `Dienstplan`, `Dienstplantag`, `Planeintrag`, `
 
 ## Schritt 6: Planungsansicht – Gerüst (abgeschlossen)
 
-Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanPage.tsx`) auf: Kalendertage-Berechnung, Kopfbereich mit Monat/Jahr-Auswahl, Grid mit echten Mitarbeiterdaten, Platzhalter-Spalten für spätere Funktionen. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Persistenz von `Dienstplan`/`Dienstplantag`. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt6-planungsansicht-geruest.md`](./ablaufplaene/schritt6-planungsansicht-geruest.md).
+Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanPage.tsx`) auf: Kalendertage-Berechnung, Kopfbereich mit Monat/Jahr-Auswahl, Grid mit echten Mitarbeiterdaten, Platzhalter-Spalten für spätere Funktionen. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Persistenz von `Dienstplan`/`Dienstplantag`. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt6-planungsansicht-geruest.md`](./ablaufplaene/erledigt/schritt6-planungsansicht-geruest.md).
 
 - [x] Kalendertage-Funktion (reine Funktion inkl. Feiertagsberechnung nach Brandenburgischem Feiertagsgesetz) inkl. Unit-Tests
 - [x] `PlanungsPage`: Kopfbereich mit Monat-/Jahr-Auswahl sowie deaktivierten Schaltflächen „Verkürzte Form" und „Auswertung"
@@ -80,7 +80,7 @@ Baut nur das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanP
 
 ## Schritt 7: Dienstplan/Dienstplantag – Anlegen & Speichern (abgeschlossen)
 
-Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag`-Zeilen, mit dem dazugehörigen Titel-Feld. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen — siehe [`temp/temp-PlanungPage.md`](./temp/temp-PlanungPage.md) für die dafür zurückgestellten Fragen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt7-dienstplan-anlegen-speichern.md`](./ablaufplaene/schritt7-dienstplan-anlegen-speichern.md).
+Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag`-Zeilen, mit dem dazugehörigen Titel-Feld. Noch kein Setzen von `Planeintrag`/`Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen — siehe `temp/temp-PlanungPage.md` für die dafür zurückgestellten Fragen. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt7-dienstplan-anlegen-speichern.md`](./ablaufplaene/erledigt/schritt7-dienstplan-anlegen-speichern.md).
 
 - [x] `Dienstplan`/`Dienstplantag`-Typen in `shared/types.ts`
 - [x] Repository-Funktionssignaturen (`getDienstplaene`/`getDienstplanMitTagen`/`createDienstplan`/`updateDienstplanTitel`), zunächst mit Testdaten
@@ -95,7 +95,7 @@ Erstellen/Laden/Speichern von `Dienstplan` inkl. der zugehörigen `Dienstplantag
 
 ## Schritt 8: Planeintrag – Setzen und Bearbeiten (abgeschlossen)
 
-Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover je Zellengruppe, persistiert gemeinsam mit dem Titel über den bestehenden „Speichern"-Button aus Schritt 7. Noch kein `Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt8-planeintrag-setzen.md`](./ablaufplaene/schritt8-planeintrag-setzen.md).
+Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover je Zellengruppe, persistiert gemeinsam mit dem Titel über den bestehenden „Speichern"-Button aus Schritt 7. Noch kein `Rufbereitschaft`, keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt8-planeintrag-setzen.md`](./ablaufplaene/erledigt/schritt8-planeintrag-setzen.md).
 
 - [x] `Planeintrag`-Typ in `shared/types.ts`
 - [x] Berechnungsfunktion für mitarbeiterabhängige Arbeitszeit inkl. Unit-Tests
@@ -111,7 +111,7 @@ Setzen/Ändern/Entfernen von `Planeintrag`-Einträgen im Grid, über ein Popover
 
 ## Schritt 9: Rufbereitschaft – Setzen, Ändern und Entfernen (abgeschlossen)
 
-Setzen/Ändern/Entfernen von `Rufbereitschaft` in der Rufbereitschaft-Spalte, nach demselben Popover- und Entwurf/Baseline-Muster wie `Planeintrag` in Schritt 8, persistiert gemeinsam über den bestehenden „Speichern"-Button. Noch keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt9-rufbereitschaft-setzen.md`](./ablaufplaene/schritt9-rufbereitschaft-setzen.md).
+Setzen/Ändern/Entfernen von `Rufbereitschaft` in der Rufbereitschaft-Spalte, nach demselben Popover- und Entwurf/Baseline-Muster wie `Planeintrag` in Schritt 8, persistiert gemeinsam über den bestehenden „Speichern"-Button. Noch keine Bemerkung-Funktion, keine berechneten Kennzahlen. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt9-rufbereitschaft-setzen.md`](./ablaufplaene/erledigt/schritt9-rufbereitschaft-setzen.md).
 
 - [x] `Rufbereitschaft`-Typ in `shared/types.ts`
 - [x] Repository-Funktionssignaturen (`getRufbereitschaftenFuerDienstplan`), zunächst mit Testdaten
@@ -127,7 +127,7 @@ Setzen/Ändern/Entfernen von `Rufbereitschaft` in der Rufbereitschaft-Spalte, na
 
 ## Schritt 10: Bemerkung – Setzen und Bearbeiten (abgeschlossen)
 
-Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkung-Spalte (max. 40 Zeichen), persistiert gemeinsam über den bestehenden „Speichern"-Button. Keine neue Entität/Tabelle, keine neue Lade-Logik nötig. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt10-bemerkung-setzen.md`](./ablaufplaene/schritt10-bemerkung-setzen.md).
+Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkung-Spalte (max. 40 Zeichen), persistiert gemeinsam über den bestehenden „Speichern"-Button. Keine neue Entität/Tabelle, keine neue Lade-Logik nötig. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt10-bemerkung-setzen.md`](./ablaufplaene/erledigt/schritt10-bemerkung-setzen.md).
 
 - [x] Validierung der Bemerkung-Länge (max. 40 Zeichen) inkl. Unit-Tests
 - [x] `speicherePlanungsstand` um Bemerkung-Änderungen erweitern, zunächst mit Testdaten
@@ -141,7 +141,7 @@ Setzen/Ändern von `Dienstplantag.bemerkung` als Inline-Textfeld in der Bemerkun
 
 ## Schritt 11: Berechnete Kennzahlen (abgeschlossen)
 
-Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`architektur/auswertung.md`](./architektur/auswertung.md) als reine Funktionen in `shared/`, verdrahtet davon zunächst nur die fünf Platzhalter in `PlanungsGrid.tsx` (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll), live aus dem aktuellen Entwurf, nur für Erzieher. Die übrigen zehn Zeilen sind für die spätere `AuswertungsPage` vorbereitet, aber noch nicht angezeigt. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt11-kennzahlen-berechnen.md`](./ablaufplaene/schritt11-kennzahlen-berechnen.md).
+Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`architektur/auswertung.md`](./architektur/auswertung.md) als reine Funktionen in `shared/`, verdrahtet davon zunächst nur die fünf Platzhalter in `PlanungsGrid.tsx` (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll), live aus dem aktuellen Entwurf, nur für Erzieher. Die übrigen zehn Zeilen sind für die spätere `AuswertungsPage` vorbereitet, aber noch nicht angezeigt. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt11-kennzahlen-berechnen.md`](./ablaufplaene/erledigt/schritt11-kennzahlen-berechnen.md).
 
 - [x] Rundungshilfsfunktion vereinheitlichen (`rundeAufVolleMinute` nach `shared/`)
 - [x] Anzahl Arbeitstage im Monat inkl. Unit-Tests
@@ -153,7 +153,7 @@ Implementiert die vollständige Berechnungslogik aller 15 Kennzahlen aus [`archi
 
 ## Schritt 12: TeamMember löschen (abgeschlossen)
 
-Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn der Mitarbeiter bereits in `Planeintrag`/`Rufbereitschaft` verwendet wird. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt12-teammember-loeschen.md`](./ablaufplaene/schritt12-teammember-loeschen.md).
+Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn der Mitarbeiter bereits in `Planeintrag`/`Rufbereitschaft` verwendet wird. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt12-teammember-loeschen.md`](./ablaufplaene/erledigt/schritt12-teammember-loeschen.md).
 
 - [x] Repository-Funktion `deleteTeamMember` (mit Verwendungsprüfung)
 - [x] IPC-Handler und typisierte Preload-API
@@ -164,7 +164,7 @@ Löschen über das bestehende Bearbeiten-Formular in `TeamPage`, blockiert wenn 
 
 ## Schritt 13: Eintragsdefinition löschen (abgeschlossen)
 
-Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwendungsprüfung (bereits gesetzte Planeinträge sind laut Datenmodell als Snapshot unabhängig von der Eintragsdefinition). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt13-eintragsdefinition-loeschen.md`](./ablaufplaene/schritt13-eintragsdefinition-loeschen.md).
+Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwendungsprüfung (bereits gesetzte Planeinträge sind laut Datenmodell als Snapshot unabhängig von der Eintragsdefinition). Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt13-eintragsdefinition-loeschen.md`](./ablaufplaene/erledigt/schritt13-eintragsdefinition-loeschen.md).
 
 - [x] Repository-Funktion `deleteEintragsdefinition`
 - [x] IPC-Handler und typisierte Preload-API
@@ -175,7 +175,7 @@ Löschen über das bestehende Bearbeiten-Formular in `EintraegePage`, ohne Verwe
 
 ## Schritt 14: Dienstplan löschen (abgeschlossen)
 
-Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskadiert über `dienstplantage`/`planeintraege`/`rufbereitschaften` in einer Transaktion. Detaillierter Ablaufplan siehe [`ablaufplaene/schritt14-dienstplan-loeschen.md`](./ablaufplaene/schritt14-dienstplan-loeschen.md).
+Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskadiert über `dienstplantage`/`planeintraege`/`rufbereitschaften` in einer Transaktion. Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt14-dienstplan-loeschen.md`](./ablaufplaene/erledigt/schritt14-dienstplan-loeschen.md).
 
 - [x] Repository-Funktion `deleteDienstplan` (kaskadierende Transaktion)
 - [x] IPC-Handler und typisierte Preload-API
@@ -186,7 +186,7 @@ Löschen ausschließlich über die Laden-Liste (`DienstplanLadenDialog`), kaskad
 
 ## Schritt 15: AuswertungsPage (abgeschlossen)
 
-Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelöst über den bestehenden „Auswertung"-Button, zeigt alle 15 Kennzahlen-Zeilen aus `auswertung.md` nur für Erzieher, live aus dem aktuellen Entwurf. Inklusive der in Schritt 11 zurückgestellten farblichen Hervorhebung von Δ Soll/Ist (jetzt auch rückwirkend in `PlanungsGrid`). Detaillierter Ablaufplan siehe [`ablaufplaene/schritt15-auswertungspage.md`](./ablaufplaene/schritt15-auswertungspage.md).
+Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelöst über den bestehenden „Auswertung"-Button, zeigt alle 15 Kennzahlen-Zeilen aus `auswertung.md` nur für Erzieher, live aus dem aktuellen Entwurf. Inklusive der in Schritt 11 zurückgestellten farblichen Hervorhebung von Δ Soll/Ist (jetzt auch rückwirkend in `PlanungsGrid`). Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt15-auswertungspage.md`](./ablaufplaene/erledigt/schritt15-auswertungspage.md).
 
 - [x] Farbfunktion für Δ Soll/Ist inkl. Unit-Tests
 - [x] `AuswertungDialog.tsx`: Grundstruktur (Dialog-Größe, Layout, Zeilenbeschriftungen, nur Erzieher-Spalten)
@@ -197,7 +197,7 @@ Dialog-Overlay innerhalb der `PlanungsPage` (kein eigener Router-Pfad), ausgelö
 
 ## Schritt 16: Verkürzte Ansicht (abgeschlossen)
 
-Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/„Druckvorschau" im Kopfbereich der `PlanungsPage` und ergänzt eine neue, rein lesende `VerkuerzteAnsicht`-Komponente: eine Spalte je Mitarbeiter (statt drei Unterspalten), Kopfzeile mit Wochenarbeitszeit statt der Kennzahlen-Platzhalter aus `PlanungsGrid`, Rufbereitschaft/Bemerkung bleiben erhalten, alle `TeamMember` sichtbar. Kein PDF-Export/Druckdialog in diesem Schritt (eigener, späterer Schritt), nur ein deaktivierter Platzhalter-Button „Drucken". Detaillierter Ablaufplan siehe [`ablaufplaene/schritt16-verkuerzte-ansicht.md`](./ablaufplaene/schritt16-verkuerzte-ansicht.md).
+Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/„Druckvorschau" im Kopfbereich der `PlanungsPage` und ergänzt eine neue, rein lesende `VerkuerzteAnsicht`-Komponente: eine Spalte je Mitarbeiter (statt drei Unterspalten), Kopfzeile mit Wochenarbeitszeit statt der Kennzahlen-Platzhalter aus `PlanungsGrid`, Rufbereitschaft/Bemerkung bleiben erhalten, alle `TeamMember` sichtbar. Kein PDF-Export/Druckdialog in diesem Schritt (eigener, späterer Schritt), nur ein deaktivierter Platzhalter-Button „Drucken". Detaillierter Ablaufplan siehe [`ablaufplaene/erledigt/schritt16-verkuerzte-ansicht.md`](./ablaufplaene/erledigt/schritt16-verkuerzte-ansicht.md).
 
 - [x] Planform-Umschalter aktivieren (State in `PlanPage`, bedingtes Rendering)
 - [x] `VerkuerzteAnsicht.tsx`: Grundstruktur (Spalten-/Kopfzeilenlayout, Platzhalterwerte)
@@ -208,7 +208,7 @@ Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/
 
 ## Zwischenschritt: Teststrategie überarbeitet (abgeschlossen)
 
-Kein nummerierter Fachschritt, sondern eine Überarbeitung der Testinfrastruktur vor Schritt 17. Die bisherige Strategie hatte drei Ebenen, von denen nur zwei existierten — die UI-Schicht und die IPC-Verdrahtung waren vollständig ungeprüft, und die dritte Ebene bestand aus nicht eingecheckten Screenshot-Skripten. Neue Fassung siehe [`architektur/teststrategie.md`](./architektur/teststrategie.md).
+Kein nummerierter Fachschritt, sondern eine Überarbeitung der Testinfrastruktur vor Schritt 17. Die bisherige Strategie hatte drei Ebenen, von denen nur zwei existierten — die UI-Schicht und die IPC-Verdrahtung waren vollständig ungeprüft, und die dritte Ebene bestand aus nicht eingecheckten Screenshot-Skripten. Neue Fassung siehe [`test/teststrategie.md`](./test/teststrategie.md).
 
 - [x] `vitest.config.ts` auf zwei Projekte umgestellt (Node und jsdom, Aufteilung über die Dateiendung — Laufzeit dadurch bei 1,9 s statt 42,8 s)
 - [x] Testhilfen unter `src/test/`: typisiertes `window.api`-Fake, In-Memory-Datenbank, Testdaten-Fabriken, jsdom-Setup inkl. Radix-Polyfills

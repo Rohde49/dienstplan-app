@@ -2,7 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vitest/config'
 
 // Zwei getrennte Projekte, weil Main-/Shared-Code in Node laufen muss (better-sqlite3,
-// keine DOM-Globals) und Renderer-Tests ein DOM brauchen. Siehe docs/architektur/teststrategie.md.
+// keine DOM-Globals) und Renderer-Tests ein DOM brauchen. Siehe docs/test/teststrategie.md.
 // `globals` bleibt bewusst aus — Tests importieren describe/it/expect explizit aus 'vitest'.
 export default defineConfig({
   test: {

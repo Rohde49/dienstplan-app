@@ -23,7 +23,7 @@ Die App läuft lokal für eine Person, es gibt nichts über Netzwerk zu synchron
 
 Einziges relevantes Build-Target laut Projektanforderung. Packaging über `electron-builder` als Windows-Installer (`npm run build:win`).
 
-> ⚠️ Zu prüfen: `electron-builder.yml` ist noch unverändert auf Template-Stand — `productName: electron-scaffold-tmp`, mac-/linux-Targets und eine `publish`-URL auf `example.com`. Das fällt erst beim tatsächlichen Packaging auf, das laut [`../TODO.md`](../TODO.md) noch offen ist. Beim Umsetzen dieses Punkts mitkorrigieren.
+> ⚠️ Zu prüfen: `electron-builder.yml` ist noch unverändert auf Template-Stand — `productName: electron-scaffold-tmp`, mac-/linux-Targets und eine `publish`-URL auf `example.com`. Das fällt erst beim tatsächlichen Packaging auf, das laut [`TODO.md`](../TODO.md) noch offen ist. Beim Umsetzen dieses Punkts mitkorrigieren.
 
 ## `HashRouter` statt der Alternativen
 

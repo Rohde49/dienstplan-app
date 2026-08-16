@@ -35,6 +35,6 @@ Datei oder Bereich benennen, gewünschtes Verhalten beschreiben, auf ein bestehe
 
 ## Ergebnisse überprüfbar machen
 
-**Ohne Prüfsignal merkt Claude selbst nicht, ob etwas kaputt ist.** Die verfügbaren Signale sind `npm run typecheck`, `npm run lint`, `npm run test` und `npm run test:e2e` — welche Ebene für welche Frage zuständig ist, steht in [`../test/teststrategie.md`](../test/teststrategie.md).
+**Ohne Prüfsignal merkt Claude selbst nicht, ob etwas kaputt ist.** Die verfügbaren Signale sind `npm run typecheck`, `npm run lint`, `npm run test` und `npm run test:e2e` — welche Ebene für welche Frage zuständig ist, steht in [`test/teststrategie.md`](../test/teststrategie.md).
 
-**Ein Screenshot gehört nicht dazu.** Er ist Sichtprüfung: Er zeigt einmalig, dass etwas aussieht wie erwartet, und meldet danach nie wieder etwas. Für eine neue Fehlerklasse gehört ein echter Test her, und der wird einmal absichtlich rot gemacht, bevor man ihm glaubt (siehe [`../test/testpraxis.md`](../test/testpraxis.md), Abschnitt „Gegenproben").
+**Ein Screenshot gehört nicht dazu.** Er ist Sichtprüfung: Er zeigt einmalig, dass etwas aussieht wie erwartet, und meldet danach nie wieder etwas. Für eine neue Fehlerklasse gehört ein echter Test her, und der wird einmal absichtlich rot gemacht, bevor man ihm glaubt (siehe [`test/testpraxis.md`](../test/testpraxis.md), Abschnitt „Gegenproben").

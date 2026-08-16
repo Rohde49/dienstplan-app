@@ -96,7 +96,8 @@ describe('Druckausgabe', () => {
   })
 
   // BEKANNTER MANGEL, wird von Schritt 17 behoben (siehe
-  // docs/ablaufplaene/schritt17-druckvorschau-drucken.md).
+  // docs/ablaufplaene/schritt17-druckvorschau-drucken.md, registriert in
+  // docs/test/offene-maengel.md).
   //
   // Der Druck liefert heute zwar eine Seite, aber der letzte Tag des Monats fehlt
   // darauf: die Ansicht aus Schritt 16 ist ein Scrollcontainer, gedruckt wird nur der

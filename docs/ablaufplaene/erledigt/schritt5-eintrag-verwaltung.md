@@ -1,8 +1,8 @@
 # Ablaufplan Schritt 5: Eintrag-Verwaltung
 
-> **Abgeschlossen am 12.08.2026** (Commit `5760978`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 12.08.2026** (Commit `5760978`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
-Annahme zum Umfang: Schritt 5 verwaltet ausschließlich die Stammdaten der `Eintragsdefinition` (Dienstarten, Urlaub, Krankheit usw.), analog zur Team-Verwaltung in Schritt 4. `Dienstplan`, `Dienstplantag`, `Planeintrag` und `Rufbereitschaft` aus [`architektur/datenmodell.md`](../architektur/datenmodell.md) gehören zur späteren Planungsansicht (nächster Schritt laut `TODO.md`), nicht zu diesem Schritt. Falls das nicht stimmt, bitte vor dem Start korrigieren.
+Annahme zum Umfang: Schritt 5 verwaltet ausschließlich die Stammdaten der `Eintragsdefinition` (Dienstarten, Urlaub, Krankheit usw.), analog zur Team-Verwaltung in Schritt 4. `Dienstplan`, `Dienstplantag`, `Planeintrag` und `Rufbereitschaft` aus [`architektur/datenmodell.md`](../../architektur/datenmodell.md) gehören zur späteren Planungsansicht (nächster Schritt laut `TODO.md`), nicht zu diesem Schritt. Falls das nicht stimmt, bitte vor dem Start korrigieren.
 
 Jeder Punkt unten ist ein eigener Prompt für Claude Code: erst im Plan Mode geben, nach Freigabe umsetzen lassen, erst danach zum nächsten Punkt übergehen, jeweils mit der beschriebenen Prüfung. Vitest ist seit Schritt 4 eingerichtet, dafür entfällt hier der Setup-Schritt. Anders als bei `TeamMember` ist von Anfang an eine Bearbeiten-Funktion mitgeplant, nicht erst nachträglich ergänzt, weil „Stammdatenpflege" laut `datenmodell.md` ausdrücklich auch das Ändern bestehender Werte einschließt, nicht nur das Anlegen.
 

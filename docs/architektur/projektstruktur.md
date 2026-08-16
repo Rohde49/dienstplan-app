@@ -44,7 +44,7 @@ Ein Import aus `shared/` zurück nach `renderer/src/lib/` ist ausgeschlossen: De
 
 **Der Renderer bleibt trotzdem „dumm" gegenüber Daten**: Er ruft über die Preload-API ab, zeigt an und schickt Formulareingaben zurück. Er baut keine SQL-Abfragen und kennt `better-sqlite3` nicht.
 
-> ⚠️ Zu prüfen: Eine frühere Fassung dieser Datei verlangte, Fachlogik gehöre „in den Main-Prozess, dicht bei den Repositories". Das beschreibt den Code nicht: Sämtliche Validierung (`validateTeamMember`, `validateEintragsdefinition`, `validateBemerkung`) liegt im Renderer, die Berechnungen liegen in `shared/`, und der Main-Prozess validiert **nichts**. Für die Kennzahlen ist das eine bewusste Entscheidung (sie müssen live aus dem noch ungespeicherten Entwurf rechnen, den der Main-Prozess nicht kennt). Für die Eingabevalidierung ist es keine Entscheidung, sondern gewachsen — siehe den Eintrag in [`../test/offene-maengel.md`](../test/offene-maengel.md).
+> ⚠️ Zu prüfen: Eine frühere Fassung dieser Datei verlangte, Fachlogik gehöre „in den Main-Prozess, dicht bei den Repositories". Das beschreibt den Code nicht: Sämtliche Validierung (`validateTeamMember`, `validateEintragsdefinition`, `validateBemerkung`) liegt im Renderer, die Berechnungen liegen in `shared/`, und der Main-Prozess validiert **nichts**. Für die Kennzahlen ist das eine bewusste Entscheidung (sie müssen live aus dem noch ungespeicherten Entwurf rechnen, den der Main-Prozess nicht kennt). Für die Eingabevalidierung ist es keine Entscheidung, sondern gewachsen — siehe den Eintrag in [`test/offene-maengel.md`](../test/offene-maengel.md).
 
 ## Reihenfolge für einen neuen Fachbereich
 

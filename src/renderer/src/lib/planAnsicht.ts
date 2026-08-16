@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 // Gemeinsame Darstellungskonstanten von PlanungsGrid und VerkuerzteAnsicht.
 // Vor Schritt 17 zusammengeführt, damit der Umbau zur Druckansicht keine dritte
-// Kopie erzeugt (siehe docs/architektur/design-system.md).
+// Kopie erzeugt (siehe docs/style/design-system.md).
 
 export const FEIERTAG_FARBE = 'bg-[color-mix(in_oklch,var(--destructive)_10%,var(--card))]'
 export const WOCHENENDE_FARBE = 'bg-muted'

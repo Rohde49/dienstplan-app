@@ -1,6 +1,6 @@
 # Ablaufplan Schritt 6: Planungsansicht – Gerüst
 
-> **Abgeschlossen am 12.08.2026** (Commit `31bae38`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 12.08.2026** (Commit `31bae38`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
 Annahme zum Umfang: Schritt 6 baut ausschließlich das Grundgerüst der `PlanungsPage` (bestehende Platzhalterdatei `PlanPage.tsx`, Datei- und Routenname bleiben unverändert, nur der Seiteninhalt wird ersetzt). Es werden noch keine `Planeintrag`- oder `Rufbereitschaft`-Datensätze gesetzt, und `Dienstplan`/`Dienstplantag` werden nicht persistiert — die Kalendertage werden für die Anzeige rein berechnet, nicht in der Datenbank angelegt. Berechnete Kennzahlen, die eine Formel statt reiner Anzeige brauchen (allen voran Soll-Arbeitszeit je Mitarbeiter), sind bewusst nicht Teil dieses Schritts, sondern eines eigenen Folgeschritts. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 

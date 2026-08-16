@@ -1,6 +1,6 @@
 # Ablaufplan Schritt 13: Eintragsdefinition löschen
 
-> **Abgeschlossen am 13.08.2026** (Commit `d45716b`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `d45716b`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
 Annahme zum Umfang: Löschen einer `Eintragsdefinition` über das bestehende Bearbeiten-Formular in `EintraegePage`. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 

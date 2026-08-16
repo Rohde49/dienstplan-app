@@ -1,8 +1,8 @@
 # Ablaufplan Schritt 15: AuswertungsPage
 
-> **Abgeschlossen am 13.08.2026** (Commit `ff749d3`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `ff749d3`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
-Annahme zum Umfang: Trotz des Namens keine eigene Route, sondern ein Dialog-Overlay innerhalb der `PlanungsPage`, ausgelöst über den bestehenden, bisher deaktivierten „Auswertung"-Button im Kopfbereich. Zeigt die vollständige 15-Zeilen-Auswertung aus [`architektur/auswertung.md`](../architektur/auswertung.md), deren Berechnungslogik seit Schritt 11 vollständig als reine Funktionen in `shared/auswertung.ts` vorliegt, hier aber erstmals komplett angezeigt wird (`PlanungsGrid` nutzt bisher nur 5 der 15 Werte). Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
+Annahme zum Umfang: Trotz des Namens keine eigene Route, sondern ein Dialog-Overlay innerhalb der `PlanungsPage`, ausgelöst über den bestehenden, bisher deaktivierten „Auswertung"-Button im Kopfbereich. Zeigt die vollständige 15-Zeilen-Auswertung aus [`architektur/auswertung.md`](../../architektur/auswertung.md), deren Berechnungslogik seit Schritt 11 vollständig als reine Funktionen in `shared/auswertung.ts` vorliegt, hier aber erstmals komplett angezeigt wird (`PlanungsGrid` nutzt bisher nur 5 der 15 Werte). Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Design-Entscheidungen (Referenz für alle Punkte unten)
 

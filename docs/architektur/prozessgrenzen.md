@@ -60,4 +60,4 @@ Eine Grenze bleibt: Ein rein zusätzlicher **hinterer** Parameter fällt nicht a
 
 Die letzte Zeile ist kein Loch: Beide Seiten lesen dieselbe Konstante, eine Umbenennung bewegt sie gleichzeitig. Diese Fehlerklasse ist durch die Zentralisierung beseitigt, statt abgefangen zu werden.
 
-> ⚠️ Zu prüfen: Der Main-Prozess validiert derzeit **nichts**. Alle Eingabeprüfungen liegen im Renderer, die Handler reichen ihre Argumente ungeprüft an das Repository durch. Für ein lokales Einzelnutzer-Programm ohne Netzwerkschnittstelle ist das vertretbar, widerspricht aber der in [`datenmodell.md`](./datenmodell.md) für `Rufbereitschaft` festgehaltenen Vorgabe. Siehe [`../test/offene-maengel.md`](../test/offene-maengel.md).
+> ⚠️ Zu prüfen: Der Main-Prozess validiert derzeit **nichts**. Alle Eingabeprüfungen liegen im Renderer, die Handler reichen ihre Argumente ungeprüft an das Repository durch. Für ein lokales Einzelnutzer-Programm ohne Netzwerkschnittstelle ist das vertretbar, widerspricht aber der in [`datenmodell.md`](./datenmodell.md) für `Rufbereitschaft` festgehaltenen Vorgabe. Siehe [`test/offene-maengel.md`](../test/offene-maengel.md).

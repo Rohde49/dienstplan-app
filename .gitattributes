@@ -2,5 +2,5 @@
 # lokaler/globaler/system-weiter core.autocrlf-Einstellung (z. B. Git for
 # Windows installiert core.autocrlf=true system-weit). Ohne diese Datei
 # checkt Git Text-Dateien mit CRLF im Arbeitsbaum aus, obwohl das Repository
-# LF speichert (siehe docs/entwicklungstagebuch.md).
+# LF speichert (Ursachenanalyse siehe docs/tagebuch/2026-kw33.md, 13.08.2026).
 * text=auto eol=lf

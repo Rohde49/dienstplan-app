@@ -1,8 +1,8 @@
 # Ablaufplan Schritt 8: Planeintrag – Setzen und Bearbeiten
 
-> **Abgeschlossen am 13.08.2026** (Commit `8ddaaeb`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `8ddaaeb`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
-Annahme zum Umfang: Dieser Schritt behandelt das Setzen, Ändern und Entfernen von `Planeintrag`-Datensätzen im Grid der `PlanungsPage`, aufbauend auf der in Schritt 7 gebauten Dienstplan-Persistenz. `Rufbereitschaft`, die Bemerkung-Spalte und alle berechneten Kennzahlen (Δ Soll/Ist, Dienste-Zähler, Ist-Arbeitszeit-Summen) sind weiterhin nicht Teil dieses Schritts, siehe [`temp/temp-PlanungPage.md`](../temp/temp-PlanungPage.md) für die dafür noch offenen Fragen. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
+Annahme zum Umfang: Dieser Schritt behandelt das Setzen, Ändern und Entfernen von `Planeintrag`-Datensätzen im Grid der `PlanungsPage`, aufbauend auf der in Schritt 7 gebauten Dienstplan-Persistenz. `Rufbereitschaft`, die Bemerkung-Spalte und alle berechneten Kennzahlen (Δ Soll/Ist, Dienste-Zähler, Ist-Arbeitszeit-Summen) sind weiterhin nicht Teil dieses Schritts, siehe `temp/temp-PlanungPage.md` für die dafür noch offenen Fragen. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Design-Entscheidungen (Referenz für alle Punkte unten)
 

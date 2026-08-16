@@ -24,7 +24,7 @@ Gelten für die gesamte App, nicht nur für einzelne Bereiche. Bei Konflikt gehe
 | Prinzip                       | Konkret                                                                                                                                                                      |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Responsiv**                 | Über den ganzen sinnvollen Fenstergrößenbereich funktionsfähig, nicht nur bei einer angenommenen Zielgröße. Breakpoints gegen die echten Fenstergrößen prüfen (siehe unten). |
-| **Zentral statt dupliziert**  | Wiederkehrende Bausteine einmal anlegen und von dort verwenden. Die Kategorie ergibt sich aus [`../architektur/projektstruktur.md`](../architektur/projektstruktur.md).      |
+| **Zentral statt dupliziert**  | Wiederkehrende Bausteine einmal anlegen und von dort verwenden. Die Kategorie ergibt sich aus [`architektur/projektstruktur.md`](../architektur/projektstruktur.md).         |
 | **Konsequente Farbbedeutung** | Jede Farbe behält im gesamten Frontend dieselbe Bedeutung. Vor einem neuen Farbwert prüfen, ob ein bestehendes Token semantisch passt.                                       |
 | **Sichtbares Feedback**       | Jede Aktion, die fehlschlagen kann, gibt unmittelbar Rückmeldung — Validierung vor dem Absenden, Fehler am Feld, keine stillen Fehlschläge.                                  |
 
@@ -163,7 +163,7 @@ Bewusst offen gelassen, jeweils mit Grund:
 - **`Collapsible` hat keine eigene Optik.** Reicht die Radix-Primitives ohne `cn()` durch; das Aussehen entsteht vollständig an der einzigen Aufrufstelle (`EintraegePage`). Solange es dabei bleibt, wäre eine Vereinheitlichung Vorratsarbeit. Bei der zweiten Aufrufstelle nachziehen.
 - **Kein `--popover`-Token.** Popover, Select und Dialog nutzen `bg-card`. Solange es nur eine erhabene Flächenfarbe gibt, wäre ein zweites Token ohne Unterschied.
 - **`text-[9px]` und `text-[11px]`** in `PlanungsGrid` (viermal) und `VerkuerzteAnsicht` (einmal). Sie stammen aus der Platznot der Kennzahlen-Kopfzeile. Bei der Umstellung auf die Druckansicht (Schritt 17) prüfen, ob sie noch nötig sind.
-- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Siehe [`../architektur/projektstruktur.md`](../architektur/projektstruktur.md), Abschnitt „Bekannte Abweichungen".
+- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Siehe [`architektur/projektstruktur.md`](../architektur/projektstruktur.md), Abschnitt „Bekannte Abweichungen".
 - **Zwei Tabellensysteme.** `Table` für Stammdaten, handgebaute `<table>` für Raster und Auswertung (nötig wegen `colgroup` und `sticky`). Die Kopfzellen-Optik ist in beiden gleich, aber nicht geteilt.
 
 ## Geteilte Darstellungslogik

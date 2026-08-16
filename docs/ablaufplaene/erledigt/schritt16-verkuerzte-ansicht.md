@@ -1,6 +1,6 @@
 # Ablaufplan Schritt 16: Verkürzte Ansicht
 
-> **Abgeschlossen am 14.08.2026** (Commit `65092dc`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 14.08.2026** (Commit `65092dc`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
 Annahme zum Umfang: Aktiviert den bestehenden, bisher deaktivierten Planform-Umschalter „Planung"/„Druckvorschau" im Kopfbereich der `PlanungsPage` und ergänzt dafür eine neue, rein lesende Komponente mit einer kompakten Darstellung des Dienstplans (eine Spalte je Mitarbeiter statt drei Unterspalten). Kein PDF-Export, kein Windows-Druckdialog in diesem Schritt — das ist ein eigener, späterer Schritt (siehe `TODO.md`, „Geplante nächste Schritte"). Hier entsteht lediglich ein deaktivierter Platzhalter-Button „Drucken". Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 

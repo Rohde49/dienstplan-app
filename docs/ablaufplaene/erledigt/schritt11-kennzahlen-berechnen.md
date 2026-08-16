@@ -1,8 +1,8 @@
 # Ablaufplan Schritt 11: Berechnete Kennzahlen
 
-> **Abgeschlossen am 13.08.2026** (Commit `caffece`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `caffece`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
-Annahme zum Umfang: Dieser Schritt implementiert die vollständige Berechnungslogik für alle 15 Kennzahlen aus [`architektur/auswertung.md`](../architektur/auswertung.md), verdrahtet davon aber zunächst nur die fünf Platzhalter, die bereits seit Schritt 6/8 in `PlanungsGrid.tsx` angelegt sind (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll). Die übrigen zehn Zeilen (u. a. Nachtzuschläge, Anzahl Arbeitstage als eigene Anzeige, Anzahl Rufbereitschaften als eigene Anzeige) werden mitimplementiert und mitgetestet, aber noch nirgends angezeigt — sie sind für die separat geplante `AuswertungsPage` vorgesehen. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
+Annahme zum Umfang: Dieser Schritt implementiert die vollständige Berechnungslogik für alle 15 Kennzahlen aus [`architektur/auswertung.md`](../../architektur/auswertung.md), verdrahtet davon aber zunächst nur die fünf Platzhalter, die bereits seit Schritt 6/8 in `PlanungsGrid.tsx` angelegt sind (SN/F-Dienste, Freie Tage, Δ Soll/Ist, Ist, Soll). Die übrigen zehn Zeilen (u. a. Nachtzuschläge, Anzahl Arbeitstage als eigene Anzeige, Anzahl Rufbereitschaften als eigene Anzeige) werden mitimplementiert und mitgetestet, aber noch nirgends angezeigt — sie sind für die separat geplante `AuswertungsPage` vorgesehen. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Design-Entscheidungen (Referenz für alle Punkte unten)
 

@@ -8,12 +8,14 @@ Dienstplan-Desktop-App: eine Windows-Desktop-Anwendung zur Dienstplanverwaltung.
 
 ## Aktueller Stand & geplante Reihenfolge
 
-Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.md) gepflegt (Checkliste je Schritt, aktueller Schritt dort oben markiert), Verlauf und Begründungen einzelner Entscheidungen in [`docs/entwicklungstagebuch.md`](./docs/entwicklungstagebuch.md). Vor Beginn eines neuen Schritts `docs/TODO.md` und den zugehörigen Ablaufplan unter [`docs/ablaufplaene/`](./docs/ablaufplaene) lesen, um den tatsächlichen Stand zu kennen statt ihn hier zu vermuten — diese Datei dupliziert den Fortschritt bewusst nicht, damit er nicht wie zuvor auseinanderlaufen kann.
+Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.md) gepflegt, Abgeschlossenes in [`docs/erledigt.md`](./docs/erledigt.md), Verlauf und Begründungen einzelner Entscheidungen im Tagebuch unter [`docs/tagebuch/`](./docs/tagebuch) (eine Datei je Kalenderwoche, Index in dessen `README.md`). Vor Beginn eines neuen Schritts `docs/TODO.md` und den zugehörigen Ablaufplan unter [`docs/ablaufplaene/`](./docs/ablaufplaene) lesen, um den tatsächlichen Stand zu kennen statt ihn hier zu vermuten — diese Datei dupliziert den Fortschritt bewusst nicht, damit er nicht wie zuvor auseinanderlaufen kann.
+
+Wegweiser durch die gesamte Dokumentation: [`docs/README.md`](./docs/README.md). Nach Code-Änderungen die betroffene Doku mit `/doku-pflege` nachziehen, Ablageregeln siehe [`docs/workflow/doku-pflege.md`](./docs/workflow/doku-pflege.md).
 
 ### Datenbank
 
 - `src/main/db.ts` — öffnet `better-sqlite3`-DB unter `app.getPath('userData')/dienstplan.db` (WAL-Modus), exportiert die `db`-Instanz und `runDbSmokeTest()`
-- Repository-Module (z. B. `src/main/db/teamRepository.ts`) importieren die globale `db`-Instanz nicht selbst, sondern nehmen die Verbindung als Parameter entgegen — Verdrahtung mit der echten Instanz passiert erst in den IPC-Handlern (`src/main/ipc/`). Grund und Testkonsequenz siehe [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md).
+- Repository-Module (z. B. `src/main/db/teamRepository.ts`) importieren die globale `db`-Instanz nicht selbst, sondern nehmen die Verbindung als Parameter entgegen — Verdrahtung mit der echten Instanz passiert erst in den IPC-Handlern (`src/main/ipc/`). Grund und Testkonsequenz siehe [`docs/architektur/prozessgrenzen.md`](./docs/architektur/prozessgrenzen.md).
 - `better-sqlite3` v13 nutzt N-API-Prebuilds (im Paket enthalten) — kein `electron-rebuild`/`node-gyp` nötig, funktioniert direkt im Electron-Main-Prozess
 - Reines Main-Prozess-Modul — Renderer darf `better-sqlite3` nicht direkt importieren, Zugriff nur über IPC/Preload-Bridge (analog zum `ping`-Beispiel)
 
@@ -29,7 +31,7 @@ Fortschritt und Planung werden ausschließlich in [`docs/TODO.md`](./docs/TODO.m
 - `npm run build` — Typecheck + Produktions-Build
 - `npm run build:win` — Windows-Installer via `electron-builder` (einziges relevantes Build-Target laut `docs/TODO.md`)
 
-Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht getestet wird: [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md) — vor dem Schreiben neuer Tests lesen.
+Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht getestet wird: [`docs/test/teststrategie.md`](./docs/test/teststrategie.md) — vor dem Schreiben neuer Tests lesen.
 
 ### Projektstruktur
 
@@ -42,7 +44,7 @@ Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht gete
 - `src/shared/ipcKanaele.ts` — einzige Quelle der IPC-Kanalnamen; Preload und Handler greifen beide darauf zu, ein Vertragstest prüft die Vollständigkeit
 - `src/test/` — Testhilfen für alle Ebenen: `apiFake.ts` (typisierter `window.api`-Ersatz), `datenbank.ts`, `factories.ts`, `setup.renderer.ts`
 - `e2e/` — Playwright-Tests gegen die gebaute App, inklusive automatisierter Druckprüfung über `printToPDF`
-- `docs/` — Projektdokumentation, siehe [`docs/README.md`](./docs/README.md) für die Übersicht. Vor UI-Arbeit [`docs/architektur/design-system.md`](./docs/architektur/design-system.md) lesen: Tokens, Skalen, Zustände und Barrierefreiheits-Mindestanforderungen sind dort verbindlich festgehalten
+- `docs/` — Projektdokumentation, siehe [`docs/README.md`](./docs/README.md) für die Übersicht. Vor UI-Arbeit [`docs/style/design-system.md`](./docs/style/design-system.md) und [`docs/style/barrierefreiheit.md`](./docs/style/barrierefreiheit.md) lesen: Tokens, Skalen, Zustände und die Barrierefreiheits-Mindestanforderungen sind dort verbindlich festgehalten
 - `electron.vite.config.ts` — Build-Konfiguration für alle drei Prozesse
 - `electron-builder.yml` — Packaging-Konfiguration
 - `tsconfig.node.json` / `tsconfig.web.json` — getrennte TS-Konfiguration für Main/Preload vs. Renderer
@@ -64,6 +66,6 @@ Begründung und Details zur Ordnerstruktur siehe [`docs/architektur/projektstruk
 - Aufträge konkret formulieren: Datei/Bereich benennen, gewünschtes Verhalten beschreiben, auf bestehende Muster im Code verweisen statt vager Anweisungen
 - Nach zwei erfolglosen Korrekturversuchen am selben Problem: `/clear` und Auftrag präziser neu formulieren, statt weiter zu flicken
 - `/clear` zwischen thematisch unabhängigen Aufgaben, um den Kontext sauber zu halten
-- Wo möglich eine Prüfmöglichkeit schaffen (Tests, TypeScript-Compiler) — ohne Prüfsignal wird kaputter Code nicht selbst erkannt. Die passende Ebene dafür ergibt sich aus [`docs/architektur/teststrategie.md`](./docs/architektur/teststrategie.md); ein Screenshot ist Sichtprüfung, kein Prüfsignal
+- Wo möglich eine Prüfmöglichkeit schaffen (Tests, TypeScript-Compiler) — ohne Prüfsignal wird kaputter Code nicht selbst erkannt. Die passende Ebene dafür ergibt sich aus [`docs/test/teststrategie.md`](./docs/test/teststrategie.md); ein Screenshot ist Sichtprüfung, kein Prüfsignal
 - Nach einem neuen Test, der eine bisher ungeprüfte Fehlerklasse abdeckt: einmal die geprüfte Eigenschaft absichtlich verletzen, Rotwerden bestätigen, Verletzung zurücknehmen — ein Test, der nie fehlschlägt, ist wertlos
 - Kommunikation in diesem Projekt erfolgt auf Deutsch

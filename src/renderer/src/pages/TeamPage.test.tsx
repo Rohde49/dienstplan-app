@@ -7,7 +7,7 @@ import { installiereApiFake } from '../../../test/apiFake'
 import { neuerMitarbeiter } from '../../../test/factories'
 import type { TeamMember } from '../../../shared/types'
 
-// Muster für Komponententests (Ebene 3, siehe docs/architektur/teststrategie.md):
+// Muster für Komponententests (Ebene 3, siehe docs/test/teststrategie.md):
 // Gerendert wird die echte Seite mit ihren echten Kindkomponenten, ersetzt wird nur
 // die Prozessgrenze — window.api. Bedient wird ausschließlich über zugängliche
 // Rollen und Beschriftungen, nie über CSS-Klassen oder Testids: ein Feld, das der

@@ -2,7 +2,7 @@
 
 > **Diese Datei beschreibt nicht den aktuellen Stand.** Sie hält fest, _warum_ das Styling-Fundament so gewählt wurde und wie die Farbpalette entstanden ist — einschließlich zweier Entscheidungen, die später revidiert wurden. Was heute gilt, steht in [`design-system.md`](./design-system.md) und [`barrierefreiheit.md`](./barrierefreiheit.md). **Bei jedem Widerspruch gilt `design-system.md`.**
 
-Eigene Datei, weil Begründung und Detailtiefe mit den anderen Architekturentscheidungen vergleichbar sind, siehe [`../architektur/technologieentscheidungen.md`](../architektur/technologieentscheidungen.md).
+Eigene Datei, weil Begründung und Detailtiefe mit den anderen Architekturentscheidungen vergleichbar sind, siehe [`architektur/technologieentscheidungen.md`](../architektur/technologieentscheidungen.md).
 
 ## Referenzprojekt
 

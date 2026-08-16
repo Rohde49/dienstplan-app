@@ -1,8 +1,8 @@
 # Ablaufplan Schritt 9: Rufbereitschaft – Setzen, Ändern und Entfernen
 
-> **Abgeschlossen am 13.08.2026** (Commit `7af24c2`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `7af24c2`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
-Annahme zum Umfang: Dieser Schritt behandelt das Setzen, Ändern und Entfernen von `Rufbereitschaft`-Datensätzen in der Rufbereitschaft-Spalte der `PlanungsPage`, nach demselben Muster wie `Planeintrag` in Schritt 8. Die Bemerkung-Spalte und alle berechneten Kennzahlen sind weiterhin nicht Teil dieses Schritts, siehe [`temp/temp-PlanungPage.md`](../temp/temp-PlanungPage.md). Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
+Annahme zum Umfang: Dieser Schritt behandelt das Setzen, Ändern und Entfernen von `Rufbereitschaft`-Datensätzen in der Rufbereitschaft-Spalte der `PlanungsPage`, nach demselben Muster wie `Planeintrag` in Schritt 8. Die Bemerkung-Spalte und alle berechneten Kennzahlen sind weiterhin nicht Teil dieses Schritts, siehe `temp/temp-PlanungPage.md`. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 
 ## Design-Entscheidungen (Referenz für alle Punkte unten)
 

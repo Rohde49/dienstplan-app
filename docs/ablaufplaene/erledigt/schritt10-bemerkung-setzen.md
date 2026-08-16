@@ -1,6 +1,6 @@
 # Ablaufplan Schritt 10: Bemerkung – Setzen und Bearbeiten
 
-> **Abgeschlossen am 13.08.2026** (Commit `74d2ab8`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`../../TODO.md`](../../TODO.md) und [`../../erledigt.md`](../../erledigt.md).
+> **Abgeschlossen am 13.08.2026** (Commit `74d2ab8`). Historisches Dokument: Der Prompt-Verlauf bleibt unverändert, auch wo der Code sich seitdem weiterentwickelt hat. Aktueller Stand siehe [`TODO.md`](../../TODO.md) und [`erledigt.md`](../../erledigt.md).
 
 Annahme zum Umfang: Dieser Schritt behandelt das Setzen und Ändern von `Dienstplantag.bemerkung` in der Bemerkung-Spalte der `PlanungsPage`. Danach sind aus dem ursprünglichen Fahrplan für die Planungsansicht nur noch die berechneten Kennzahlen offen (eigener, separat geplanter Ablaufplan), siehe `docs/TODO.md`. Falls das nicht mehr stimmt, bitte vor dem Start korrigieren.
 

@@ -25,7 +25,7 @@ Kein Produktivcode, aber von beiden tsconfigs erfasst — sonst wäre die Typabs
 | [`factories.ts`](../../src/test/factories.ts)           | Testdaten-Fabriken: sinnvoller Standardfall plus punktuelle Overrides                               |
 | [`setup.renderer.ts`](../../src/test/setup.renderer.ts) | jsdom-Setup inklusive der Polyfills, die Radix braucht                                              |
 
-**Warum das Fake seinen Typ aus dem Preload bezieht:** Der Rückgabetyp von `apiFake.ts` ist die aus [`src/preload/index.d.ts`](../../src/preload/index.d.ts) exportierte `interface API`. Ändert sich dort eine Signatur, bricht der Typecheck im Fake — der Vertrag wird vom Compiler bewacht statt von Disziplin. Details in [`../architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md).
+**Warum das Fake seinen Typ aus dem Preload bezieht:** Der Rückgabetyp von `apiFake.ts` ist die aus [`src/preload/index.d.ts`](../../src/preload/index.d.ts) exportierte `interface API`. Ändert sich dort eine Signatur, bricht der Typecheck im Fake — der Vertrag wird vom Compiler bewacht statt von Disziplin. Details in [`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md).
 
 **Warum Fabriken statt Objektliteralen:** Ein Test nennt nur die Felder, um die es ihm geht. Kommt ein Pflichtfeld zur Entität hinzu, ist genau eine Stelle anzupassen statt jeder Testdatei.
 

@@ -42,7 +42,7 @@ Gerendert wird die echte Seite mit ihren echten Kindkomponenten; ersetzt wird au
 
 **Das `window.api`-Fake** ([`src/test/apiFake.ts`](../../src/test/apiFake.ts)) hält die Daten im Speicher und verhält sich fachlich wie die echten Handler. Sein Rückgabetyp ist der aus [`src/preload/index.d.ts`](../../src/preload/index.d.ts) exportierte Typ `API`: Ändert sich dort eine Signatur, schlägt `npm run typecheck` im Fake fehl. Der Vertrag zwischen Renderer und Main wird damit vom Compiler bewacht statt von Disziplin. (Grenze: Ein rein zusätzlicher hinterer Parameter fällt nicht auf, weil TypeScript Funktionen mit weniger Parametern zulässt — diesen Fall fängt der aufrufende Anwendungscode ab.)
 
-**Bedienung ausschließlich über zugängliche Rollen und Beschriftungen**, nie über CSS-Klassen oder Testids. Das ist keine Stilfrage: Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht — die Mindestanforderungen aus [`../style/barrierefreiheit.md`](../style/barrierefreiheit.md) werden dadurch nebenbei mitgeprüft.
+**Bedienung ausschließlich über zugängliche Rollen und Beschriftungen**, nie über CSS-Klassen oder Testids. Das ist keine Stilfrage: Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht — die Mindestanforderungen aus [`style/barrierefreiheit.md`](../style/barrierefreiheit.md) werden dadurch nebenbei mitgeprüft.
 
 **Dateiendungen entscheiden über die Umgebung**: `.test.tsx` und `.dom.test.ts` laufen in jsdom, alles andere in Node. Ein DOM kostet pro Testdatei spürbar Startzeit — deshalb nur dort, wo er gebraucht wird. Die reinen Funktionen unter `renderer/src/lib/` bleiben bewusst auf Ebene 1.
 

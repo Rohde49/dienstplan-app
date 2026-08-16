@@ -9,7 +9,7 @@ Ursprünglich eine Momentaufnahme vom 15.08.2026. Beim Doku-Umbau am 16.08.2026 
 | Bereich                 | Status                                                                                          | Bewertung |
 | ----------------------- | ----------------------------------------------------------------------------------------------- | --------- |
 | `CLAUDE.md`             | verweist auf `docs/` statt zu duplizieren, Workflow-Konventionen enthalten                      | ✅        |
-| Projektdokumentation    | `docs/` nach Bereichen gegliedert, siehe [`../README.md`](../README.md)                         | ✅        |
+| Projektdokumentation    | `docs/` nach Bereichen gegliedert, siehe [`README.md`](../README.md)                            | ✅        |
 | Prüfsignale (lokal)     | `typecheck` (node + web getrennt), `lint`, `test` (19 Dateien / 174 Fälle), `test:e2e`, `build` | ✅        |
 | Testebenen              | fünf, inklusive Komponententests, IPC-Vertragstest und automatisierter Druckprüfung             | ✅        |
 | Aktive Plugins          | `plugin-dev`, `frontend-design`, `claude-code-setup`, `code-review` (global aktiviert)          | ✅        |
@@ -68,7 +68,7 @@ Das Projekt hat einen stark wiederholten Arbeitsablauf, der heute in Prosa in `d
 
 `disable-model-invocation: true` bedeutet: nur per Slash-Befehl aufrufbar, Claude startet den Ablauf nicht von sich aus. Für alles, was schreibt oder committet, ist das zwingend.
 
-Die Empfehlung `app-screenshot` ist **entfallen**: Druckausgabe, Durchstich und Prozessgrenze sind seit dem 16.08.2026 über die E2E-Ebene automatisiert. Was bleibt, ist die schnelle Sichtprüfung — deren eine Regel („laufende Dev-Instanz weiterverwenden") steht jetzt in [`../test/testpraxis.md`](../test/testpraxis.md).
+Die Empfehlung `app-screenshot` ist **entfallen**: Druckausgabe, Durchstich und Prozessgrenze sind seit dem 16.08.2026 über die E2E-Ebene automatisiert. Was bleibt, ist die schnelle Sichtprüfung — deren eine Regel („laufende Dev-Instanz weiterverwenden") steht jetzt in [`test/testpraxis.md`](../test/testpraxis.md).
 
 ## 5. Subagenten
 
@@ -77,7 +77,7 @@ Die Empfehlung `app-screenshot` ist **entfallen**: Druckausgabe, Durchstich und 
 | **`ipc-pruefer`**           | Die wichtigste Architekturregel ist unsichtbar: Ein Verstoß gegen die Prozessgrenzen fällt weder Typecheck noch Tests auf, sondern erst zur Laufzeit                                 | **hoch**  |
 | **`design-system-pruefer`** | Tokens, Skalen und Barrierefreiheits-Mindestanforderungen sind verbindlich festgelegt; ein Agent, der UI-Änderungen dagegen prüft, hält das Design-System nach Schritt 17 ff. stabil | mittel    |
 
-Beide Prompts sollten auf die zuständigen Dokumente verweisen ([`../architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md) bzw. [`../style/design-system.md`](../style/design-system.md)), statt die Regeln zu wiederholen — sonst entsteht eine dritte Fassung, die veraltet.
+Beide Prompts sollten auf die zuständigen Dokumente verweisen ([`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md) bzw. [`style/design-system.md`](../style/design-system.md)), statt die Regeln zu wiederholen — sonst entsteht eine dritte Fassung, die veraltet.
 
 ## 6. MCP-Server
 

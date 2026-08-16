@@ -17,7 +17,7 @@ Herausgelöst aus dem Design-System, weil die Prüfung sonst zwischen Farbwerten
 | **Überschriften** über `CardTitle as="h1                                                                                                                      | h2                                                                                          | h3"`statt optisch großer`div`s | Das Dokument hatte zuvor keine einzige echte Überschrift |
 | Sprache und Titel des Dokuments stehen in `src/renderer/index.html` (`lang="de"`)                                                                             | Beides stand unverändert auf Template-Stand („Electron", kein `lang`)                       |
 
-Die Komponententests auf Ebene 3 bedienen die Oberfläche ausschließlich über zugängliche Rollen und Beschriftungen. Das ist kein Stil, sondern der Grund, warum diese Anforderungen nicht nur auf dem Papier stehen: **Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht.** Siehe [`../test/teststrategie.md`](../test/teststrategie.md), Ebene 3.
+Die Komponententests auf Ebene 3 bedienen die Oberfläche ausschließlich über zugängliche Rollen und Beschriftungen. Das ist kein Stil, sondern der Grund, warum diese Anforderungen nicht nur auf dem Papier stehen: **Ein Feld, das der Screenreader nicht findet, findet der Test auch nicht.** Siehe [`test/teststrategie.md`](../test/teststrategie.md), Ebene 3.
 
 ## Der schwerwiegendste Befund
 

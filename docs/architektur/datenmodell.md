@@ -42,7 +42,7 @@ interface TeamMember {
 
 **`wochenarbeitszeitMinuten` als Zahl in Minuten**: Zeitwerte werden in der gesamten App im Format HH:MM dargestellt und eingegeben, das betrifft aber nur Anzeige und Eingabe. Intern wird die Wochenarbeitszeit als Minutenzahl gespeichert (z. B. 39h = 2340), weil spätere Berechnungen (Soll-/Ist-Vergleich, Summenbildung über einen Monat) mit einer Zahl fehlerfrei möglich sind, während ein String wie `"39:00"` bei jeder Rechnung neu geparst werden müsste. Die Umrechnung HH:MM ↔ Minuten erfolgt an der UI-Grenze (Renderer).
 
-**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Zehn kräftige, gut unterscheidbare Farbtöne, bewusst getrennt vom Theme-Akzent — kein Grauton (für UI-Chrome reserviert) und keine zu große Nähe zum `--destructive`-Rotton (um Verwechslung mit Fehler-/Lösch-Zuständen zu vermeiden). Herleitung der Palette siehe [`../style/grundlagen.md`](../style/grundlagen.md), ihre Darstellung im Raster siehe [`../style/design-system.md`](../style/design-system.md).
+**`farbe` als Hex-String aus fester Palette**: Auswahl aus einer vordefinierten Palette statt freier Farbwahl, um Lesbarkeit und Unterscheidbarkeit der Mitglieder im Dienstplan zu garantieren. Zehn kräftige, gut unterscheidbare Farbtöne, bewusst getrennt vom Theme-Akzent — kein Grauton (für UI-Chrome reserviert) und keine zu große Nähe zum `--destructive`-Rotton (um Verwechslung mit Fehler-/Lösch-Zuständen zu vermeiden). Herleitung der Palette siehe [`style/grundlagen.md`](../style/grundlagen.md), ihre Darstellung im Raster siehe [`style/design-system.md`](../style/design-system.md).
 
 **Der Farbname gehört zur Datenstruktur, nicht in einen Kommentar.** Die Palette liegt deshalb als Objektliste vor, nicht als Liste von Hex-Werten — die Farbauswahl braucht den Namen als Beschriftung, sonst sagt der Screenreader den Hex-Code an und die Auswahl ist rein farblich erkennbar:
 
@@ -202,7 +202,7 @@ interface Rufbereitschaft {
 
 **Nur `TeamMember` mit `rolle: 'Erzieher'` zulässig**: Fachliche Regel, die über die reine Typstruktur (`teamMemberId: number`) hinausgeht.
 
-> ⚠️ Zu prüfen: Diese Regel ist nur in der Auswahl-UI umgesetzt (`RufbereitschaftAuswahl` filtert die Liste auf Erzieher). Der Main-Prozess prüft sie nicht — ursprünglich stand hier, sie „muss auch bei der Verarbeitung im Main-Prozess geprüft werden", was den Code nie beschrieben hat. Praktisch folgenlos, solange die UI die einzige Eingabequelle ist; festgehalten in [`../test/offene-maengel.md`](../test/offene-maengel.md).
+> ⚠️ Zu prüfen: Diese Regel ist nur in der Auswahl-UI umgesetzt (`RufbereitschaftAuswahl` filtert die Liste auf Erzieher). Der Main-Prozess prüft sie nicht — ursprünglich stand hier, sie „muss auch bei der Verarbeitung im Main-Prozess geprüft werden", was den Code nie beschrieben hat. Praktisch folgenlos, solange die UI die einzige Eingabequelle ist; festgehalten in [`test/offene-maengel.md`](../test/offene-maengel.md).
 
 **Höchstens eine Rufbereitschaft pro Kalendertag**: Anders als bei `Planeintrag` ist hier `dienstplantagId` allein eindeutig (`UNIQUE`), nicht die Kombination mit `teamMemberId` — pro Tag ist unabhängig von der Person nur eine einzige Rufbereitschaft zulässig.
 
