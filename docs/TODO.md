@@ -16,7 +16,6 @@ Kein Schritt aktuell in Arbeit.
 ## Technik und Infrastruktur
 
 - [ ] **Packaging mit `electron-builder`** (Windows-Installer über `npm run build:win`). Der letzte geplante Schritt des Projekts. `electron-builder.yml` ist seit dem 17.08.2026 auf das Projekt umgestellt und `build:unpack` erzeugt ein korrekt benanntes Paket — offen ist der signierte Installer selbst.
-- [ ] **CI-Workflow** `.github/workflows/ci.yml`: `lint`, `typecheck`, `test` bei Push und PR, dazu `build` und `test:e2e` auf einem Windows-Runner. Größter verbleibender Einzelzugewinn — bis dahin laufen alle Prüfungen nur, wenn jemand daran denkt. **Vorher zu klären:** `npm ci` scheitert ohne Python/Build-Tools, siehe [`test/offene-maengel.md`](./test/offene-maengel.md).
 - [ ] **Hooks für Prettier und gezielten Typecheck** nach `Edit`/`Write`, siehe [`workflow/setup-empfehlungen.md`](./workflow/setup-empfehlungen.md), Abschnitt 3.
 - [ ] **Skills `schritt-start` und `schritt-abschluss`** — der am häufigsten wiederholte Ablauf im Projekt.
 
@@ -33,7 +32,6 @@ Vollständig im Register [`test/offene-maengel.md`](./test/offene-maengel.md). K
 | ----------------------------------------- | ----------------- | -------------- |
 | Druck verliert den letzten Tag des Monats | `it.fails` in E2E | PDF-Export     |
 | Main-Prozess validiert keine Eingabe      | keines            | zu entscheiden |
-| `npm ci` braucht Python/Build-Tools       | keines            | mit dem CI     |
 | Toter Scaffold-Code                       | keines            | siehe „Ideen"  |
 
 ## Ideen und Später

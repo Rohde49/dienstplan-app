@@ -32,7 +32,7 @@ Wegweiser durch die gesamte Dokumentation: [`docs/README.md`](./docs/README.md).
 - `npm run build` — Typecheck + Produktions-Build
 - `npm run build:win` — Windows-Installer via `electron-builder` (einziges Build-Target; mac/Linux wurden entfernt)
 
-> `npm ci` scheitert auf einem Rechner ohne Python/Build-Tools, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist er nicht — die Prebuilds liegen im Paket. Siehe [`docs/test/offene-maengel.md`](./docs/test/offene-maengel.md).
+> Auf einem frischen Rechner **`npm ci --ignore-scripts`** verwenden, gefolgt von `node node_modules/electron/install.js`. Ohne das Flag startet npm für `better-sqlite3` einen `node-gyp`-Build und scheitert ohne Python/Build-Tools. Nötig ist der Build nicht — die N-API-Prebuilds aller Plattformen liegen im Paket. Der CI-Workflow geht denselben Weg, siehe [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht getestet wird: [`docs/test/teststrategie.md`](./docs/test/teststrategie.md) — vor dem Schreiben neuer Tests lesen.
 

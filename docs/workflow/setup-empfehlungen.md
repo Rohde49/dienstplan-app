@@ -6,23 +6,23 @@ Ursprünglich eine Momentaufnahme vom 15.08.2026. Beim Doku-Umbau am 16.08.2026 
 
 ## 1. Ist-Zustand
 
-| Bereich                 | Status                                                                                          | Bewertung |
-| ----------------------- | ----------------------------------------------------------------------------------------------- | --------- |
-| `CLAUDE.md`             | verweist auf `docs/` statt zu duplizieren, Workflow-Konventionen enthalten                      | ✅        |
-| Projektdokumentation    | `docs/` nach Bereichen gegliedert, siehe [`README.md`](../README.md)                            | ✅        |
-| Prüfsignale (lokal)     | `typecheck` (node + web getrennt), `lint`, `test` (21 Dateien / 183 Fälle), `test:e2e`, `build` | ✅        |
-| Testebenen              | fünf, inklusive Komponententests, IPC-Vertragstest und automatisierter Druckprüfung             | ✅        |
-| Aktive Plugins          | `plugin-dev`, `frontend-design`, `claude-code-setup`, `code-review` (global aktiviert)          | ✅        |
-| Permission-Modus        | global `defaultMode: "auto"`                                                                    | ✅        |
-| Projekt-`settings.json` | angelegt beim Doku-Umbau, enthält den Stop-Hook zur Doku-Erinnerung                             | ✅        |
-| Projekt-Skills          | `/doku-pflege` vorhanden; `schritt-start`/`schritt-abschluss` weiterhin offen                   | ⚠️        |
-| Hooks                   | Stop-Hook für die Doku-Erinnerung; Prettier-/Typecheck-Hooks weiterhin offen                    | ⚠️        |
-| Permission-Allowlist    | in `.claude/settings.json` für die harmlosen npm-Skripte hinterlegt                             | ✅        |
-| Subagenten              | keine (`.claude/agents/` fehlt)                                                                 | ❌        |
-| MCP-Server              | keine (`.mcp.json` fehlt)                                                                       | ⚠️        |
-| CI                      | kein `.github/` — trotz GitHub-Remote laufen alle Prüfungen nur lokal                           | ❌        |
+| Bereich                 | Status                                                                                           | Bewertung |
+| ----------------------- | ------------------------------------------------------------------------------------------------ | --------- |
+| `CLAUDE.md`             | verweist auf `docs/` statt zu duplizieren, Workflow-Konventionen enthalten                       | ✅        |
+| Projektdokumentation    | `docs/` nach Bereichen gegliedert, siehe [`README.md`](../README.md)                             | ✅        |
+| Prüfsignale (lokal)     | `typecheck` (node + web getrennt), `lint`, `test` (21 Dateien / 183 Fälle), `test:e2e`, `build`  | ✅        |
+| Testebenen              | fünf, inklusive Komponententests, IPC-Vertragstest und automatisierter Druckprüfung              | ✅        |
+| Aktive Plugins          | `plugin-dev`, `frontend-design`, `claude-code-setup`, `code-review` (global aktiviert)           | ✅        |
+| Permission-Modus        | global `defaultMode: "auto"`                                                                     | ✅        |
+| Projekt-`settings.json` | angelegt beim Doku-Umbau, enthält den Stop-Hook zur Doku-Erinnerung                              | ✅        |
+| Projekt-Skills          | `/doku-pflege` vorhanden; `schritt-start`/`schritt-abschluss` weiterhin offen                    | ⚠️        |
+| Hooks                   | Stop-Hook für die Doku-Erinnerung; Prettier-/Typecheck-Hooks weiterhin offen                     | ⚠️        |
+| Permission-Allowlist    | in `.claude/settings.json` für die harmlosen npm-Skripte hinterlegt                              | ✅        |
+| Subagenten              | keine (`.claude/agents/` fehlt)                                                                  | ❌        |
+| MCP-Server              | keine (`.mcp.json` fehlt)                                                                        | ⚠️        |
+| CI                      | `.github/workflows/ci.yml` bei Push und PR: Linux für Lint/Typecheck/Test, Windows für Build/E2E | ✅        |
 
-**Kernbefund, unverändert gültig:** Die _Dokumentation_ des Projekts ist überdurchschnittlich gut, die _Automatisierung_ hinkt hinterher. Was in `CLAUDE.md` als Regel steht, muss in jeder Session neu gelesen und freiwillig befolgt werden. Hooks und Skills sind der Mechanismus, um daraus erzwungenes bzw. abrufbares Verhalten zu machen — mit `/doku-pflege` und dem Stop-Hook ist der erste Schritt getan, der größte verbleibende Hebel ist CI.
+**Kernbefund, teilweise überholt:** Die _Dokumentation_ des Projekts war überdurchschnittlich gut, die _Automatisierung_ hinkte hinterher. Was in `CLAUDE.md` als Regel steht, muss weiterhin in jeder Session neu gelesen und freiwillig befolgt werden. Hooks und Skills sind der Mechanismus, um daraus erzwungenes bzw. abrufbares Verhalten zu machen. Mit `/doku-pflege`, dem Stop-Hook und seit dem 17.08.2026 der CI ist der Rückstand weitgehend aufgeholt — die verbleibenden Hebel sind die Hooks für Prettier und Typecheck (Welle 1) sowie die beiden Schritt-Skills.
 
 ## 2. Projektprofil
 
@@ -73,9 +73,9 @@ Die Empfehlung `app-screenshot` ist **entfallen**: Druckausgabe, Durchstich und 
 
 ## 5. Subagenten
 
-| Empfehlung                  | Warum hier relevant                                                                                                                                                                  | Priorität |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| **`ipc-pruefer`**           | Die wichtigste Architekturregel ist unsichtbar: Ein Verstoß gegen die Prozessgrenzen fällt weder Typecheck noch Tests auf, sondern erst zur Laufzeit                                 | **hoch**  |
+| Empfehlung                  | Warum hier relevant                                                                                                                                                                      | Priorität |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **`ipc-pruefer`**           | Die wichtigste Architekturregel ist unsichtbar: Ein Verstoß gegen die Prozessgrenzen fällt weder Typecheck noch Tests auf, sondern erst zur Laufzeit                                     | **hoch**  |
 | **`design-system-pruefer`** | Tokens, Skalen und Barrierefreiheits-Mindestanforderungen sind verbindlich festgelegt; ein Agent, der UI-Änderungen dagegen prüft, hält das Design-System nach dem PDF-Export ff. stabil | mittel    |
 
 Beide Prompts sollten auf die zuständigen Dokumente verweisen ([`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md) bzw. [`style/design-system.md`](../style/design-system.md)), statt die Regeln zu wiederholen — sonst entsteht eine dritte Fassung, die veraltet.
@@ -105,13 +105,13 @@ claude mcp add context7
 
 > Die Skill `fewer-permission-prompts` leitet eine solche Liste aus den bisherigen Sitzungsprotokollen ab, statt sie zu raten.
 
-## 8. Größter verbleibender Einzelzugewinn: CI
+## 8. Größter verbleibender Einzelzugewinn: CI ✅ am 17.08.2026 umgesetzt
 
-`CLAUDE.md` fordert selbst: „Wo möglich eine Prüfmöglichkeit schaffen." Die Signale existieren, laufen aber nur, wenn jemand sie manuell startet — ein Commit kann mit gebrochenem Typecheck oder roten Tests auf `main` landen, ohne dass es auffällt.
+`CLAUDE.md` fordert selbst: „Wo möglich eine Prüfmöglichkeit schaffen." Die Signale existierten, liefen aber nur, wenn jemand sie manuell startete — ein Commit konnte mit gebrochenem Typecheck oder roten Tests auf `main` landen, ohne dass es auffiel.
 
-`.github/workflows/ci.yml` mit `npm ci && npm run lint && npm run typecheck && npm run test` bei Push und PR, dazu `npm run test:e2e` auf einem Windows-Runner (das Skript baut seit dem 17.08.2026 selbst vor).
+[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) läuft bei Push und Pull Request: `lint`, `typecheck` und `test` auf `ubuntu-latest`, dazu Build und E2E auf `windows-latest`.
 
-> **Vorher zu klären:** `npm ci` scheitert auf einem Rechner ohne Python und Build-Tools, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist der Build nicht. Details und der nachgewiesene Umweg stehen in [`../test/offene-maengel.md`](../test/offene-maengel.md).
+Die offene Frage zu `npm ci` ist damit entschieden: Der Workflow nutzt `npm ci --ignore-scripts` und holt die Electron-Binärdatei per `node node_modules/electron/install.js` nach, statt Python und Build-Tools auf dem Runner vorauszusetzen. Begründung im [Tagebuch](../tagebuch/2026-kw34.md).
 
 ## 9. Priorisierte Reihenfolge
 
@@ -123,7 +123,7 @@ claude mcp add context7
 | ~~1~~ | ~~Permission-Allowlist in `.claude/settings.json`~~    | ✅ am 17.08.2026 eingerichtet                              |
 | 2     | Skills `schritt-start` + `schritt-abschluss`           | Der häufigste Ablauf wird zu zwei Slash-Befehlen           |
 | 2     | Subagent `ipc-pruefer`                                 | Sichert die Architekturregel ohne automatisches Signal ab  |
-| 2     | CI-Workflow                                            | Prüfsignal unabhängig von Disziplin                        |
+| ~~2~~ | ~~CI-Workflow~~                                        | ✅ am 17.08.2026 eingerichtet                              |
 | 3     | Subagent `design-system-pruefer`                       | Hält das Design-System langfristig stabil                  |
 | 3     | Skills `neuer-ablaufplan`, `neues-repository`          | Beschleunigt wiederkehrende Dateimuster                    |
 | 3     | Hook: betroffene Tests nach Modul-Änderung             | Feineres, schnelleres Testsignal                           |

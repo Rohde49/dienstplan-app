@@ -16,7 +16,13 @@ Der aktuelle Stand steht in [`docs/TODO.md`](./docs/TODO.md), der Verlauf im [Ta
 npm install
 ```
 
-> Auf einem Rechner ohne Python und Build-Tools bricht `npm ci` ab, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist der Build nicht — die Prebuilds liegen im Paket. Umweg und Hintergrund in [`docs/test/offene-maengel.md`](./docs/test/offene-maengel.md).
+Für eine reproduzierbare Installation aus der `package-lock.json` — und auf jedem Rechner ohne Python und Build-Tools — stattdessen:
+
+```bash
+npm ci --ignore-scripts && node node_modules/electron/install.js
+```
+
+> Ohne `--ignore-scripts` startet npm für `better-sqlite3` einen `node-gyp`-Build und bricht ohne Python ab. Nötig ist der Build nicht — die N-API-Prebuilds aller Plattformen liegen im Paket. Der zweite Befehl holt die Electron-Binärdatei nach, deren `postinstall` das Flag mit unterdrückt. Denselben Weg geht der CI-Workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 ## Entwicklung
 
@@ -31,6 +37,8 @@ npm run typecheck && npm run lint && npm run test && npm run test:e2e
 ```
 
 Was die einzelnen Testebenen abdecken und was bewusst nicht getestet wird: [`docs/test/teststrategie.md`](./docs/test/teststrategie.md).
+
+Dieselben Prüfungen laufen bei jedem Push und Pull Request automatisch über [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) — Lint, Typecheck und Tests auf Linux, Build und E2E auf Windows.
 
 ## Windows-Installer bauen
 

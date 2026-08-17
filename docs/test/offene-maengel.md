@@ -22,10 +22,7 @@ Diese Mängel meldet niemand automatisch. Sie stehen hier, weil sie beim Doku-Um
 | --------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------- |
 | Der Main-Prozess validiert keine einzige Eingabe                                        | alle Module unter `src/main/ipc/`       | vertretbar, aber nicht entschieden — siehe unten              |
 | `Rufbereitschaft` nur für Erzieher ist reine UI-Filterung                               | `RufbereitschaftAuswahl`                | Sonderfall des Punkts darüber, im Datenmodell anders zugesagt |
-| `npm ci` scheitert ohne Python und Build-Tools                                          | `package.json`, `better-sqlite3`        | betrifft den geplanten CI-Schritt — siehe unten               |
 | Toter Scaffold-Code: `electron.svg`, `wavy-lines.svg`, `ping`-Kanal, `runDbSmokeTest()` | `src/renderer/src/assets/`, `src/main/` | folgenlos, aber irreführend                                   |
-
-**Zu `npm ci`:** npm startet für `better-sqlite3` einen `node-gyp`-Build, weil eine `binding.gyp` im Paket liegt — obwohl das Paket keinen eigenen `install`-Schritt deklariert. Ohne Python bricht das ab. Nötig ist der Build nicht: Die N-API-Prebuilds liegen im Paket, `npm ci --ignore-scripts` gefolgt von `node node_modules/electron/install.js` erzeugt am 17.08.2026 nachweislich einen vollständig lauffähigen Stand (alle Tests und E2E grün). Die Entscheidung — Build-Tools voraussetzen oder den Build unterdrücken — gehört in den CI-Schritt, wo sich zeigt, was der Runner tatsächlich braucht. Bis dahin ist der Punkt hier festgehalten, damit er nicht erst dort auffällt.
 
 **Zu `runDbSmokeTest()`:** Die Funktion schreibt bei **jedem** App-Start eine Zeile in eine Tabelle `smoke_test`, die niemand liest und die nie beschnitten wird. Sie überlebte die Bereinigung vom 17.08.2026, weil toter Scaffold-Code ausdrücklich außerhalb des Auftrags lag.
 

@@ -168,3 +168,13 @@ Main-Prozess, Setup und Konfiguration gegen den Code geprüft, vor dem Beginn vo
 Datenbankstart auf eine explizite `oeffneDatenbank()`-Funktion umgebaut, `try/catch` mit Fehlerdialog in `index.ts`; `foreign_keys` eingeschaltet und dafür `src/main/db/schema.ts` mit `bereiteDatenbankVor()` als gemeinsame Grundlage für Produktion und Tests angelegt; `PRAGMA user_version` samt Migrationspfad vorbereitet; `sandbox: true` aktiviert und dafür `window.electron`/`Versions.tsx` entfernt; `electron-builder.yml` vom Template auf das Projekt umgestellt; Permission-Allowlist eingerichtet; seitenübergreifende Fehleranzeige (`FehlerHinweis`) eingeführt, nachdem sich zeigte, dass abgelehnte IPC-Aufrufe im Renderer bis dahin spurlos verschwanden.
 
 Ergebnis unter anderem in [`architektur/prozessgrenzen.md`](./architektur/prozessgrenzen.md), [`architektur/technologieentscheidungen.md`](./architektur/technologieentscheidungen.md) und [`test/offene-maengel.md`](./test/offene-maengel.md). Verlauf und verworfene Alternativen im [Tagebuch](./tagebuch/2026-kw34.md).
+
+### CI-Workflow — 17.08.2026
+
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) prüft bei jedem Push und Pull Request. Zwei Jobs: `lint`, `typecheck` und `test` auf `ubuntu-latest` (die schnelle Spur — die Ebenen 1–4 starten keine Electron-Binärdatei), dazu Build und E2E auf `windows-latest`, also gegen die einzige Zielplattform. Erster Lauf grün in 43 Sekunden beziehungsweise 2:05 Minuten.
+
+Damit laufen die Prüfsignale erstmals unabhängig davon, ob jemand daran denkt.
+
+Der Installationsschritt nutzt `npm ci --ignore-scripts`, statt Python und Build-Tools auf dem Runner vorauszusetzen — das löst zugleich den bis dahin offenen `npm ci`-Mangel. Begründung im [Tagebuch](./tagebuch/2026-kw34.md).
+
+`npm run build:win` bleibt bewusst außerhalb der CI: Der Installer ist ein eigener, noch offener Punkt.
