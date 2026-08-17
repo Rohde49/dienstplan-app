@@ -30,9 +30,9 @@ Fachlogik gehört bewusst in solche Funktionen und nicht in Komponenten — das 
 
 Tests gegen eine In-Memory-SQLite-Datenbank (`new Database(':memory:')`). Mit `better-sqlite3` synchron und ohne Mocking — es wird also echte SQL-Logik geprüft, ohne eine Datei auf der Platte anzulegen.
 
-**Voraussetzung**: Repository-Module dürfen die globale `db`-Instanz aus [`src/main/db.ts`](../../src/main/db.ts) nicht selbst importieren, sonst löst schon der Import unter Vitest `app.getPath(...)` aus `electron` aus und schlägt fehl. Stattdessen nehmen Repository-Funktionen die Verbindung als Parameter entgegen (siehe [`teamRepository.ts`](../../src/main/db/teamRepository.ts)), die Verdrahtung mit der echten Instanz passiert erst in den IPC-Handlern.
+**Voraussetzung**: Repository-Module dürfen die globale `db`-Instanz aus [`src/main/db.ts`](../../src/main/db.ts) nicht selbst importieren, sonst löst schon der Import unter Vitest `app.getPath(...)` aus `electron` aus und schlägt fehl. Stattdessen nehmen Repository-Funktionen die Verbindung als Parameter entgegen (siehe [`teamRepository.ts`](../../src/main/db/teamRepository.ts)); dieselbe Parameterübergabe gilt seit dem 17.08.2026 auch für die IPC-Handler. Verdrahtet wird ausschließlich in [`src/main/index.ts`](../../src/main/index.ts).
 
-**Schema**: [`src/test/datenbank.ts`](../../src/test/datenbank.ts) stellt `erzeugeTestDatenbank()` bereit. Das Schema entsteht dort über dieselben `ensure…`-Funktionen, die auch die IPC-Handler beim App-Start aufrufen — Tests können deshalb nicht gegen ein abweichendes Schema laufen.
+**Schema**: [`src/test/datenbank.ts`](../../src/test/datenbank.ts) stellt `erzeugeTestDatenbank()` bereit. Sie ruft dieselbe Funktion `bereiteDatenbankVor()` aus [`src/main/db/schema.ts`](../../src/main/db/schema.ts) auf, die auch der Main-Prozess beim Öffnen der Datenbank anwendet — Tests können deshalb weder gegen ein abweichendes Schema noch gegen abweichende Pragmas laufen (insbesondere `foreign_keys = ON`, siehe [`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md)).
 
 **Gehört nicht hierher**: Formatierung und Darstellung von Werten.
 

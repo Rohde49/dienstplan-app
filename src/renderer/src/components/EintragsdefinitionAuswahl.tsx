@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import type { Eintragsdefinition } from '../../../shared/types'
 
 function formatZeitpunkt(value: string | null): string {
@@ -19,7 +20,10 @@ function EintragsdefinitionAuswahl({
   const [eintraege, setEintraege] = useState<Eintragsdefinition[]>([])
 
   useEffect(() => {
-    window.api.eintragsdefinition.list().then(setEintraege)
+    window.api.eintragsdefinition
+      .list()
+      .then(setEintraege)
+      .catch(fehlerMelder('Die Eintragsdefinitionen konnten nicht geladen werden.'))
   }, [])
 
   return (

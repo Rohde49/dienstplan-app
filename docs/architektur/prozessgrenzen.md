@@ -10,9 +10,13 @@ Die wichtigste Architekturregel des Projekts ist unsichtbar: Ein Verstoß gegen 
 | **Preload**  | Node, im Renderer-Kontext | `ipcRenderer.invoke` aufrufen und über `contextBridge` exponieren | Fachlogik enthalten                                |
 | **Renderer** | Chromium                  | React, DOM, `window.api`                                          | `require`, `process`, `better-sqlite3`, `electron` |
 
-`contextIsolation` ist aktiv, `sandbox` ist aus (nötig, damit das Preload-Skript aus einem gebündelten Modul laden kann). Der Renderer sieht dadurch ausschließlich das, was `contextBridge.exposeInMainWorld` freigibt: `window.electron` (Toolkit-Standard) und `window.api` (dieses Projekt).
+`contextIsolation`, `sandbox` und `nodeIntegration: false` sind in [`src/main/index.ts`](../../src/main/index.ts) ausdrücklich gesetzt, obwohl die ersten beiden Werte den Voreinstellungen von Electron 39 entsprechen. Sie sind die Grundlage dieser Seite und sollen ein Major-Upgrade überstehen, ohne von einer geänderten Voreinstellung still gekippt zu werden.
 
-Dass die Grenze tatsächlich dicht ist, prüft Ebene 5 direkt: Ein E2E-Fall stellt fest, dass der Renderer weder `require` noch `process` kennt.
+Der Renderer sieht dadurch ausschließlich `window.api` — die in [`src/preload/index.ts`](../../src/preload/index.ts) freigegebene Brücke, die genau die Kanäle aus `IPC_KANAELE` durchreicht.
+
+**Das Preload-Bundle darf außer `electron` nichts per `require` laden.** Unter `sandbox: true` steht im Preload nur dieses eine Modul zur Verfügung; ein Paket aus `node_modules` bricht den Ladevorgang ab, und `window.api` bleibt undefiniert — die App startet dann mit einem funktionslosen Fenster. electron-vite lässt Pakete aus `dependencies` unbehandelt im Bundle stehen, ein neuer Import dort genügt also für den Ausfall. Der E2E-Durchstich schlägt in diesem Fall fehl und ist das Signal dafür.
+
+Dass die Grenze tatsächlich dicht ist, prüft Ebene 5 direkt: Ein E2E-Fall stellt fest, dass der Renderer weder `require` noch `process` noch `window.electron` kennt.
 
 ## Repositories nehmen die Verbindung als Parameter
 
@@ -23,9 +27,25 @@ export function getTeamMembers(database: Database): TeamMember[]
 export function addTeamMember(data: Omit<TeamMember, 'id'>, database: Database): TeamMember
 ```
 
-Der Grund ist nicht Eleganz, sondern Testbarkeit: `src/main/db.ts` ruft beim Import `app.getPath('userData')` aus `electron` auf. Unter Vitest gibt es keine echte `app`-API — schon der Import würde fehlschlagen, und die gesamte Ebene 2 wäre nicht möglich. Der Verbindungstyp kommt über einen reinen Typ-Import (`import type Database from 'better-sqlite3'`) herein, also ohne Laufzeit-Abhängigkeit.
+Der Grund ist nicht Eleganz, sondern Testbarkeit: `src/main/db.ts` importiert `electron`, um über `app.getPath('userData')` den Dateipfad zu bestimmen. Unter Vitest gibt es keine echte `app`-API — schon der Import würde fehlschlagen, und die gesamte Ebene 2 wäre nicht möglich. Der Verbindungstyp kommt über einen reinen Typ-Import (`import type Database from 'better-sqlite3'`) herein, also ohne Laufzeit-Abhängigkeit.
 
-Verdrahtet wird erst im IPC-Handler: Dort — und nur dort — wird die echte `db`-Instanz importiert und der passende `ensure…Table(db)`-Aufruf ausgeführt.
+Dasselbe gilt für die IPC-Handler unter `src/main/ipc/`: Auch sie importieren die Datenbank nicht selbst, sondern bekommen sie als Parameter (`registerTeamHandlers(db)`).
+
+**Verdrahtet wird an genau einer Stelle:** in [`src/main/index.ts`](../../src/main/index.ts), innerhalb von `app.whenReady()`. Dort wird `oeffneDatenbank()` in einem `try/catch` aufgerufen und das Ergebnis an alle fünf `register…Handlers`-Funktionen weitergereicht.
+
+## Schema und Pragmas an einer Stelle
+
+[`src/main/db/schema.ts`](../../src/main/db/schema.ts) importiert bewusst **kein** `electron`. Es beschreibt, wie eine Datenbank auszusehen hat, nicht wo sie liegt — dadurch kann [`src/test/datenbank.ts`](../../src/test/datenbank.ts) dieselbe Funktion `bereiteDatenbankVor()` auf eine In-Memory-Datenbank anwenden, die der Main-Prozess auf die Datei des Nutzers anwendet.
+
+Das ist keine Kosmetik: Die Pragmas gehören dazu. `foreign_keys = ON` wird hier gesetzt, und ohne diese gemeinsame Quelle liefen die Repository-Tests gegen eine Datenbank ohne Fremdschlüsselprüfung, während die Produktion sie hat.
+
+| Pragma                | Warum                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------- |
+| `journal_mode = WAL`  | Nebenläufige Leser blockieren den Schreiber nicht                                                   |
+| `foreign_keys = ON`   | Ohne dies sind die `REFERENCES`-Klauseln der Repositories wirkungslos — SQLite prüft sonst nicht    |
+| `busy_timeout = 5000` | Zweiter Riegel hinter der Einzelinstanz-Sperre; wartet auf den Schreiblock statt sofort abzubrechen |
+
+Die Schemaversion steht in `PRAGMA user_version`. Frische Datenbanken bekommen sofort die aktuelle Version, Bestandsdatenbanken durchlaufen die Einträge in `MIGRATIONEN`. Die Regeln für neue Migrationen stehen als Kommentar an diesem Array — sie gelten unwiderruflich, sobald ein Installer ausgeliefert ist.
 
 ## Ein Kanal, eine Quelle
 
@@ -52,6 +72,7 @@ Eine Grenze bleibt: Ein rein zusätzlicher **hinterer** Parameter fällt nicht a
 | ---------------------------------------------------- | ---------------------------------------------------- |
 | Renderer importiert `better-sqlite3` oder `electron` | Typecheck (`typecheck:web`), sonst erst zur Laufzeit |
 | Repository importiert `../db` selbst                 | Ebene-2-Test bricht beim Import                      |
+| Preload importiert ein Paket aus `node_modules`      | Ebene 5 — unter Sandbox bleibt `window.api` leer     |
 | Kanal deklariert, aber kein Handler registriert      | Ebene 4 (Vertragstest)                               |
 | Handler registriert, den niemand deklariert hat      | Ebene 4                                              |
 | Kanal doppelt registriert                            | Ebene 4                                              |

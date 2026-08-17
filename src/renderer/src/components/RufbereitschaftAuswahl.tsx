@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import type { TeamMember } from '../../../shared/types'
 
 const ZEILEN_BASIS =
@@ -15,6 +16,7 @@ function RufbereitschaftAuswahl({ onSelect }: RufbereitschaftAuswahlProps): Reac
     window.api.team
       .list()
       .then((members) => setErzieher(members.filter((member) => member.rolle === 'Erzieher')))
+      .catch(fehlerMelder('Die Mitarbeiterliste konnte nicht geladen werden.'))
   }, [])
 
   return (

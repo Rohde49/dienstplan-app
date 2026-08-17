@@ -5,7 +5,12 @@ import type { API } from '../src/preload/index.d'
 // Innerhalb von page.evaluate läuft der Code im Renderer. Die globale Window-
 // Erweiterung aus src/preload/index.d.ts steht hier nicht zur Verfügung (Node-tsconfig
 // ohne DOM-Lib), deshalb der Zugriff über diesen expliziten Typ.
-type RendererFenster = Window & { api: API; require?: unknown; process?: unknown }
+type RendererFenster = Window & {
+  api: API
+  require?: unknown
+  process?: unknown
+  electron?: unknown
+}
 
 // Ebene 5 der Teststrategie: bewusst schmale Smoke-Suite gegen die gebaute App.
 // Hier gehört nur hin, was sich ausschließlich im Zusammenspiel aller drei Prozesse
@@ -42,13 +47,23 @@ describe('Prozessgrenze zwischen Renderer und Main', () => {
 
     const erreichbar = await fenster.evaluate(() => {
       const w = window as unknown as RendererFenster
-      return { require: typeof w.require, process: typeof w.process, api: typeof w.api }
+      return {
+        require: typeof w.require,
+        process: typeof w.process,
+        api: typeof w.api,
+        electron: typeof w.electron
+      }
     })
 
     // Der Renderer darf better-sqlite3 nur über die Preload-Brücke erreichen.
     expect(erreichbar.require).toBe('undefined')
     expect(erreichbar.process).toBe('undefined')
     expect(erreichbar.api).toBe('object')
+
+    // `window.electron` brachte generische ipcRenderer-Wrapper mit und hätte jeden
+    // registrierten Kanal direkt aufrufbar gemacht — an der Kanalliste vorbei. Es ist
+    // zugleich das Modul, das `sandbox: true` verhinderte.
+    expect(erreichbar.electron).toBe('undefined')
   })
 })
 

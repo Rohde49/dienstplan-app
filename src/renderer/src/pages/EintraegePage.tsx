@@ -9,6 +9,7 @@ import {
 } from '@/components/EintragsdefinitionForm'
 import { EintragsdefinitionTable } from '@/components/EintragsdefinitionTable'
 import { formatMinutesToHHMM, parseHHMMToMinutes } from '../../../shared/time'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import { validateEintragsdefinitionInput } from '@/lib/validateEintragsdefinition'
 import type { Eintragsdefinition } from '../../../shared/types'
 
@@ -33,7 +34,10 @@ function EintraegePage(): React.JSX.Element {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   const loadEintraege = useCallback(() => {
-    window.api.eintragsdefinition.list().then(setEintraege)
+    window.api.eintragsdefinition
+      .list()
+      .then(setEintraege)
+      .catch(fehlerMelder('Die Eintragsdefinitionen konnten nicht geladen werden.'))
   }, [])
 
   useEffect(() => {
@@ -149,21 +153,26 @@ function EintraegePage(): React.JSX.Element {
         ? window.api.eintragsdefinition.add(data)
         : window.api.eintragsdefinition.update(selectedId, data)
 
-    request.then(() => {
-      handleNewEintrag()
-      setIsFormOpen(false)
-      loadEintraege()
-    })
+    request
+      .then(() => {
+        handleNewEintrag()
+        setIsFormOpen(false)
+        loadEintraege()
+      })
+      .catch(fehlerMelder('Die Eintragsdefinition konnte nicht gespeichert werden.'))
   }
 
   function handleDelete(): void {
     if (selectedId === null) return
 
-    window.api.eintragsdefinition.delete(selectedId).then(() => {
-      handleNewEintrag()
-      setIsFormOpen(false)
-      loadEintraege()
-    })
+    window.api.eintragsdefinition
+      .delete(selectedId)
+      .then(() => {
+        handleNewEintrag()
+        setIsFormOpen(false)
+        loadEintraege()
+      })
+      .catch(fehlerMelder('Die Eintragsdefinition konnte nicht gelöscht werden.'))
   }
 
   return (

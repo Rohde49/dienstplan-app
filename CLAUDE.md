@@ -14,8 +14,9 @@ Wegweiser durch die gesamte Dokumentation: [`docs/README.md`](./docs/README.md).
 
 ### Datenbank
 
-- `src/main/db.ts` — öffnet `better-sqlite3`-DB unter `app.getPath('userData')/dienstplan.db` (WAL-Modus), exportiert die `db`-Instanz und `runDbSmokeTest()`
-- Repository-Module (z. B. `src/main/db/teamRepository.ts`) importieren die globale `db`-Instanz nicht selbst, sondern nehmen die Verbindung als Parameter entgegen — Verdrahtung mit der echten Instanz passiert erst in den IPC-Handlern (`src/main/ipc/`). Grund und Testkonsequenz siehe [`docs/architektur/prozessgrenzen.md`](./docs/architektur/prozessgrenzen.md).
+- `src/main/db.ts` — exportiert `oeffneDatenbank()` (öffnet `app.getPath('userData')/dienstplan.db`) und `datenbankPfad()`. Das Öffnen ist bewusst **keine** Modul-Nebenwirkung: `src/main/index.ts` ruft es in `app.whenReady()` innerhalb eines `try/catch` auf und zeigt bei einem Fehler `dialog.showErrorBox`, statt den Prozess stumm sterben zu lassen.
+- `src/main/db/schema.ts` — `bereiteDatenbankVor()`: Pragmas (`WAL`, `foreign_keys = ON`, `busy_timeout`), Tabellen und `user_version`-Migrationen. Ohne `electron`-Import, damit die Tests über `src/test/datenbank.ts` exakt dieselbe Vorbereitung nutzen.
+- Repository-Module (z. B. `src/main/db/teamRepository.ts`) **und** die IPC-Handler nehmen die Verbindung als Parameter entgegen; verdrahtet wird ausschließlich in `src/main/index.ts`. Grund und Testkonsequenz siehe [`docs/architektur/prozessgrenzen.md`](./docs/architektur/prozessgrenzen.md).
 - `better-sqlite3` v13 nutzt N-API-Prebuilds (im Paket enthalten) — kein `electron-rebuild`/`node-gyp` nötig, funktioniert direkt im Electron-Main-Prozess
 - Reines Main-Prozess-Modul — Renderer darf `better-sqlite3` nicht direkt importieren, Zugriff nur über IPC/Preload-Bridge (analog zum `ping`-Beispiel)
 
@@ -26,10 +27,12 @@ Wegweiser durch die gesamte Dokumentation: [`docs/README.md`](./docs/README.md).
 - `npm run lint` — ESLint
 - `npm run format` — Prettier (schreibt Änderungen)
 - `npm run test` — Vitest, Ebenen 1–4 (reine Funktionen, Repository gegen In-Memory-SQLite, Komponenten in jsdom, IPC-Vertrag), läuft in unter 20 Sekunden
-- `npm run test:e2e` — Ebene 5: Playwright gegen die gebaute App, setzt `npm run build` voraus
+- `npm run test:e2e` — Ebene 5: Playwright gegen die gebaute App; baut selbst vorher. `npm run test:e2e:only` überspringt den Build für schnelle Wiederholungen
 - `npm run test:coverage` — Coverage-Bericht (Signal zum Finden blinder Flecken, kein Zielwert)
 - `npm run build` — Typecheck + Produktions-Build
-- `npm run build:win` — Windows-Installer via `electron-builder` (einziges relevantes Build-Target laut `docs/TODO.md`)
+- `npm run build:win` — Windows-Installer via `electron-builder` (einziges Build-Target; mac/Linux wurden entfernt)
+
+> `npm ci` scheitert auf einem Rechner ohne Python/Build-Tools, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist er nicht — die Prebuilds liegen im Paket. Siehe [`docs/test/offene-maengel.md`](./docs/test/offene-maengel.md).
 
 Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht getestet wird: [`docs/test/teststrategie.md`](./docs/test/teststrategie.md) — vor dem Schreiben neuer Tests lesen.
 
@@ -38,7 +41,7 @@ Zuständigkeit der einzelnen Testebenen, Konventionen und was bewusst nicht gete
 - `src/main/index.ts` — Electron Main-Prozess
 - `src/main/db.ts` — SQLite-Verbindung; `src/main/db/` — Repository-Module je Fachbereich (z. B. `teamRepository.ts`)
 - `src/main/ipc/` — IPC-Handler je Fachbereich (z. B. `teamHandlers.ts`)
-- `src/preload/index.ts` (+ `index.d.ts`) — Preload-Skript, Brücke zwischen Main und Renderer
+- `src/preload/index.ts` (+ `index.d.ts`) — Preload-Skript, einzige Brücke zwischen Main und Renderer (`window.api`). Darf außer `electron` **nichts** importieren, sonst bricht es unter `sandbox: true`
 - `src/shared/types.ts` — Entitäten, die Main und Renderer gemeinsam nutzen (einziger „Wahrheitsort" für Datenstrukturen)
 - `src/renderer/src/` — React-App: `pages/` (eine Datei je Route), `components/ui/` (shadcn-Primitives), `components/layout/` (seitenübergreifende, fachlich unwissende Layout-Bausteine), `components/` direkt (fachspezifische Komponenten), `lib/` (reine Funktionen), `assets/`
 - `src/shared/ipcKanaele.ts` — einzige Quelle der IPC-Kanalnamen; Preload und Handler greifen beide darauf zu, ein Vertragstest prüft die Vollständigkeit

@@ -1,18 +1,17 @@
+import type Database from 'better-sqlite3'
 import { ipcMain } from 'electron'
-import { db } from '../db'
 import { IPC_KANAELE } from '../../shared/ipcKanaele'
 import type { Eintragsdefinition } from '../../shared/types'
 import {
   addEintragsdefinition,
   deleteEintragsdefinition,
-  ensureEintragsdefinitionenTable,
   getEintragsdefinitionen,
   updateEintragsdefinition
 } from '../db/eintragsdefinitionRepository'
 
-export function registerEintragsdefinitionHandlers(): void {
-  ensureEintragsdefinitionenTable(db)
+type Db = InstanceType<typeof Database>
 
+export function registerEintragsdefinitionHandlers(db: Db): void {
   ipcMain.handle(IPC_KANAELE.eintragsdefinition.list, (): Eintragsdefinition[] =>
     getEintragsdefinitionen(db)
   )

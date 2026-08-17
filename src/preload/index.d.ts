@@ -1,4 +1,3 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
 import type {
   BemerkungAenderung,
   Dienstplan,
@@ -66,9 +65,11 @@ export interface API {
   rufbereitschaft: RufbereitschaftAPI
 }
 
+// `window.api` ist die einzige Brücke in den Main-Prozess. Bewusst kein zusätzliches
+// `window.electron`: Das brachte generische ipcRenderer-Wrapper mit und machte die
+// Kanalliste in src/shared/ipcKanaele.ts zu einer Empfehlung statt zu einer Grenze.
 declare global {
   interface Window {
-    electron: ElectronAPI
     api: API
   }
 }

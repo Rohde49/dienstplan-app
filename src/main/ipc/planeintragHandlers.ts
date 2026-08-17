@@ -1,15 +1,12 @@
+import type Database from 'better-sqlite3'
 import { ipcMain } from 'electron'
-import { db } from '../db'
 import { IPC_KANAELE } from '../../shared/ipcKanaele'
 import type { Planeintrag } from '../../shared/types'
-import {
-  ensurePlaneintraegeTabelle,
-  getPlaneintraegeFuerDienstplan
-} from '../db/planeintragRepository'
+import { getPlaneintraegeFuerDienstplan } from '../db/planeintragRepository'
 
-export function registerPlaneintragHandlers(): void {
-  ensurePlaneintraegeTabelle(db)
+type Db = InstanceType<typeof Database>
 
+export function registerPlaneintragHandlers(db: Db): void {
   ipcMain.handle(
     IPC_KANAELE.planeintrag.listFuerDienstplan,
     (_event, dienstplanId: number): Planeintrag[] =>

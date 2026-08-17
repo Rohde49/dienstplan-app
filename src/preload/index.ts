@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
 import { IPC_KANAELE } from '../shared/ipcKanaele'
 import type {
   BemerkungAenderung,
@@ -76,19 +75,12 @@ const api = {
   }
 }
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-  } catch (error) {
-    console.error(error)
-  }
-} else {
-  // @ts-ignore (define in dts)
-  window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
-}
+// Dieses Bündel ist die einzige Verbindung des Renderers zum Main-Prozess. Es reicht
+// ausschließlich die in IPC_KANAELE deklarierten Kanäle durch — kein generischer
+// ipcRenderer-Zugriff, damit die Kanalliste eine echte Grenze ist und nicht nur eine
+// Konvention.
+//
+// Das Bundle darf außer `electron` nichts per require laden: Unter `sandbox: true`
+// (src/main/index.ts) steht im Preload nur dieses eine Modul zur Verfügung, ein Paket aus
+// node_modules bricht den Ladevorgang ab und `window.api` bliebe undefiniert.
+contextBridge.exposeInMainWorld('api', api)

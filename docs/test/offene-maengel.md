@@ -18,12 +18,16 @@ Diese Mängel schlagen fehl, **sobald sie behoben sind**, und erzwingen damit di
 
 Diese Mängel meldet niemand automatisch. Sie stehen hier, weil sie beim Doku-Umbau am 16.08.2026 beim Abgleich der Dokumentation gegen den Code aufgefallen sind.
 
-| Mangel                                                                                    | Wo                                    | Bewertung                                                     |
-| ----------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------- |
-| Der Main-Prozess validiert keine einzige Eingabe                                          | alle Module unter `src/main/ipc/`     | vertretbar, aber nicht entschieden — siehe unten              |
-| `Rufbereitschaft` nur für Erzieher ist reine UI-Filterung                                 | `RufbereitschaftAuswahl`              | Sonderfall des Punkts darüber, im Datenmodell anders zugesagt |
-| `electron-builder.yml` steht unverändert auf Template-Stand                               | `electron-builder.yml`                | fällt beim Packaging auf, das noch offen ist                  |
-| Toter Scaffold-Code: `Versions.tsx`, `electron.svg`, `wavy-lines.svg`, `runDbSmokeTest()` | `src/renderer/src/`, `src/main/db.ts` | folgenlos, aber irreführend                                   |
+| Mangel                                                                                  | Wo                                      | Bewertung                                                     |
+| --------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------- |
+| Der Main-Prozess validiert keine einzige Eingabe                                        | alle Module unter `src/main/ipc/`       | vertretbar, aber nicht entschieden — siehe unten              |
+| `Rufbereitschaft` nur für Erzieher ist reine UI-Filterung                               | `RufbereitschaftAuswahl`                | Sonderfall des Punkts darüber, im Datenmodell anders zugesagt |
+| `npm ci` scheitert ohne Python und Build-Tools                                          | `package.json`, `better-sqlite3`        | betrifft den geplanten CI-Schritt — siehe unten               |
+| Toter Scaffold-Code: `electron.svg`, `wavy-lines.svg`, `ping`-Kanal, `runDbSmokeTest()` | `src/renderer/src/assets/`, `src/main/` | folgenlos, aber irreführend                                   |
+
+**Zu `npm ci`:** npm startet für `better-sqlite3` einen `node-gyp`-Build, weil eine `binding.gyp` im Paket liegt — obwohl das Paket keinen eigenen `install`-Schritt deklariert. Ohne Python bricht das ab. Nötig ist der Build nicht: Die N-API-Prebuilds liegen im Paket, `npm ci --ignore-scripts` gefolgt von `node node_modules/electron/install.js` erzeugt am 17.08.2026 nachweislich einen vollständig lauffähigen Stand (alle Tests und E2E grün). Die Entscheidung — Build-Tools voraussetzen oder den Build unterdrücken — gehört in den CI-Schritt, wo sich zeigt, was der Runner tatsächlich braucht. Bis dahin ist der Punkt hier festgehalten, damit er nicht erst dort auffällt.
+
+**Zu `runDbSmokeTest()`:** Die Funktion schreibt bei **jedem** App-Start eine Zeile in eine Tabelle `smoke_test`, die niemand liest und die nie beschnitten wird. Sie überlebte die Bereinigung vom 17.08.2026, weil toter Scaffold-Code ausdrücklich außerhalb des Auftrags lag.
 
 **Zur fehlenden Validierung im Main-Prozess:** Sämtliche Prüfungen (`validateTeamMember`, `validateEintragsdefinition`, `validateBemerkung`) liegen im Renderer; die IPC-Handler reichen ihre Argumente ungeprüft an das Repository durch. Für ein lokales Einzelnutzer-Programm ohne Netzwerkschnittstelle ist das vertretbar — die UI ist die einzige Eingabequelle. Es widerspricht aber dem, was [`architektur/datenmodell.md`](../architektur/datenmodell.md) für `Rufbereitschaft` ausdrücklich zusagt („muss auch bei der Verarbeitung im Main-Prozess geprüft werden"). Zu entscheiden ist deshalb eines von beidem: die Prüfung nachziehen oder die Zusage streichen. Die Doku benennt bis dahin den Ist-Zustand.
 

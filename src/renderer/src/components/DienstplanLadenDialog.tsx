@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import type { Dienstplan } from '../../../shared/types'
 
 const MONATE_KURZ = [
@@ -66,7 +67,10 @@ function DienstplanLadenDialog({
   const [loeschenDienstplan, setLoeschenDienstplan] = useState<Dienstplan | null>(null)
 
   const ladeListe = (): void => {
-    window.api.dienstplan.list().then(setDienstplaene)
+    window.api.dienstplan
+      .list()
+      .then(setDienstplaene)
+      .catch(fehlerMelder('Die Dienstplanliste konnte nicht geladen werden.'))
   }
 
   useEffect(() => {
@@ -83,13 +87,16 @@ function DienstplanLadenDialog({
   function handleLoeschenBestaetigen(): void {
     if (loeschenDienstplan === null) return
     const geloeschteId = loeschenDienstplan.id
-    window.api.dienstplan.delete(geloeschteId).then(() => {
-      ladeListe()
-      setLoeschenDienstplan(null)
-      if (geloeschteId === aktiverDienstplanId) {
-        onAktiverDienstplanGeloescht()
-      }
-    })
+    window.api.dienstplan
+      .delete(geloeschteId)
+      .then(() => {
+        ladeListe()
+        setLoeschenDienstplan(null)
+        if (geloeschteId === aktiverDienstplanId) {
+          onAktiverDienstplanGeloescht()
+        }
+      })
+      .catch(fehlerMelder('Der Dienstplan konnte nicht gelöscht werden.'))
   }
 
   return (

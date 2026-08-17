@@ -2,7 +2,7 @@
 
 Abgeschlossene Schritte, ausgelagert aus [`TODO.md`](./TODO.md), damit dort nur noch steht, was offen ist. Je Schritt das Ergebnis in zwei bis drei Zeilen — die vollständigen Checklisten stehen im jeweiligen Ablaufplan, die Begründungen im [Tagebuch](./tagebuch).
 
-Alle Schritte fielen bisher in [KW 33/2026](./tagebuch/2026-kw33.md).
+Die nummerierten Schritte und die ersten drei Querschnittsarbeiten fielen in [KW 33/2026](./tagebuch/2026-kw33.md), die Setup- und Konfigurationsprüfung in [KW 34/2026](./tagebuch/2026-kw34.md).
 
 ## Überblick
 
@@ -160,3 +160,11 @@ Ergebnis in [`test/teststrategie.md`](./test/teststrategie.md) und [`test/testpr
 Neu nach Bereichen getrennt (`architektur/`, `style/`, `test/`, `workflow/`, `tagebuch/`), Erledigtes ausgelagert, Historie nach Kalenderwochen. Beim Abgleich gegen den Code fielen mehrere veraltete Angaben auf, unter anderem in `projektstruktur.md`, die den Stand nach Schritt 6 beschrieb.
 
 Abgesichert über die Skill `/doku-pflege` und einen Stop-Hook, der erinnert, wenn `src/` geändert wurde und `docs/` nicht. Regeln in [`workflow/doku-pflege.md`](./workflow/doku-pflege.md).
+
+### Setup- und Konfigurationsprüfung vor Schritt 17 — 17.08.2026
+
+Main-Prozess, Setup und Konfiguration gegen den Code geprüft, vor dem Beginn von Schritt 17, solange Korrekturen noch billig sind (kein Installer hat bislang beim Nutzer eine Datenbank angelegt).
+
+Datenbankstart auf eine explizite `oeffneDatenbank()`-Funktion umgebaut, `try/catch` mit Fehlerdialog in `index.ts`; `foreign_keys` eingeschaltet und dafür `src/main/db/schema.ts` mit `bereiteDatenbankVor()` als gemeinsame Grundlage für Produktion und Tests angelegt; `PRAGMA user_version` samt Migrationspfad vorbereitet; `sandbox: true` aktiviert und dafür `window.electron`/`Versions.tsx` entfernt; `electron-builder.yml` vom Template auf das Projekt umgestellt; Permission-Allowlist eingerichtet; seitenübergreifende Fehleranzeige (`FehlerHinweis`) eingeführt, nachdem sich zeigte, dass abgelehnte IPC-Aufrufe im Renderer bis dahin spurlos verschwanden.
+
+Ergebnis unter anderem in [`architektur/prozessgrenzen.md`](./architektur/prozessgrenzen.md), [`architektur/technologieentscheidungen.md`](./architektur/technologieentscheidungen.md) und [`test/offene-maengel.md`](./test/offene-maengel.md). Verlauf und verworfene Alternativen im [Tagebuch](./tagebuch/2026-kw34.md).

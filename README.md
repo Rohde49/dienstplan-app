@@ -1,34 +1,41 @@
-# electron-scaffold-tmp
+# Dienstplan-App
 
-An Electron application with React and TypeScript
+Windows-Desktop-Anwendung zur Dienstplanverwaltung. Studienprojekt, entwickelt mit Claude Code.
 
-## Recommended IDE Setup
+Electron + Vite + React + TypeScript, lokale SQLite-Datenbank über `better-sqlite3`. Ausführliche Begründung der Technologiewahl in [`docs/architektur/technologieentscheidungen.md`](./docs/architektur/technologieentscheidungen.md).
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Dokumentation
 
-## Project Setup
+Wegweiser durch die gesamte Projektdokumentation: [`docs/README.md`](./docs/README.md).
 
-### Install
+Der aktuelle Stand steht in [`docs/TODO.md`](./docs/TODO.md), der Verlauf im [Tagebuch](./docs/tagebuch), die Arbeitskonventionen in [`CLAUDE.md`](./CLAUDE.md).
 
-```bash
-$ npm install
-```
-
-### Development
+## Einrichtung
 
 ```bash
-$ npm run dev
+npm install
 ```
 
-### Build
+> Auf einem Rechner ohne Python und Build-Tools bricht `npm ci` ab, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist der Build nicht — die Prebuilds liegen im Paket. Umweg und Hintergrund in [`docs/test/offene-maengel.md`](./docs/test/offene-maengel.md).
+
+## Entwicklung
 
 ```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+npm run dev
 ```
+
+## Prüfen
+
+```bash
+npm run typecheck && npm run lint && npm run test && npm run test:e2e
+```
+
+Was die einzelnen Testebenen abdecken und was bewusst nicht getestet wird: [`docs/test/teststrategie.md`](./docs/test/teststrategie.md).
+
+## Windows-Installer bauen
+
+```bash
+npm run build:win
+```
+
+Empfohlene IDE-Einrichtung: [VS Code](https://code.visualstudio.com/) mit [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) und [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).

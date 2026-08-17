@@ -1,5 +1,5 @@
+import type Database from 'better-sqlite3'
 import { ipcMain } from 'electron'
-import { db } from '../db'
 import { IPC_KANAELE } from '../../shared/ipcKanaele'
 import type {
   BemerkungAenderung,
@@ -13,15 +13,14 @@ import type {
 import {
   createDienstplan,
   deleteDienstplan,
-  ensureDienstplanTabellen,
   getDienstplaene,
   getDienstplanMitTagen,
   speicherePlanungsstand
 } from '../db/dienstplanRepository'
 
-export function registerDienstplanHandlers(): void {
-  ensureDienstplanTabellen(db)
+type Db = InstanceType<typeof Database>
 
+export function registerDienstplanHandlers(db: Db): void {
   ipcMain.handle(IPC_KANAELE.dienstplan.list, (): Dienstplan[] => getDienstplaene(db))
 
   ipcMain.handle(

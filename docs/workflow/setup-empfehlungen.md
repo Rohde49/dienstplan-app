@@ -10,13 +10,14 @@ Ursprünglich eine Momentaufnahme vom 15.08.2026. Beim Doku-Umbau am 16.08.2026 
 | ----------------------- | ----------------------------------------------------------------------------------------------- | --------- |
 | `CLAUDE.md`             | verweist auf `docs/` statt zu duplizieren, Workflow-Konventionen enthalten                      | ✅        |
 | Projektdokumentation    | `docs/` nach Bereichen gegliedert, siehe [`README.md`](../README.md)                            | ✅        |
-| Prüfsignale (lokal)     | `typecheck` (node + web getrennt), `lint`, `test` (19 Dateien / 174 Fälle), `test:e2e`, `build` | ✅        |
+| Prüfsignale (lokal)     | `typecheck` (node + web getrennt), `lint`, `test` (21 Dateien / 183 Fälle), `test:e2e`, `build` | ✅        |
 | Testebenen              | fünf, inklusive Komponententests, IPC-Vertragstest und automatisierter Druckprüfung             | ✅        |
 | Aktive Plugins          | `plugin-dev`, `frontend-design`, `claude-code-setup`, `code-review` (global aktiviert)          | ✅        |
 | Permission-Modus        | global `defaultMode: "auto"`                                                                    | ✅        |
 | Projekt-`settings.json` | angelegt beim Doku-Umbau, enthält den Stop-Hook zur Doku-Erinnerung                             | ✅        |
 | Projekt-Skills          | `/doku-pflege` vorhanden; `schritt-start`/`schritt-abschluss` weiterhin offen                   | ⚠️        |
 | Hooks                   | Stop-Hook für die Doku-Erinnerung; Prettier-/Typecheck-Hooks weiterhin offen                    | ⚠️        |
+| Permission-Allowlist    | in `.claude/settings.json` für die harmlosen npm-Skripte hinterlegt                             | ✅        |
 | Subagenten              | keine (`.claude/agents/` fehlt)                                                                 | ❌        |
 | MCP-Server              | keine (`.mcp.json` fehlt)                                                                       | ⚠️        |
 | CI                      | kein `.github/` — trotz GitHub-Remote laufen alle Prüfungen nur lokal                           | ❌        |
@@ -94,28 +95,13 @@ claude mcp add context7
 
 ## 7. Konfigurationshygiene
 
-| Punkt                                   | Befund                                                                                                    | Stand                                                              |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `.claude/settings.json` fehlt           | Es existierte nur `settings.local.json`, die vom Repository ausgeschlossen ist                            | ✅ angelegt und eingecheckt                                        |
-| Toter Permission-Eintrag                | `settings.local.json` erlaubt einen `node cdp.mjs eval …`-Aufruf; die Datei existiert im Repository nicht | offen — die Datei ist nicht eingecheckt, Nutzer entscheidet        |
-| Keine Permission-Allowlist              | `npm run test`, `lint`, `typecheck`, `build` sind harmlos und werden ständig gebraucht                    | offen                                                              |
-| `.gitignore` deckte `.claude/` nicht ab | Funktionierte nur wegen der globalen Ignore-Datei des Nutzers                                             | ✅ `.claude/settings.local.json` steht in der Projekt-`.gitignore` |
-
-Vorschlag für die Allowlist:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm run test:*)",
-      "Bash(npm run lint)",
-      "Bash(npm run typecheck:*)",
-      "Bash(npm run format)",
-      "Bash(npx vitest run:*)"
-    ]
-  }
-}
-```
+| Punkt                                   | Befund                                                                                            | Stand                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `.claude/settings.json` fehlt           | Es existierte nur `settings.local.json`, die vom Repository ausgeschlossen ist                    | ✅ angelegt und eingecheckt                                        |
+| Toter Permission-Eintrag                | `settings.local.json` erlaubte einen `node cdp.mjs eval …`-Aufruf auf eine nicht vorhandene Datei | ✅ am 17.08.2026 entfernt                                          |
+| Keine Permission-Allowlist              | `npm run test`, `lint`, `typecheck`, `build` sind harmlos und werden ständig gebraucht            | ✅ in `.claude/settings.json` eingetragen                          |
+| `.gitignore` deckte `.claude/` nicht ab | Funktionierte nur wegen der globalen Ignore-Datei des Nutzers                                     | ✅ `.claude/settings.local.json` steht in der Projekt-`.gitignore` |
+| `.claude/` landete im Installer         | Die `files`-Liste in `electron-builder.yml` schloss den Ordner nicht aus                          | ✅ am 17.08.2026 ausgeschlossen                                    |
 
 > Die Skill `fewer-permission-prompts` leitet eine solche Liste aus den bisherigen Sitzungsprotokollen ab, statt sie zu raten.
 
@@ -123,7 +109,9 @@ Vorschlag für die Allowlist:
 
 `CLAUDE.md` fordert selbst: „Wo möglich eine Prüfmöglichkeit schaffen." Die Signale existieren, laufen aber nur, wenn jemand sie manuell startet — ein Commit kann mit gebrochenem Typecheck oder roten Tests auf `main` landen, ohne dass es auffällt.
 
-`.github/workflows/ci.yml` mit `npm ci && npm run lint && npm run typecheck && npm run test` bei Push und PR, dazu `npm run build && npm run test:e2e` auf einem Windows-Runner.
+`.github/workflows/ci.yml` mit `npm ci && npm run lint && npm run typecheck && npm run test` bei Push und PR, dazu `npm run test:e2e` auf einem Windows-Runner (das Skript baut seit dem 17.08.2026 selbst vor).
+
+> **Vorher zu klären:** `npm ci` scheitert auf einem Rechner ohne Python und Build-Tools, weil npm für `better-sqlite3` einen `node-gyp`-Build startet. Nötig ist der Build nicht. Details und der nachgewiesene Umweg stehen in [`../test/offene-maengel.md`](../test/offene-maengel.md).
 
 ## 9. Priorisierte Reihenfolge
 
@@ -132,7 +120,7 @@ Vorschlag für die Allowlist:
 | 1     | Hook: Prettier nach `Edit`/`Write`                     | Keine Formatier-Diffs mehr in Commits                      |
 | 1     | Hook: gezielter Typecheck nach `.ts`/`.tsx`-Änderungen | Fehler sofort statt Schritte später sichtbar               |
 | 1     | `claude mcp add context7`                              | Verlässliche Doku für Tailwind v4 / React 19 / Electron 39 |
-| 1     | Permission-Allowlist in `.claude/settings.json`        | Weniger Rückfragen ohne Risiko                             |
+| ~~1~~ | ~~Permission-Allowlist in `.claude/settings.json`~~    | ✅ am 17.08.2026 eingerichtet                              |
 | 2     | Skills `schritt-start` + `schritt-abschluss`           | Der häufigste Ablauf wird zu zwei Slash-Befehlen           |
 | 2     | Subagent `ipc-pruefer`                                 | Sichert die Architekturregel ohne automatisches Signal ab  |
 | 2     | CI-Workflow                                            | Prüfsignal unabhängig von Disziplin                        |

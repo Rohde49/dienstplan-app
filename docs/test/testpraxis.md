@@ -18,12 +18,12 @@ Wie ein Test in diesem Projekt konkret geschrieben wird. **Welche** Ebene für e
 
 Kein Produktivcode, aber von beiden tsconfigs erfasst — sonst wäre die Typabsicherung unten wirkungslos.
 
-| Datei                                                   | Zweck                                                                                               |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| [`apiFake.ts`](../../src/test/apiFake.ts)               | `window.api`-Ersatz, hält Daten im Speicher, verhält sich fachlich wie die echten Handler           |
-| [`datenbank.ts`](../../src/test/datenbank.ts)           | `erzeugeTestDatenbank()` — In-Memory-SQLite, Schema über dieselben `ensure…`-Funktionen wie die App |
-| [`factories.ts`](../../src/test/factories.ts)           | Testdaten-Fabriken: sinnvoller Standardfall plus punktuelle Overrides                               |
-| [`setup.renderer.ts`](../../src/test/setup.renderer.ts) | jsdom-Setup inklusive der Polyfills, die Radix braucht                                              |
+| Datei                                                   | Zweck                                                                                                      |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`apiFake.ts`](../../src/test/apiFake.ts)               | `window.api`-Ersatz, hält Daten im Speicher, verhält sich fachlich wie die echten Handler                  |
+| [`datenbank.ts`](../../src/test/datenbank.ts)           | `erzeugeTestDatenbank()` — In-Memory-SQLite, vorbereitet über dieselbe `bereiteDatenbankVor()` wie die App |
+| [`factories.ts`](../../src/test/factories.ts)           | Testdaten-Fabriken: sinnvoller Standardfall plus punktuelle Overrides                                      |
+| [`setup.renderer.ts`](../../src/test/setup.renderer.ts) | jsdom-Setup inklusive der Polyfills, die Radix braucht                                                     |
 
 **Warum das Fake seinen Typ aus dem Preload bezieht:** Der Rückgabetyp von `apiFake.ts` ist die aus [`src/preload/index.d.ts`](../../src/preload/index.d.ts) exportierte `interface API`. Ändert sich dort eine Signatur, bricht der Typecheck im Fake — der Vertrag wird vom Compiler bewacht statt von Disziplin. Details in [`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md).
 

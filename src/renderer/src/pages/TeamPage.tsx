@@ -6,6 +6,7 @@ import { ManagementLayout } from '@/components/layout/ManagementLayout'
 import { TeamMemberForm, type TeamMemberFormValues } from '@/components/TeamMemberForm'
 import { TeamMemberTable } from '@/components/TeamMemberTable'
 import { formatMinutesToHHMM, parseHHMMToMinutes } from '../../../shared/time'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import { validateTeamMemberInput } from '@/lib/validateTeamMember'
 import type { TeamMember } from '../../../shared/types'
 
@@ -24,7 +25,10 @@ function TeamPage(): React.JSX.Element {
   const [errors, setErrors] = useState<string[]>([])
 
   const loadTeamMembers = useCallback(() => {
-    window.api.team.list().then(setTeamMembers)
+    window.api.team
+      .list()
+      .then(setTeamMembers)
+      .catch(fehlerMelder('Die Mitarbeiterliste konnte nicht geladen werden.'))
   }, [])
 
   useEffect(() => {
@@ -83,23 +87,28 @@ function TeamPage(): React.JSX.Element {
     const request =
       selectedId === null ? window.api.team.add(data) : window.api.team.update(selectedId, data)
 
-    request.then(() => {
-      handleNewMember()
-      loadTeamMembers()
-    })
+    request
+      .then(() => {
+        handleNewMember()
+        loadTeamMembers()
+      })
+      .catch(fehlerMelder('Der Mitarbeiter konnte nicht gespeichert werden.'))
   }
 
   function handleDelete(): void {
     if (selectedId === null) return
 
-    window.api.team.delete(selectedId).then((result) => {
-      if (result.geloescht) {
-        handleNewMember()
-        loadTeamMembers()
-      } else {
-        setErrors(result.grund ? [result.grund] : ['Löschen nicht möglich.'])
-      }
-    })
+    window.api.team
+      .delete(selectedId)
+      .then((result) => {
+        if (result.geloescht) {
+          handleNewMember()
+          loadTeamMembers()
+        } else {
+          setErrors(result.grund ? [result.grund] : ['Löschen nicht möglich.'])
+        }
+      })
+      .catch(fehlerMelder('Der Mitarbeiter konnte nicht gelöscht werden.'))
   }
 
   return (

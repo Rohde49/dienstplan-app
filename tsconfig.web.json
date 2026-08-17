@@ -12,6 +12,8 @@
   ],
   "compilerOptions": {
     "composite": true,
+    // Siehe tsconfig.node.json: Die Lockerung des Presets wird zurückgenommen.
+    "noImplicitAny": true,
     "jsx": "react-jsx",
     "paths": {
       "@/*": [

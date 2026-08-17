@@ -13,16 +13,10 @@ vi.mock('electron', () => ({
   }
 }))
 
-// Verhindert, dass der Import der Handler die echte Datenbank öffnet: db.ts ruft beim
-// Laden app.getPath('userData') auf, was ohne laufendes Electron fehlschlägt.
-vi.mock('../db', () => ({ db: {} }))
-
-// Die ensure…-Aufrufe der Handler laufen gegen das db-Doppel und müssen ins Leere gehen.
-vi.mock('../db/teamRepository', () => ({ ensureTeamMembersTable: () => {} }))
-vi.mock('../db/eintragsdefinitionRepository', () => ({ ensureEintragsdefinitionenTable: () => {} }))
-vi.mock('../db/dienstplanRepository', () => ({ ensureDienstplanTabellen: () => {} }))
-vi.mock('../db/planeintragRepository', () => ({ ensurePlaneintraegeTabelle: () => {} }))
-vi.mock('../db/rufbereitschaftRepository', () => ({ ensureRufbereitschaftenTabelle: () => {} }))
+// Die Handler bekommen die Datenbank als Parameter und öffnen selbst keine. Für die
+// reine Registrierung wird sie nie berührt — die Aufrufe stecken in Callbacks, die
+// dieser Test nicht auslöst —, deshalb genügt hier ein leeres Doppel.
+const datenbankDoppel = {} as Parameters<typeof import('./teamHandlers').registerTeamHandlers>[0]
 
 async function registriereAlleHandler(): Promise<void> {
   const [team, eintragsdefinition, dienstplan, planeintrag, rufbereitschaft] = await Promise.all([
@@ -33,11 +27,11 @@ async function registriereAlleHandler(): Promise<void> {
     import('./rufbereitschaftHandlers')
   ])
 
-  team.registerTeamHandlers()
-  eintragsdefinition.registerEintragsdefinitionHandlers()
-  dienstplan.registerDienstplanHandlers()
-  planeintrag.registerPlaneintragHandlers()
-  rufbereitschaft.registerRufbereitschaftHandlers()
+  team.registerTeamHandlers(datenbankDoppel)
+  eintragsdefinition.registerEintragsdefinitionHandlers(datenbankDoppel)
+  dienstplan.registerDienstplanHandlers(datenbankDoppel)
+  planeintrag.registerPlaneintragHandlers(datenbankDoppel)
+  rufbereitschaft.registerRufbereitschaftHandlers(datenbankDoppel)
 }
 
 beforeEach(async () => {

@@ -30,6 +30,7 @@ import {
   parsePlaneintragSchluessel,
   planeintragSchluessel
 } from '../../../shared/planeintragSchluessel'
+import { fehlerMelder } from '@/lib/fehlermeldung'
 import { erzeugePlaneintragSnapshot, planeintraegeAlsEntwurf } from '@/lib/planeintragSnapshot'
 import { rufbereitschaftenAlsEntwurf } from '@/lib/rufbereitschaftEntwurf'
 import type {
@@ -97,7 +98,10 @@ function PlanPage(): React.JSX.Element {
   >(null)
 
   const loadTeamMembers = useCallback(() => {
-    window.api.team.list().then(setTeamMembers)
+    window.api.team
+      .list()
+      .then(setTeamMembers)
+      .catch(fehlerMelder('Die Mitarbeiterliste konnte nicht geladen werden.'))
   }, [])
 
   useEffect(() => {
@@ -169,6 +173,7 @@ function PlanPage(): React.JSX.Element {
         setLetzterGespeicherterTitel(dienstplan.titel)
         setTitelWirdBearbeitet(false)
       })
+      .catch(fehlerMelder('Der Dienstplan konnte nicht angelegt werden.'))
   }
 
   function fuehreNeuAnlegenAus(): void {
@@ -276,6 +281,7 @@ function PlanPage(): React.JSX.Element {
           setTitelWirdBearbeitet(false)
         }
       )
+      .catch(fehlerMelder('Der Planungsstand konnte nicht gespeichert werden.'))
   }
 
   function handleLaden(): void {
@@ -310,25 +316,27 @@ function PlanPage(): React.JSX.Element {
       window.api.dienstplan.get(id),
       window.api.planeintrag.listFuerDienstplan(id),
       window.api.rufbereitschaft.listFuerDienstplan(id)
-    ]).then(([geladen, planeintraege, rufbereitschaften]) => {
-      if (geladen === null) return
+    ])
+      .then(([geladen, planeintraege, rufbereitschaften]) => {
+        if (geladen === null) return
 
-      const entwurf = planeintraegeAlsEntwurf(planeintraege)
-      const rufbereitschaftEntwurfGeladen = rufbereitschaftenAlsEntwurf(rufbereitschaften)
-      setAktiverDienstplan(geladen.dienstplan)
-      setDienstplantage(geladen.tage)
-      setPlaneintraegeEntwurf(entwurf)
-      setPlaneintraegeBaseline(entwurf)
-      setRufbereitschaftEntwurf(rufbereitschaftEntwurfGeladen)
-      setRufbereitschaftBaseline(rufbereitschaftEntwurfGeladen)
-      setBemerkungEntwurf(bemerkungEntwurfAusTagen(geladen.tage))
-      setMonat(geladen.dienstplan.monat)
-      setJahr(geladen.dienstplan.jahr)
-      setTitelEntwurf(geladen.dienstplan.titel)
-      setLetzterGespeicherterTitel(geladen.dienstplan.titel)
-      setTitelWirdBearbeitet(false)
-      setLadenDialogOffen(false)
-    })
+        const entwurf = planeintraegeAlsEntwurf(planeintraege)
+        const rufbereitschaftEntwurfGeladen = rufbereitschaftenAlsEntwurf(rufbereitschaften)
+        setAktiverDienstplan(geladen.dienstplan)
+        setDienstplantage(geladen.tage)
+        setPlaneintraegeEntwurf(entwurf)
+        setPlaneintraegeBaseline(entwurf)
+        setRufbereitschaftEntwurf(rufbereitschaftEntwurfGeladen)
+        setRufbereitschaftBaseline(rufbereitschaftEntwurfGeladen)
+        setBemerkungEntwurf(bemerkungEntwurfAusTagen(geladen.tage))
+        setMonat(geladen.dienstplan.monat)
+        setJahr(geladen.dienstplan.jahr)
+        setTitelEntwurf(geladen.dienstplan.titel)
+        setLetzterGespeicherterTitel(geladen.dienstplan.titel)
+        setTitelWirdBearbeitet(false)
+        setLadenDialogOffen(false)
+      })
+      .catch(fehlerMelder('Der Dienstplan konnte nicht geladen werden.'))
   }
 
   return (
