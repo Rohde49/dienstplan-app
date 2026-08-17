@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Ein neuer Push auf denselben Branch bricht den noch laufenden Lauf ab.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruefen:
+    name: Lint, Typecheck, Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # --ignore-scripts unterdrückt den node-gyp-Build von better-sqlite3, den npm
+      # allein wegen der binding.gyp im Paket startet. Nötig ist er nicht: die
+      # N-API-Prebuilds für alle Plattformen liegen im Paket. Ohne die Unterdrückung
+      # bräuchte der Runner Python und Build-Tools.
+      - run: npm ci --ignore-scripts
+
+      # Die Ebenen 1–4 starten keine Electron-Binärdatei (ipcVertrag.test.ts ersetzt
+      # das Modul per vi.mock), deshalb entfällt hier der Nachzug von electron/install.js.
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+
+  windows:
+    name: Build und E2E (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      # Holt die Electron-Binärdatei nach, die durch --ignore-scripts ausgefallen ist.
+      - name: Electron-Binärdatei nachladen
+        run: node node_modules/electron/install.js
+
+      # Bewusst getrennt statt "npm run test:e2e" (das selbst baut): so ist im Log
+      # eindeutig, ob der Build oder der E2E-Lauf gefallen ist.
+      - run: npm run build
+      - run: npm run test:e2e:only
