@@ -63,7 +63,7 @@ Schritt 3 und 6 getrennt zu halten, hat sich mehrfach bewährt: Solange Testdate
 
 ## Bekannte Abweichungen
 
-- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Sie importieren `TeamMember`, `Kalendertag` und die Kennzahlen-Berechnung und widersprechen damit der Definition von `layout/` als „fachlich unwissend". Ein Verschieben wurde zurückgestellt, weil Schritt 17 `VerkuerzteAnsicht` ohnehin umbaut — die Einordnung wird dort mitentschieden.
+- **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Sie importieren `TeamMember`, `Kalendertag` und die Kennzahlen-Berechnung und widersprechen damit der Definition von `layout/` als „fachlich unwissend". Ein Verschieben wurde zurückgestellt, weil der PDF-Export `VerkuerzteAnsicht` ohnehin umbaut — die Einordnung wird dort mitentschieden.
 - **`FehlerHinweis` liegt direkt unter `components/`, ist aber der umgekehrte Fall: fachlich unwissend und seitenübergreifend.** Sie zeigt Fehler aus der Preload-Bridge unabhängig vom Fachbereich an und importiert keine Fachtypen — passt der Definition nach eher zu `layout/`. Landete am 17.08.2026 trotzdem direkt unter `components/`, weil sie kein Layout im eigentlichen Sinn ist (kein Rahmen um Seiteninhalt, sondern eine global eingehängte Anzeige). Keine Korrektur geplant, nur benannt.
 - **`src/main/db.ts` blieb eine eigenständige Datei** neben dem Ordner `src/main/db/`, statt zu `db/index.ts` zu werden. Kein Umbau geplant; die Trennung „Verbindung hier, Repositories dort" ist eindeutig genug.
 

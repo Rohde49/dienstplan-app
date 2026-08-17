@@ -10,9 +10,9 @@ Diese Mängel schlagen fehl, **sobald sie behoben sind**, und erzwingen damit di
 
 | Mangel                                        | Test                                                                                                              | Behoben durch |
 | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------- |
-| Der Druck verliert den letzten Tag des Monats | `legt alle Tage des Monats auf die Seite` in [`e2e/druckausgabe.e2e.test.ts`](../../e2e/druckausgabe.e2e.test.ts) | Schritt 17    |
+| Der Druck verliert den letzten Tag des Monats | `legt alle Tage des Monats auf die Seite` in [`e2e/druckausgabe.e2e.test.ts`](../../e2e/druckausgabe.e2e.test.ts) | PDF-Export    |
 
-**Zum Druckmangel:** Die Ausgabe liefert heute zwar eine einzelne A4-Seite mit allen Mitarbeiterspalten, aber der letzte Tag fehlt darauf — die Ansicht aus Schritt 16 ist ein Scrollcontainer, gedruckt wird nur der sichtbare Ausschnitt. Genau die Zusage, die Schritt 17 über die feste A4-Fläche mit Live-Skalierung einlösen soll. Nach Abschluss von Schritt 17 ist `.fails` zu entfernen und dieser Eintrag zu streichen.
+**Zum Druckmangel:** Die Ausgabe liefert heute zwar eine einzelne A4-Seite mit allen Mitarbeiterspalten, aber der letzte Tag fehlt darauf — die Ansicht aus Schritt 16 ist ein Scrollcontainer, gedruckt wird nur der sichtbare Ausschnitt. Genau die Zusage, die der PDF-Export über die feste A4-Fläche mit Live-Skalierung einlösen soll. Nach Abschluss des PDF-Exports ist `.fails` zu entfernen und dieser Eintrag zu streichen.
 
 ## Ohne Prüfsignal festgehalten
 

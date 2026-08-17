@@ -6,9 +6,7 @@ Der Zweck ist die **Prüfbarkeit dazwischen**. Ein Schritt, der in einem Zug umg
 
 ## Aktueller Plan
 
-| Schritt | Plan                                                          |
-| ------- | ------------------------------------------------------------- |
-| 17      | [Druckvorschau/Drucken](./schritt17-druckvorschau-drucken.md) |
+Aktuell kein Ablaufplan in Arbeit.
 
 Abgeschlossene Pläne liegen unter [`erledigt/`](./erledigt) und tragen oben eine Zeile mit Abschlussdatum und Commit.
 

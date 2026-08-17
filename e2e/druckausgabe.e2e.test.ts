@@ -95,17 +95,16 @@ describe('Druckausgabe', () => {
     }
   })
 
-  // BEKANNTER MANGEL, wird von Schritt 17 behoben (siehe
-  // docs/ablaufplaene/schritt17-druckvorschau-drucken.md, registriert in
+  // BEKANNTER MANGEL, wird vom PDF-Export behoben (registriert in
   // docs/test/offene-maengel.md).
   //
   // Der Druck liefert heute zwar eine Seite, aber der letzte Tag des Monats fehlt
   // darauf: die Ansicht aus Schritt 16 ist ein Scrollcontainer, gedruckt wird nur der
   // sichtbare Ausschnitt. Genau diese Zusage — "alles passt vollständig auf eine
-  // A4-Seite" — löst Schritt 17 über die feste A4-Fläche mit Live-Skalierung ein.
+  // A4-Seite" — löst der PDF-Export über die feste A4-Fläche mit Live-Skalierung ein.
   //
   // `it.fails` hält den Mangel fest, ohne die Suite rot zu färben, und schlägt fehl,
-  // sobald der Test bestehen WÜRDE. Nach Abschluss von Schritt 17 ist daher `.fails`
+  // sobald der Test bestehen WÜRDE. Nach Abschluss des PDF-Exports ist daher `.fails`
   // zu entfernen — der Test kann nicht stillschweigend veralten.
   it.fails('legt alle Tage des Monats auf die Seite — offen bis Schritt 17', async () => {
     laufend = await starteApp()

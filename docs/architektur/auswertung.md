@@ -70,7 +70,7 @@ Nicht jede Ansicht zeigt alle 15 Zeilen. Dieselbe Funktion `berechneKennzahlenFu
 
 Unterschiedlich ist auch, wer überhaupt eine Spalte bekommt: `AuswertungDialog` zeigt **nur** Erzieher, `PlanungsGrid` zeigt alle Rollen und schreibt „n/A" in die Kennzahlenzellen der Nicht-Erzieher, `VerkuerzteAnsicht` zeigt ebenfalls alle Rollen, lässt deren Fußzeilen aber leer.
 
-> ⚠️ Zu prüfen: Schritt 17 baut `VerkuerzteAnsicht` zu `DruckAnsicht` um. Diese Spalte danach umbenennen und nachsehen, ob die Fußzeilen unverändert geblieben sind.
+> ⚠️ Zu prüfen: Der PDF-Export baut `VerkuerzteAnsicht` zu `DruckAnsicht` um. Diese Spalte danach umbenennen und nachsehen, ob die Fußzeilen unverändert geblieben sind.
 
 - **„Freie Tage" ist ein eigener, einfacherer Wert** und bewusst nicht die Summe aus „Freie Samstage" (Zeile 2) und „Freie Sonntage und Feiertage" (Zeile 3): Anzahl der `Planeintrag`-Datensätze eines `TeamMember` mit `kuerzel === '/'`, unabhängig vom Wochentag. Er gehört deshalb nicht zu den 15 Zeilen, sondern nur ins Raster. Die beiden engeren Zeilen 2 und 3 bleiben davon unberührt.
 - **Farbliche Hervorhebung von „Δ Soll/Ist"**: `sollIstFarbe()` in [`src/renderer/src/lib/sollIstFarbe.ts`](../../src/renderer/src/lib/sollIstFarbe.ts) — `text-primary` bei exaktem Ausgleich, sonst eine aus `--destructive` abgeleitete Tönung. Dieselbe Funktion in Dialog und Raster, keine zweite Farblogik.

@@ -162,7 +162,7 @@ Bewusst offen gelassen, jeweils mit Grund:
 
 - **`Collapsible` hat keine eigene Optik.** Reicht die Radix-Primitives ohne `cn()` durch; das Aussehen entsteht vollständig an der einzigen Aufrufstelle (`EintraegePage`). Solange es dabei bleibt, wäre eine Vereinheitlichung Vorratsarbeit. Bei der zweiten Aufrufstelle nachziehen.
 - **Kein `--popover`-Token.** Popover, Select und Dialog nutzen `bg-card`. Solange es nur eine erhabene Flächenfarbe gibt, wäre ein zweites Token ohne Unterschied.
-- **`text-[9px]` und `text-[11px]`** in `PlanungsGrid` (viermal) und `VerkuerzteAnsicht` (einmal). Sie stammen aus der Platznot der Kennzahlen-Kopfzeile. Bei der Umstellung auf die Druckansicht (Schritt 17) prüfen, ob sie noch nötig sind.
+- **`text-[9px]` und `text-[11px]`** in `PlanungsGrid` (viermal) und `VerkuerzteAnsicht` (einmal). Sie stammen aus der Platznot der Kennzahlen-Kopfzeile. Bei der Umstellung auf die Druckansicht (PDF-Export) prüfen, ob sie noch nötig sind.
 - **`PlanungsGrid` und `VerkuerzteAnsicht` liegen in `layout/`, sind aber fachlich wissend.** Siehe [`architektur/projektstruktur.md`](../architektur/projektstruktur.md), Abschnitt „Bekannte Abweichungen".
 - **Zwei Tabellensysteme.** `Table` für Stammdaten, handgebaute `<table>` für Raster und Auswertung (nötig wegen `colgroup` und `sticky`). Die Kopfzellen-Optik ist in beiden gleich, aber nicht geteilt.
 
@@ -170,4 +170,4 @@ Bewusst offen gelassen, jeweils mit Grund:
 
 [`src/renderer/src/lib/planAnsicht.ts`](../../src/renderer/src/lib/planAnsicht.ts) hält, was `PlanungsGrid` und `VerkuerzteAnsicht` gemeinsam brauchen: `FEIERTAG_FARBE`, `WOCHENENDE_FARBE`, `DATUM_SPALTE_BREITE`, `RUFBEREITSCHAFT_SPALTE_BREITE`, `formatTagUndMonat()` und `mitarbeiterSpaltenStil()`.
 
-Vorher lag all das wortgleich in beiden Dateien. Zusammengeführt wurde es **vor** Schritt 17, weil der Umbau von `VerkuerzteAnsicht` zu `DruckAnsicht` sonst die dritte Kopie erzeugt hätte.
+Vorher lag all das wortgleich in beiden Dateien. Zusammengeführt wurde es **vor** dem PDF-Export, weil der Umbau von `VerkuerzteAnsicht` zu `DruckAnsicht` sonst die dritte Kopie erzeugt hätte.

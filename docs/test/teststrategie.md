@@ -86,7 +86,7 @@ Der native Windows-Druckdialog lässt sich nicht automatisieren — das Druckerg
 
 Warum kein eigener Regex über die PDF-Streams: Chromium bettet Schriften als Teilmengen mit eigener Kodierung ein, ein naiver Ansatz liefert Binärmüll aus den Bilddaten. `pdfjs-dist` wertet die ToUnicode-Tabellen korrekt aus und ist derselbe Parser, mit dem der Nutzer die Datei später ansieht.
 
-Damit ist die zentrale Zusage von Schritt 17 — „der Dienstplan passt vollständig auf eine A4-Seite" — erstmals maschinell prüfbar: eine Seite **und** alle Mitarbeiterspalten **und** alle Tage des Monats. Nur alle drei zusammen bedeuten „nichts abgeschnitten"; eine einzelne Seite allein wäre auch dann erreicht, wenn der Rest wegfiele.
+Damit ist die zentrale Zusage des PDF-Exports — „der Dienstplan passt vollständig auf eine A4-Seite" — erstmals maschinell prüfbar: eine Seite **und** alle Mitarbeiterspalten **und** alle Tage des Monats. Nur alle drei zusammen bedeuten „nichts abgeschnitten"; eine einzelne Seite allein wäre auch dann erreicht, wenn der Rest wegfiele.
 
 Manuell bleibt danach nur noch, dass der Dialog überhaupt aufgeht und ein realer Drucker angesprochen wird.
 

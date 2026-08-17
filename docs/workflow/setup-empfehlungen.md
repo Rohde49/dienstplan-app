@@ -76,7 +76,7 @@ Die Empfehlung `app-screenshot` ist **entfallen**: Druckausgabe, Durchstich und 
 | Empfehlung                  | Warum hier relevant                                                                                                                                                                  | Priorität |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
 | **`ipc-pruefer`**           | Die wichtigste Architekturregel ist unsichtbar: Ein Verstoß gegen die Prozessgrenzen fällt weder Typecheck noch Tests auf, sondern erst zur Laufzeit                                 | **hoch**  |
-| **`design-system-pruefer`** | Tokens, Skalen und Barrierefreiheits-Mindestanforderungen sind verbindlich festgelegt; ein Agent, der UI-Änderungen dagegen prüft, hält das Design-System nach Schritt 17 ff. stabil | mittel    |
+| **`design-system-pruefer`** | Tokens, Skalen und Barrierefreiheits-Mindestanforderungen sind verbindlich festgelegt; ein Agent, der UI-Änderungen dagegen prüft, hält das Design-System nach dem PDF-Export ff. stabil | mittel    |
 
 Beide Prompts sollten auf die zuständigen Dokumente verweisen ([`architektur/prozessgrenzen.md`](../architektur/prozessgrenzen.md) bzw. [`style/design-system.md`](../style/design-system.md)), statt die Regeln zu wiederholen — sonst entsteht eine dritte Fassung, die veraltet.
 

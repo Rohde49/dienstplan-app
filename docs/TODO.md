@@ -6,24 +6,11 @@ Gegliedert nach Zustand und Bereich, nicht nach Schrittnummer: Der aktuelle Schr
 
 ## Aktueller Schritt
 
-### Schritt 17: Druckvorschau/Drucken
-
-Baut `VerkuerzteAnsicht.tsx` zu `DruckAnsicht.tsx` um: statt einer scrollbaren Kompakttabelle eine dauerhaft live skalierte, exakte A4-Hochformat-Vorschau (zwei getrennte Skalierungsebenen — Inhalts-Skalierung auf die physische Seite, davon unabhängig ein rein optischer Außen-Zoom fürs Panel), inklusive Dienstplan-Titel als Kopfzeile. Der „Drucken"-Button löst darauf `window.print()` aus (nativer Windows-Dialog, kein neuer IPC-Kanal). Kein Signaturblock in diesem Schritt.
-
-Ablaufplan: [`ablaufplaene/schritt17-druckvorschau-drucken.md`](./ablaufplaene/schritt17-druckvorschau-drucken.md)
-
-- [ ] Umbenennung `VerkuerzteAnsicht.tsx` → `DruckAnsicht.tsx`, A4-Flächen-Grundgerüst, Titel-Kopfzeile
-- [ ] Reine Skalierungsfunktion (`berechneDruckSkalierungsfaktor`) inkl. Unit-Tests
-- [ ] Live Inhalts-Skalierung verdrahten (auf eine A4-Seite, unabhängig von der Fenstergröße)
-- [ ] Live Außen-Zoom verdrahten (Panel-Anpassung per `ResizeObserver`, rein optisch)
-- [ ] Print-Stylesheet und „Drucken"-Button aktivieren
-- [ ] **Früh prüfen, nicht am Ende:** einmal manuell über „Drucken" als PDF exportieren — nur der native Dialog bleibt unautomatisierbar
-- [ ] Gesamtverifikation (`npm run typecheck`, `npm run lint`, `npm run test`, `npm run test:e2e`)
-- [ ] `.fails` in `e2e/druckausgabe.e2e.test.ts` entfernen und den Eintrag aus [`test/offene-maengel.md`](./test/offene-maengel.md) streichen — der Test schlägt sonst fehl, sobald er bestehen würde
-- [ ] Doku nachziehen (`/doku-pflege`): Schritt nach `erledigt.md`, Tagebucheintrag, Ablaufplan nach `ablaufplaene/erledigt/`
+Kein Schritt aktuell in Arbeit.
 
 ## Fachfunktionen
 
+- [ ] **PDF-Export**: Live skalierte A4-Druckvorschau des Dienstplans, Drucken über den nativen Windows-Dialog.
 - [ ] **Signaturblock „Freigabe und Unterschrift"** auf der Druckausgabe. Stammt aus dem Mockup zu Schritt 16, wurde aus Schritt 17 bewusst herausgenommen. Erst sinnvoll, wenn die A4-Fläche steht.
 
 ## Technik und Infrastruktur
@@ -35,7 +22,7 @@ Ablaufplan: [`ablaufplaene/schritt17-druckvorschau-drucken.md`](./ablaufplaene/s
 
 ## Dokumentation
 
-- [ ] **Nach Schritt 17: `VerkuerzteAnsicht` → `DruckAnsicht` in der Doku nachziehen.** Betroffen sind [`architektur/auswertung.md`](./architektur/auswertung.md) (Spalte in der Ansichtstabelle) und [`style/design-system.md`](./style/design-system.md) (bekannte Abweichungen, geteilte Darstellungslogik).
+- [ ] **Nach dem PDF-Export: `VerkuerzteAnsicht` → `DruckAnsicht` in der Doku nachziehen.** Betroffen sind [`architektur/auswertung.md`](./architektur/auswertung.md) (Spalte in der Ansichtstabelle) und [`style/design-system.md`](./style/design-system.md) (bekannte Abweichungen, geteilte Darstellungslogik).
 - [ ] **Die `> ⚠️ Zu prüfen:`-Markierungen abarbeiten**, die beim Doku-Umbau gesetzt wurden. Jede benennt eine Stelle, an der die Doku den Ist-Zustand beschreibt, aber eine Entscheidung aussteht.
 
 ## Bekannte Mängel
@@ -44,7 +31,7 @@ Vollständig im Register [`test/offene-maengel.md`](./test/offene-maengel.md). K
 
 | Mangel                                    | Prüfsignal        | Behebung       |
 | ----------------------------------------- | ----------------- | -------------- |
-| Druck verliert den letzten Tag des Monats | `it.fails` in E2E | Schritt 17     |
+| Druck verliert den letzten Tag des Monats | `it.fails` in E2E | PDF-Export     |
 | Main-Prozess validiert keine Eingabe      | keines            | zu entscheiden |
 | `npm ci` braucht Python/Build-Tools       | keines            | mit dem CI     |
 | Toter Scaffold-Code                       | keines            | siehe „Ideen"  |
