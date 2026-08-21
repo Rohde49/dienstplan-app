@@ -10,11 +10,13 @@ Die wichtigste Architekturregel des Projekts ist unsichtbar: Ein Verstoß gegen 
 | **Preload**  | Node, im Renderer-Kontext | `ipcRenderer.invoke` aufrufen und über `contextBridge` exponieren | Fachlogik enthalten                                |
 | **Renderer** | Chromium                  | React, DOM, `window.api`                                          | `require`, `process`, `better-sqlite3`, `electron` |
 
-`contextIsolation`, `sandbox` und `nodeIntegration: false` sind in [`src/main/index.ts`](../../src/main/index.ts) ausdrücklich gesetzt, obwohl die ersten beiden Werte den Voreinstellungen von Electron 39 entsprechen. Sie sind die Grundlage dieser Seite und sollen ein Major-Upgrade überstehen, ohne von einer geänderten Voreinstellung still gekippt zu werden.
+`contextIsolation`, `sandbox` und `nodeIntegration: false` sind in [`src/main/index.ts`](../../src/main/index.ts) ausdrücklich gesetzt, obwohl alle drei den Voreinstellungen von Electron 43 entsprechen (`nodeIntegration` false, `contextIsolation` true, `sandbox` true seit Electron 20). Sie sind die Grundlage dieser Seite und sollen ein Major-Upgrade überstehen, ohne von einer geänderten Voreinstellung still gekippt zu werden. Beim Sprung von Electron 39 auf 43 am 17.08.2026 hat sich an keinem der drei Werte etwas geändert.
 
 Der Renderer sieht dadurch ausschließlich `window.api` — die in [`src/preload/index.ts`](../../src/preload/index.ts) freigegebene Brücke, die genau die Kanäle aus `IPC_KANAELE` durchreicht.
 
-**Das Preload-Bundle darf außer `electron` nichts per `require` laden.** Unter `sandbox: true` steht im Preload nur dieses eine Modul zur Verfügung; ein Paket aus `node_modules` bricht den Ladevorgang ab, und `window.api` bleibt undefiniert — die App startet dann mit einem funktionslosen Fenster. electron-vite lässt Pakete aus `dependencies` unbehandelt im Bundle stehen, ein neuer Import dort genügt also für den Ausfall. Der E2E-Durchstich schlägt in diesem Fall fehl und ist das Signal dafür.
+**Das Preload-Bundle darf außer `electron` nichts per `require` laden.** Unter `sandbox: true` steht im Preload nur dieses eine Modul zur Verfügung; ein Paket aus `node_modules` bricht den Ladevorgang ab, und `window.api` bleibt undefiniert — die App startet dann mit einem funktionslosen Fenster.
+
+Entscheidend dafür ist, in welchem Block der `package.json` ein Paket steht: electron-vite lässt Pakete aus `dependencies` als externes `require` im Bundle stehen, Pakete aus `devDependencies` bündelt es ein. Seit dem 17.08.2026 enthält `dependencies` nur noch `better-sqlite3` — die Gefahr beschränkt sich damit auf dieses eine Paket, und ein Import von `better-sqlite3` gehört ohnehin nie ins Preload. Wird künftig etwas nach `dependencies` verschoben, kommt die Fehlerklasse zurück. Der E2E-Durchstich schlägt in diesem Fall fehl und ist das Signal dafür.
 
 Dass die Grenze tatsächlich dicht ist, prüft Ebene 5 direkt: Ein E2E-Fall stellt fest, dass der Renderer weder `require` noch `process` noch `window.electron` kennt.
 

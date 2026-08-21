@@ -28,7 +28,7 @@ Ursprünglich eine Momentaufnahme vom 15.08.2026. Beim Doku-Umbau am 16.08.2026 
 
 | Kategorie      | Erkannt                                                            | Wirkt sich aus auf         |
 | -------------- | ------------------------------------------------------------------ | -------------------------- |
-| Laufzeit       | Electron 39, Node/Chromium, Windows-only                           | Hooks, E2E-Ebene           |
+| Laufzeit       | Electron 43, Node/Chromium, Windows-only                           | Hooks, E2E-Ebene           |
 | Sprache        | TypeScript 5.9, zwei getrennte tsconfigs (node/web)                | Typecheck-Hook             |
 | Frontend       | React 19, React Router 7 (`HashRouter`), Tailwind v4, shadcn/Radix | Design-Subagent, context7  |
 | Datenhaltung   | `better-sqlite3` 13, ausschließlich im Main-Prozess                | IPC-Subagent               |
@@ -84,7 +84,7 @@ Beide Prompts sollten auf die zuständigen Dokumente verweisen ([`architektur/pr
 
 | Empfehlung     | Warum hier relevant                                                                                                                                                                                             | Priorität |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| **context7**   | Der Stack ist durchgehend sehr neu: Electron 39, React 19, Tailwind v4 (kein `tailwind.config.js` mehr), React Router 7, Vitest 4. Bei genau diesen Versionen ist Halbwissen aus dem Training am gefährlichsten | **hoch**  |
+| **context7**   | Der Stack ist durchgehend sehr neu: Electron 43, React 19, Tailwind v4 (kein `tailwind.config.js` mehr), React Router 7, Vitest 4. Bei genau diesen Versionen ist Halbwissen aus dem Training am gefährlichsten | **hoch**  |
 | **GitHub MCP** | Remote existiert, CI ist geplant — Nutzen entsteht aber erst, sobald mit Issues/PRs gearbeitet wird                                                                                                             | niedrig   |
 
 ```bash
@@ -119,7 +119,7 @@ Die offene Frage zu `npm ci` ist damit entschieden: Der Workflow nutzt `npm ci -
 | ----- | ------------------------------------------------------ | ---------------------------------------------------------- |
 | 1     | Hook: Prettier nach `Edit`/`Write`                     | Keine Formatier-Diffs mehr in Commits                      |
 | 1     | Hook: gezielter Typecheck nach `.ts`/`.tsx`-Änderungen | Fehler sofort statt Schritte später sichtbar               |
-| 1     | `claude mcp add context7`                              | Verlässliche Doku für Tailwind v4 / React 19 / Electron 39 |
+| 1     | `claude mcp add context7`                              | Verlässliche Doku für Tailwind v4 / React 19 / Electron 43 |
 | ~~1~~ | ~~Permission-Allowlist in `.claude/settings.json`~~    | ✅ am 17.08.2026 eingerichtet                              |
 | 2     | Skills `schritt-start` + `schritt-abschluss`           | Der häufigste Ablauf wird zu zwei Slash-Befehlen           |
 | 2     | Subagent `ipc-pruefer`                                 | Sichert die Architekturregel ohne automatisches Signal ab  |

@@ -2,24 +2,30 @@ appId: de.rohde.dienstplan
 productName: Dienstplan
 directories:
   buildResources: build
+# Allow-Liste statt Ausschlussliste: Aufgezählt wird, was mitgeliefert wird — alles
+# andere bleibt draußen. Die frühere Ausschlussliste musste jede unerwünschte Datei
+# kennen und ließ deshalb ~54 MB node_modules und sogar ein nicht mehr deklariertes
+# Paket in den Installer wandern.
 files:
-  - '!**/.vscode/*'
-  # Entwicklungswerkzeug, gehört nicht zur ausgelieferten Anwendung.
-  - '!.claude/**'
-  # Einstufig ('!src/*') greift nicht für Unterordner — der gesamte Quellcode landete
-  # sonst mit im Installer.
-  - '!src/**'
-  - '!e2e/**'
-  - '!docs/**'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!vitest.config.ts'
-  - '!vitest.e2e.config.ts'
-  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,CHANGELOG.md,README.md,CLAUDE.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-  - '!components.json'
-asarUnpack:
+  - out/**
+  # Das Icon wird in src/main/index.ts per `?asset` eingebunden und zur Laufzeit als
+  # join(__dirname, '../../resources/icon.png') aufgelöst. Der Zweig greift nur unter
+  # Linux, aber solange der Import steht, muss die Datei mit.
   - resources/**
+  - package.json
+  # Der Renderer läuft mit nodeIntegration: false und kann node_modules gar nicht laden;
+  # sein Code liegt vollständig gebündelt in out/renderer/. Aus node_modules wird deshalb
+  # nur das gebraucht, was der Main-Prozess zur Laufzeit tatsächlich per require zieht.
+  - '!node_modules/**'
+  - node_modules/better-sqlite3/package.json
+  - node_modules/better-sqlite3/lib/**
+  # lib/binding.js sucht den Prebuild als ../prebuilds/<platform>-<arch>.node. Die sieben
+  # übrigen Prebuilds (macOS, Linux, arm64) und deps/ mit der sqlite3-Amalgamation sind
+  # Build-Zutaten für Plattformen, die dieses Projekt nicht ausliefert (~25 MB).
+  - node_modules/better-sqlite3/prebuilds/win32-x64.node
+# Native Binärdateien müssen außerhalb des asar liegen, sonst kann require sie nicht laden.
+asarUnpack:
+  - '**/*.node'
 win:
   executableName: Dienstplan
 nsis:

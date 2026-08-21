@@ -47,7 +47,10 @@ jobs:
 
       - run: npm ci --ignore-scripts
 
-      # Holt die Electron-Binärdatei nach, die durch --ignore-scripts ausgefallen ist.
+      # Seit Electron 42 bringt das Paket gar kein postinstall mehr mit; die Binärdatei
+      # lädt sich beim ersten Start selbst nach. Der Schritt bleibt trotzdem: Er holt den
+      # Download in einen benannten Schritt, statt ihn im E2E-Lauf passieren zu lassen,
+      # wo er in das 60-Sekunden-Timeout aus vitest.e2e.config.ts laufen könnte.
       - name: Electron-Binärdatei nachladen
         run: node node_modules/electron/install.js
 

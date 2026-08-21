@@ -15,7 +15,7 @@ Kein Schritt aktuell in Arbeit.
 
 ## Technik und Infrastruktur
 
-- [ ] **Packaging mit `electron-builder`** (Windows-Installer über `npm run build:win`). Der letzte geplante Schritt des Projekts. `electron-builder.yml` ist seit dem 17.08.2026 auf das Projekt umgestellt und `build:unpack` erzeugt ein korrekt benanntes Paket — offen ist der signierte Installer selbst.
+- [ ] **Signierung des Windows-Installers.** `npm run build:win` erzeugt seit dem 17.08.2026 `dist/dienstplan-app-<version>-setup.exe`; die gepackte App startet und schreibt nachweislich in ihre Datenbank. Offen ist allein die Signatur: `Get-AuthenticodeSignature` meldet `NotSigned`, und electron-builders Protokollzeile „signing with signtool.exe" ist irreführend — ohne hinterlegtes Zertifikat wird nichts signiert. Ein Zertifikat kostet Geld; zu entscheiden ist, ob das Studienprojekt es braucht oder ob die SmartScreen-Warnung hingenommen wird.
 - [ ] **Hooks für Prettier und gezielten Typecheck** nach `Edit`/`Write`, siehe [`workflow/setup-empfehlungen.md`](./workflow/setup-empfehlungen.md), Abschnitt 3.
 - [ ] **Skills `schritt-start` und `schritt-abschluss`** — der am häufigsten wiederholte Ablauf im Projekt.
 
@@ -41,5 +41,5 @@ Unpriorisiert, nichts davon ist zugesagt.
 - **„Inaktiv setzen" statt Löschen für `TeamMember`.** Das eigentlich passende Werkzeug für ausscheidende Mitarbeiter mit Planungshistorie — bei der Team-Verwaltung bewusst nicht eingeführt.
 - **Toten Scaffold-Code entfernen**: `electron.svg`, `wavy-lines.svg`, den `ping`-Kanal und `runDbSmokeTest()`, das bei jedem App-Start eine Zeile in eine Tabelle schreibt, die niemand liest. (`Versions.tsx` ist am 17.08.2026 entfallen — es war die Voraussetzung für `sandbox: true`.)
 - **Subagent `ipc-pruefer`** für die Architekturregel, die kein automatisches Prüfsignal hat.
-- **MCP-Server `context7`** für verlässliche Doku zu Tailwind v4, React 19 und Electron 39.
+- **MCP-Server `context7`** für verlässliche Doku zu Tailwind v4, React 19 und Electron 43.
 - **`docs/`-Markdown als Word- oder PDF-Abgabe** für das Studienprojekt.

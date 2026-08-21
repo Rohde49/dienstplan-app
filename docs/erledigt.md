@@ -178,3 +178,13 @@ Damit laufen die Prüfsignale erstmals unabhängig davon, ob jemand daran denkt.
 Der Installationsschritt nutzt `npm ci --ignore-scripts`, statt Python und Build-Tools auf dem Runner vorauszusetzen — das löst zugleich den bis dahin offenen `npm ci`-Mangel. Begründung im [Tagebuch](./tagebuch/2026-kw34.md).
 
 `npm run build:win` bleibt bewusst außerhalb der CI: Der Installer ist ein eigener, noch offener Punkt.
+
+### Electron 43 und schlankes Paket — 17.08.2026
+
+Electron von 39.8.10 auf 43.4.0 gehoben. Anlass waren zwei Advisories mit Schweregrad _high_ (`extract-zip`, über Electron); `npm audit` meldet danach null. Die Breaking Changes 40–43 wurden vor dem Sprung gegen den Code gehalten und berühren ihn nicht. Alle fünf Testebenen sind grün, Playwright 1.62.1 arbeitet mit Electron 43 zusammen.
+
+Gleichzeitig die Paketierung korrigiert: `files` in [`electron-builder.yml`](../electron-builder.yml) ist jetzt eine Allow-Liste, und `dependencies` in [`package.json`](../package.json) enthält nur noch `better-sqlite3`. Vorher wanderten 54 MB `node_modules` in den Installer, die der Renderer wegen `nodeIntegration: false` gar nicht laden konnte — dazu ein Paket, das weder in `package.json` noch im Lockfile stand. Nachher: 3,31 MB App-Nutzlast, 39 Dateien statt 4859.
+
+Geprüft wurde gegen die **gepackte** App (`dist/win-unpacked/Dienstplan.exe`), weil die E2E-Ebene den unverpackten Build startet und eine zu enge Allow-Liste dort nicht auffallen würde; Gegenprobe durch Entfernen des Prebuilds bestätigt.
+
+Ergebnis in [`architektur/technologieentscheidungen.md`](./architektur/technologieentscheidungen.md) und [`architektur/prozessgrenzen.md`](./architektur/prozessgrenzen.md). Verlauf, verworfene Alternativen und ein korrigierter Irrtum zum Datenverzeichnis im [Tagebuch](./tagebuch/2026-kw34.md).
