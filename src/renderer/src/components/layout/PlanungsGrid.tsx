@@ -245,7 +245,7 @@ function PlanungsGrid({
   return (
     <div className="bg-card relative min-h-0 w-full flex-1 overflow-hidden rounded-lg border">
       {istVorschau && (
-        <span className="text-muted-foreground absolute top-2 right-3 z-40 text-xs">
+        <span className="text-warning absolute top-2 right-3 z-40 text-xs">
           Vorschau · nicht gespeichert
         </span>
       )}

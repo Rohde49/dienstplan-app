@@ -27,6 +27,8 @@ Daraus folgt die erste Regel oben — sie ist keine Stilvorgabe, sondern die Leh
 
 ## Gemessene Kontrastwerte
 
+> **⚠️ Nicht mehr aktuell.** Die Tabelle unten stammt aus der Mint-Palette vor der Umstellung auf Blau als Primärfarbe und neue Statusfarben (Info/Erfolg/Warnung, erweiterte Fehlerdarstellung). Die Werte sind für die aktuelle Palette **nicht neu gemessen** worden — bewusst, um keine geschätzten Zahlen als gemessen auszugeben. Vor einer Verwendung als Beleg muss die Messung wie unten beschrieben wiederholt werden.
+
 Gemessen im laufenden Renderer über Canvas-Pixelauslesung, nicht geschätzt und nicht aus `getComputedStyle` gelesen: Dort kommen die `oklch`-Werte unkonvertiert zurück und lassen sich nicht direkt in die WCAG-Formel einsetzen.
 
 | Paarung                                        | Gemessen   | Schwelle | Bestanden      |

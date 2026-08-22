@@ -1,5 +1,5 @@
 const AUSGEGLICHEN_FARBE = 'text-primary'
-const ABWEICHUNG_FARBE = 'text-[color-mix(in_oklch,var(--destructive)_65%,var(--foreground))]'
+const ABWEICHUNG_FARBE = 'text-warning'
 
 // Zeile 15 aus auswertung.md: grün bei exaktem Ausgleich (0:00), sonst farblich
 // abgesetzt, analog zum FEIERTAG_FARBE-Muster in PlanungsGrid.tsx.

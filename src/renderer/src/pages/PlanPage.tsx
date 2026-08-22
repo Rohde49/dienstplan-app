@@ -472,7 +472,7 @@ function PlanPage(): React.JSX.Element {
                 </div>
               )}
               {gibtUngespeicherteAenderung && (
-                <span className="text-muted-foreground text-xs">· ungespeicherte Änderung</span>
+                <span className="text-warning text-xs">· ungespeicherte Änderung</span>
               )}
 
               <Button

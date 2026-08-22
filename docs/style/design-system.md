@@ -14,7 +14,7 @@ Bei Widersprüchen gilt diese Datei. Entstanden aus einer Konsolidierung nach Sc
 Die App hat eine einzige Kernaufgabe: einen Monat Dienstplan für ein kleines Team aufbauen, die Kennzahlen prüfen und das Ergebnis auf einer A4-Seite ausgeben. Alles andere (Team-Verwaltung, Eintrag-Verwaltung) ist Vorbereitung dafür.
 
 1. **Das Raster hat Vorrang vor der Umrahmung.** Kopfbereiche, Polsterungen und Titelgrößen bleiben knapp, damit möglichst viele Tage sichtbar sind.
-2. **Mint bedeutet Interaktion.** `--primary`, `--accent` und `--ring` markieren ausschließlich Bedienbarkeit und Zustand. Flächen (`--background`, `--card`, `--muted`, `--secondary`) sind neutral, damit die Tönung nicht mit den zehn Mitarbeiterfarben im Raster konkurriert.
+2. **Blau bedeutet Interaktion.** `--primary`, `--accent` und `--ring` markieren ausschließlich Bedienbarkeit und Zustand. Flächen (`--background`, `--card`, `--muted`, `--secondary`) sind neutral, damit die Tönung nicht mit den zehn Mitarbeiterfarben im Raster konkurriert. Ausnahme mit bekanntem Restrisiko: `TEAM_MEMBER_FARBEN` enthält bereits eine Mitarbeiterfarbe „Blau" — siehe [`grundlagen.md`](./grundlagen.md), Fassung 4.
 3. **Zahlen sind Daten, keine Typografie.** Uhrzeiten und Dauern stehen in Tabellenziffern und fluchten spaltenweise.
 
 ## Vier Grundprinzipien
@@ -30,29 +30,44 @@ Gelten für die gesamte App, nicht nur für einzelne Bereiche. Bei Konflikt gehe
 
 ## Design-Tokens
 
-Definiert in [`src/renderer/src/assets/base.css`](../../src/renderer/src/assets/base.css), über `@theme inline` an Tailwind durchgereicht. Kontrastwerte siehe [`barrierefreiheit.md`](./barrierefreiheit.md).
+Definiert in [`src/renderer/src/assets/base.css`](../../src/renderer/src/assets/base.css), über `@theme inline` an Tailwind durchgereicht. Werte referenzieren Tailwinds mitgelieferte Stockfarben-Variablen (`var(--color-blue-600)` usw.) statt handgezogener `oklch()`-Werte. **Kontrastwerte in [`barrierefreiheit.md`](./barrierefreiheit.md) sind seit der Umstellung auf Blau nicht neu gemessen** — dort als veraltet markiert, nicht als Beleg verwendbar.
 
-| Token                      | Wert      | Bedeutung                                                 |
-| -------------------------- | --------- | --------------------------------------------------------- |
-| `--background`             | `#f1f5f9` | Seitenfläche hinter allen Cards                           |
-| `--foreground`             | `#0e1011` | Fließtext                                                 |
-| `--card`                   | `#ffffff` | Erhabene Fläche: Card, Dialog, Popover, Rasterhintergrund |
-| `--card-foreground`        | `#0e1011` | Text auf Card                                             |
-| `--primary`                | `#317f61` | Aktions-Buttons, Icon-Badges, aktive Markierung           |
-| `--primary-foreground`     | `#f8fdfb` | Beschriftung auf `--primary`                              |
-| `--secondary`              | `#f3f5f7` | Zurückhaltende Button-Variante                            |
-| `--muted`                  | `#eef0f3` | Wochenendzeilen, Kachel-Tönung, Zeilen-Hover in Tabellen  |
-| `--muted-foreground`       | `#575b5f` | Sekundärtext, Spaltenüberschriften                        |
-| `--accent`                 | `#d3f0e2` | Hover und Fokus auf Listen-, Menü- und Rasterzellen       |
-| `--accent-foreground`      | `#142f24` | Text auf `--accent`                                       |
-| `--destructive`            | `#e7000b` | Ausschließlich Löschen und Fehler                         |
-| `--destructive-foreground` | `#ffffff` | Beschriftung auf `--destructive`                          |
-| `--border`                 | `#dbdee1` | Trennlinien, Card-Kontur (dekorativ)                      |
-| `--input`                  | `#798a8b` | **Nur** Begrenzung von Eingabefeldern                     |
-| `--ring`                   | `#4b9779` | Fokusindikator                                            |
-| `--radius`                 | `0.5rem`  | Basis für `--radius-sm/md/lg`                             |
+| Token                             | Wert (Tailwind-Skala)                                        | Bedeutung                                                     |
+| ---------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
+| `--background`                    | `slate-50`                                                     | Seitenfläche hinter allen Cards                               |
+| `--foreground`                    | `slate-900`                                                    | Fließtext                                                     |
+| `--card`                          | `white`                                                         | Erhabene Fläche: Card, Dialog, Popover, Rasterhintergrund     |
+| `--card-foreground`               | `slate-900`                                                    | Text auf Card                                                 |
+| `--primary`                       | `blue-600`                                                      | Aktions-Buttons, Icon-Badges, aktive Markierung               |
+| `--primary-foreground`            | `white`                                                         | Beschriftung auf `--primary`                                  |
+| `--primary-hover`                 | `blue-700`                                                      | Hover-Zustand von `--primary`                                 |
+| `--primary-active`                | `blue-800`                                                      | Gedrückt-Zustand von `--primary`                               |
+| `--primary-subtle`                | `blue-50`                                                       | Dezente blaue Fläche                                          |
+| `--primary-selected`              | `blue-100`                                                      | Ausgewählte Fläche                                             |
+| `--secondary`                     | `slate-100`                                                     | Zurückhaltende Button-Variante                                 |
+| `--muted`                         | `slate-100`                                                     | Wochenendzeilen, Kachel-Tönung, Zeilen-Hover in Tabellen       |
+| `--muted-foreground`              | `slate-500`                                                     | Sekundärtext, Spaltenüberschriften                             |
+| `--accent`                        | `blue-50`                                                       | Hover und Fokus auf Listen-, Menü- und Rasterzellen            |
+| `--accent-foreground`             | `blue-900`                                                      | Text auf `--accent`                                            |
+| `--destructive`                   | `red-600`                                                       | Ausschließlich Löschen und Fehler                              |
+| `--destructive-foreground`        | `white`                                                         | Beschriftung auf `--destructive` (z. B. Löschen-Button)        |
+| `--destructive-subtle`            | `red-50`                                                        | Hintergrund gefüllter Fehlerflächen (`FehlerHinweis`)          |
+| `--destructive-border`            | `red-200`                                                       | Rahmen gefüllter Fehlerflächen                                 |
+| `--destructive-subtle-foreground` | `red-800`                                                       | Text auf `--destructive-subtle`                                |
+| `--info` / `-subtle` / `-border` / `-foreground` | `sky-600` / `sky-50` / `sky-200` / `sky-800`     | Hinweisfläche ohne Fehler-/Erfolgscharakter                    |
+| `--success` / `-subtle` / `-border` / `-foreground` | `emerald-600` / `emerald-50` / `emerald-200` / `emerald-800` | Erfolgsrückmeldung                          |
+| `--warning` / `-subtle` / `-border` / `-foreground` | `amber-600` / `amber-50` / `amber-300` / `amber-900` | Warnung, z. B. ungespeicherte Änderungen, Soll/Ist-Abweichung |
+| `--border`                        | `slate-200`                                                     | Trennlinien, Card-Kontur (dekorativ)                            |
+| `--border-strong`                 | `slate-300`                                                     | Deutliche Abgrenzungen                                          |
+| `--input`                         | unverändert (`oklch(0.62 0.02 200)`)                            | **Nur** Begrenzung von Eingabefeldern                           |
+| `--ring`                          | `blue-600`                                                      | Fokusindikator                                                  |
+| `--radius`                        | `0.5rem`                                                        | Basis für `--radius-sm/md/lg`                                   |
 
-**Warum `--border` und `--input` auseinanderfallen:** WCAG 1.4.11 verlangt 3:1 für die Begrenzung eines Bedienelements, wenn sie das einzige Erkennungsmerkmal ist — das gilt für Eingabefelder, nicht für dekorative Trennlinien. Beide Tokens auf denselben Wert zu legen zwingt entweder die Trennlinien zu unnötiger Härte oder die Feldrahmen unter die Schwelle. Getrennt lösen sie beides.
+**Warum `--border` und `--input` auseinanderfallen:** WCAG 1.4.11 verlangt 3:1 für die Begrenzung eines Bedienelements, wenn sie das einzige Erkennungsmerkmal ist — das gilt für Eingabefelder, nicht für dekorative Trennlinien. Beide Tokens auf denselben Wert zu legen zwingt entweder die Trennlinien zu unnötiger Härte oder die Feldrahmen unter die Schwelle. Getrennt lösen sie beides. `--input` wurde bei der Umstellung auf Blau bewusst **nicht** angefasst, um diese bereits gemessene Garantie nicht ohne erneutes Audit zu brechen.
+
+### Statusfarben
+
+Vier Statusfarben (`destructive`, `info`, `success`, `warning`), jede mit demselben Vier-Token-Muster: Basisfarbe (Text/Icon auf neutraler Fläche), `-subtle` (gefüllte Statusfläche), `-border` (Rahmen der Statusfläche), `-foreground` (Text auf `-subtle`). `FehlerHinweis` nutzt `bg-destructive-subtle border-destructive-border text-destructive-subtle-foreground` als Referenzbeispiel für eine gefüllte Statusfläche statt reiner Umrandung. `info` und `success` haben aktuell noch keine Aufrufstelle — die Tokens existieren, damit neue Hinweisflächen nicht wieder auf `text-muted-foreground` ausweichen.
 
 **Regel für neue Farbwerte:** zuerst prüfen, ob ein bestehendes Token semantisch passt. Erst wenn keines passt, ein neues Token in `base.css` anlegen — nie einen rohen Farbwert oder eine Tailwind-Standardfarbe (`bg-slate-500` o. ä.) in eine Komponente schreiben.
 

@@ -31,7 +31,7 @@ export function FehlerHinweis(): React.JSX.Element | null {
         <div
           key={meldung.id}
           role="alert"
-          className="border-destructive/40 bg-background text-destructive flex w-full max-w-2xl items-start gap-3 rounded-md border p-4 shadow-lg"
+          className="bg-destructive-subtle border-destructive-border text-destructive-subtle-foreground flex w-full max-w-2xl items-start gap-3 rounded-md border p-4 shadow-lg"
         >
           <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
           <div className="min-w-0 flex-1 text-sm">

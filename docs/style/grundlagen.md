@@ -42,13 +42,14 @@ Der Konfigurationsaufwand war im Referenzprojekt bereits gelöst und musste nur 
 
 ## Wie die Farbpalette entstanden ist
 
-Drei Fassungen in Folge — die Reihenfolge erklärt, warum das heutige Ergebnis so aussieht:
+Vier Fassungen in Folge — die Reihenfolge erklärt, warum das heutige Ergebnis so aussieht:
 
 | Fassung                     | Was galt                                                            | Warum verworfen                                                                  |
 | --------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | 1. Neutral                  | Graustufen, kein Farbakzent                                         | Auf Nutzerwunsch zugunsten eines freundlicheren Schemas ersetzt                  |
 | 2. Mint durchgängig         | Alle Tokens auf oklch-Hue ~165, Sättigung steigt mit Interaktivität | Getönte Flächen konkurrierten im Raster mit den zehn Mitarbeiterfarben           |
-| 3. Mint nur für Interaktion | Flächen neutral, Mint für `--primary`/`--accent`/`--ring`           | **Gilt heute** — Werte und Kontraste in [`design-system.md`](./design-system.md) |
+| 3. Mint nur für Interaktion | Flächen neutral, Mint für `--primary`/`--accent`/`--ring`           | Auf Nutzerwunsch abgelöst — die Oberfläche wirkte überwiegend grau, da nur eine dezente Akzentfarbe und keine Statusfarben existierten |
+| 4. Blau + Statusfarben       | Primary/Accent/Ring auf Tailwinds `blue`-Skala, dazu eigene `info`/`success`/`warning`/`destructive`-Statusflächen (je `-subtle`/`-border`/`-foreground`) | **Gilt heute** — Werte in [`design-system.md`](./design-system.md). Bekanntes Restrisiko: `TEAM_MEMBER_FARBEN` enthält bereits eine Mitarbeiterfarbe „Blau" — anders als bei Fassung 2 wurde diese Überschneidung hier bewusst in Kauf genommen, weil Primärfarbe (Bedienelemente) und Mitarbeiterfarbe (Personenkennzeichnung) selten in derselben Fläche zusammentreffen |
 
 Der Zielkonflikt, der sich durch alle drei Fassungen zieht: Zwei der zehn `TeamMember.farbe`-Töne (`#34B37A` Grün, `#7FB236` Lindgrün) liegen selbst im Grünbereich und damit nah am Mint. Aufgelöst wurde er nicht über Farbabstand, sondern über **Kontext und Sättigung**: Mint markiert Bedienbarkeit, die Mitarbeiterfarben unterscheiden Personen. Beide begegnen sich nie in derselben Rolle.
 
