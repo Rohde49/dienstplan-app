@@ -54,7 +54,7 @@ describe('erzeugePlaneintragSnapshot', () => {
     })
   })
 
-  it('berechnet bei einer mitarbeiterabhängigen Eintragsdefinition arbeitszeitMinuten aus der Wochenarbeitszeit', () => {
+  it('berechnet bei einer mitarbeiterabhängigen Eintragsdefinition arbeitszeitOhneNachtbereitschaftMinuten aus der Wochenarbeitszeit', () => {
     expect(erzeugePlaneintragSnapshot(mitarbeiterabhaengigeEintragsdefinition, teamMember)).toEqual(
       {
         eintragsdefinitionId: 2,
@@ -62,8 +62,8 @@ describe('erzeugePlaneintragSnapshot', () => {
         beginn: null,
         ende: null,
         anwesenheitszeitMinuten: 0,
-        arbeitszeitMinuten: 468,
-        arbeitszeitOhneNachtbereitschaftMinuten: 0,
+        arbeitszeitMinuten: 0,
+        arbeitszeitOhneNachtbereitschaftMinuten: 468,
         nachtbereitschaftMinuten: 0,
         nachtarbeitMinuten: 0
       }

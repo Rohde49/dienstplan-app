@@ -66,21 +66,24 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     }
   }
 
-  it('zählt nur Planeinträge mit kuerzel SN/F (Zeile 1)', () => {
+  it('zählt Planeinträge mit kuerzel SN/F oder SN (Zeile 1)', () => {
     const tage = [
       tag({ datum: '2026-01-05' }),
       tag({ datum: '2026-01-06' }),
-      tag({ datum: '2026-01-07' })
+      tag({ datum: '2026-01-07' }),
+      tag({ datum: '2026-01-08' })
     ]
     const dienstplantage = [
       dienstplantag(1, '2026-01-05'),
       dienstplantag(2, '2026-01-06'),
-      dienstplantag(3, '2026-01-07')
+      dienstplantag(3, '2026-01-07'),
+      dienstplantag(4, '2026-01-08')
     ]
     const planeintraege = {
       [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({ kuerzel: 'SN/F' }),
       [planeintragSchluessel(2, MITARBEITER_ID)]: eintrag({ kuerzel: 'SN/F' }),
-      [planeintragSchluessel(3, MITARBEITER_ID)]: eintrag({ kuerzel: 'F' })
+      [planeintragSchluessel(3, MITARBEITER_ID)]: eintrag({ kuerzel: 'SN' }),
+      [planeintragSchluessel(4, MITARBEITER_ID)]: eintrag({ kuerzel: 'F' })
     }
 
     const ergebnis = berechneKennzahlenFuerMitarbeiter(
@@ -92,7 +95,7 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
       {}
     )
 
-    expect(ergebnis.anzahlSnfDienste).toBe(2)
+    expect(ergebnis.anzahlSnfDienste).toBe(3)
   })
 
   it('zählt Freie Tage unabhängig vom Wochentag (eigene Definition)', () => {
@@ -141,7 +144,7 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     expect(ergebnis.anzahlFreieSamstage).toBe(1)
   })
 
-  it('zählt einen freien Tag, der Sonntag und Feiertag zugleich ist, nur einmal (Zeile 3)', () => {
+  it('zählt nur freie Sonntage, Feiertage an Werktagen zählen nicht mit (Zeile 3)', () => {
     const tage = [
       tag({ datum: '2026-01-11', wochentag: 'So', istWochenende: true }),
       tag({
@@ -178,11 +181,11 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
       {}
     )
 
-    // 3 freie Tage gesetzt, aber Ostersonntag ist Sonntag UND Feiertag und zählt nur einmal -> 3, nicht 4.
-    expect(ergebnis.anzahlFreieSonntageUndFeiertage).toBe(3)
+    // 3 freie Tage gesetzt, aber nur die zwei Sonntage zählen; der 1. Mai ist Feiertag an einem Freitag und zählt nicht mit.
+    expect(ergebnis.anzahlFreieSonntage).toBe(2)
   })
 
-  it('summiert arbeitszeitMinuten an Sonntagen/Feiertagen, ignoriert normale Werktage (Zeile 4)', () => {
+  it('summiert arbeitszeitOhneNachtbereitschaftMinuten an Sonntagen/Feiertagen, ignoriert normale Werktage (Zeile 4)', () => {
     const tage = [
       tag({ datum: '2026-01-05', wochentag: 'Mo' }),
       tag({ datum: '2026-01-11', wochentag: 'So', istWochenende: true }),
@@ -201,13 +204,17 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     const planeintraege = {
       [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({
         kuerzel: 'F',
-        arbeitszeitMinuten: 480
+        arbeitszeitOhneNachtbereitschaftMinuten: 480
       }),
       [planeintragSchluessel(2, MITARBEITER_ID)]: eintrag({
         kuerzel: 'F',
-        arbeitszeitMinuten: 300
+        arbeitszeitOhneNachtbereitschaftMinuten: 300,
+        nachtbereitschaftMinuten: 60
       }),
-      [planeintragSchluessel(3, MITARBEITER_ID)]: eintrag({ kuerzel: 'F', arbeitszeitMinuten: 480 })
+      [planeintragSchluessel(3, MITARBEITER_ID)]: eintrag({
+        kuerzel: 'F',
+        arbeitszeitOhneNachtbereitschaftMinuten: 480
+      })
     }
 
     const ergebnis = berechneKennzahlenFuerMitarbeiter(
@@ -219,6 +226,7 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
       {}
     )
 
+    // Nachtbereitschaft (60 Min. am Sonntag) fließt hier bewusst nicht ein: 300 + 480 = 780, nicht 840.
     expect(ergebnis.gearbeiteteStundenSonntageUndFeiertageMinuten).toBe(780)
   })
 
@@ -280,13 +288,11 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     const dienstplantage = [dienstplantag(1, '2026-01-05'), dienstplantag(2, '2026-01-06')]
     const planeintraege = {
       [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({
-        arbeitszeitMinuten: 480,
         arbeitszeitOhneNachtbereitschaftMinuten: 400,
         nachtbereitschaftMinuten: 80,
         nachtarbeitMinuten: 60
       }),
       [planeintragSchluessel(2, MITARBEITER_ID)]: eintrag({
-        arbeitszeitMinuten: 300,
         arbeitszeitOhneNachtbereitschaftMinuten: 300,
         nachtbereitschaftMinuten: 0,
         nachtarbeitMinuten: 30
@@ -332,11 +338,14 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     expect(ergebnis.nachtbereitschaftszuschlagMinuten).toBe(3)
   })
 
-  it('setzt Ist-Arbeitszeit gleich der Arbeitszeit gesamt im Monat (Zeile 13)', () => {
+  it('berechnet Ist-Arbeitszeit aus Arbeitszeit ohne Nachtbereitschaft plus Nachtbereitschaftszuschlag (Zeile 13)', () => {
     const tage = [tag({ datum: '2026-01-05' })]
     const dienstplantage = [dienstplantag(1, '2026-01-05')]
     const planeintraege = {
-      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({ arbeitszeitMinuten: 480 })
+      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({
+        arbeitszeitOhneNachtbereitschaftMinuten: 420,
+        nachtbereitschaftMinuten: 40
+      })
     }
 
     const ergebnis = berechneKennzahlenFuerMitarbeiter(
@@ -348,8 +357,9 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
       {}
     )
 
-    expect(ergebnis.istArbeitszeitMinuten).toBe(ergebnis.arbeitszeitGesamtMinuten)
-    expect(ergebnis.istArbeitszeitMinuten).toBe(480)
+    // 420 + gerundet(40 * 0,25) = 420 + 10 = 430
+    expect(ergebnis.nachtbereitschaftszuschlagMinuten).toBe(10)
+    expect(ergebnis.istArbeitszeitMinuten).toBe(430)
   })
 
   it('berechnet Soll-Arbeitszeit und Differenz Soll/Ist gemäß Beispiel aus auswertung.md (21 × 39:00 / 5 = 163:48)', () => {
@@ -357,7 +367,10 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     const tage = Array.from({ length: 21 }, (_, i) => tag({ datum: `2026-01-${String(i + 1)}` }))
     const dienstplantage = tage.map((t, i) => dienstplantag(i + 1, t.datum))
     const planeintraege = {
-      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({ arbeitszeitMinuten: 9828 })
+      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({
+        arbeitszeitMinuten: 9828,
+        arbeitszeitOhneNachtbereitschaftMinuten: 9828
+      })
     }
 
     const ergebnis = berechneKennzahlenFuerMitarbeiter(
@@ -378,7 +391,10 @@ describe('berechneKennzahlenFuerMitarbeiter (tagesbezogene Zählungen)', () => {
     const tage = [tag({ datum: '2026-01-05' })]
     const dienstplantage = [dienstplantag(1, '2026-01-05')]
     const planeintraege = {
-      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({ arbeitszeitMinuten: 100 })
+      [planeintragSchluessel(1, MITARBEITER_ID)]: eintrag({
+        arbeitszeitMinuten: 100,
+        arbeitszeitOhneNachtbereitschaftMinuten: 100
+      })
     }
 
     const ergebnis = berechneKennzahlenFuerMitarbeiter(

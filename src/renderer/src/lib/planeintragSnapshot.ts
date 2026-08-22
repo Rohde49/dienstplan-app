@@ -18,10 +18,10 @@ export function erzeugePlaneintragSnapshot(
       beginn: null,
       ende: null,
       anwesenheitszeitMinuten: 0,
-      arbeitszeitMinuten: berechneMitarbeiterabhaengigeArbeitszeitMinuten(
+      arbeitszeitMinuten: 0,
+      arbeitszeitOhneNachtbereitschaftMinuten: berechneMitarbeiterabhaengigeArbeitszeitMinuten(
         teamMember.wochenarbeitszeitMinuten
       ),
-      arbeitszeitOhneNachtbereitschaftMinuten: 0,
       nachtbereitschaftMinuten: 0,
       nachtarbeitMinuten: 0
     }

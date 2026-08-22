@@ -17,7 +17,7 @@ export interface Kennzahlen {
   anzahlSnfDienste: number // Zeile 1
   anzahlFreieTage: number // Grid-eigene Definition, siehe auswertung.md, kein Bestandteil der 15 Zeilen
   anzahlFreieSamstage: number // Zeile 2
-  anzahlFreieSonntageUndFeiertage: number // Zeile 3
+  anzahlFreieSonntage: number // Zeile 3
   gearbeiteteStundenSonntageUndFeiertageMinuten: number // Zeile 4
   arbeitszeitGesamtMinuten: number // Zeile 5
   nachtbereitschaftGesamtMinuten: number // Zeile 6
@@ -45,7 +45,7 @@ export function berechneKennzahlenFuerMitarbeiter(
   let anzahlSnfDienste = 0
   let anzahlFreieTage = 0
   let anzahlFreieSamstage = 0
-  let anzahlFreieSonntageUndFeiertage = 0
+  let anzahlFreieSonntage = 0
   let gearbeiteteStundenSonntageUndFeiertageMinuten = 0
   let arbeitszeitGesamtMinuten = 0
   let nachtbereitschaftGesamtMinuten = 0
@@ -61,16 +61,18 @@ export function berechneKennzahlenFuerMitarbeiter(
 
     const eintrag = planeintraege[planeintragSchluessel(dienstplantagId, teamMemberId)]
     if (eintrag) {
-      if (eintrag.kuerzel === 'SN/F') anzahlSnfDienste++
+      if (eintrag.kuerzel === 'SN/F' || eintrag.kuerzel === 'SN') anzahlSnfDienste++
       if (eintrag.kuerzel === '/') {
         anzahlFreieTage++
         if (tag.wochentag === 'Sa') anzahlFreieSamstage++
-        if (istSonntagOderFeiertag) anzahlFreieSonntageUndFeiertage++
+        if (tag.wochentag === 'So') anzahlFreieSonntage++
       }
       if (istSonntagOderFeiertag) {
-        gearbeiteteStundenSonntageUndFeiertageMinuten += eintrag.arbeitszeitMinuten
+        gearbeiteteStundenSonntageUndFeiertageMinuten +=
+          eintrag.arbeitszeitOhneNachtbereitschaftMinuten
       }
-      arbeitszeitGesamtMinuten += eintrag.arbeitszeitMinuten
+      arbeitszeitGesamtMinuten +=
+        eintrag.arbeitszeitOhneNachtbereitschaftMinuten + eintrag.nachtbereitschaftMinuten
       nachtbereitschaftGesamtMinuten += eintrag.nachtbereitschaftMinuten
       arbeitszeitOhneNachtbereitschaftGesamtMinuten +=
         eintrag.arbeitszeitOhneNachtbereitschaftMinuten
@@ -81,7 +83,11 @@ export function berechneKennzahlenFuerMitarbeiter(
   }
 
   const anzahlArbeitstage = berechneArbeitstageFuerMonat(tage)
-  const istArbeitszeitMinuten = arbeitszeitGesamtMinuten
+  const nachtbereitschaftszuschlagMinuten = rundeAufVolleMinute(
+    nachtbereitschaftGesamtMinuten * NACHTBEREITSCHAFTSZUSCHLAG_SATZ
+  )
+  const istArbeitszeitMinuten =
+    arbeitszeitOhneNachtbereitschaftGesamtMinuten + nachtbereitschaftszuschlagMinuten
   const sollArbeitszeitMinuten = rundeAufVolleMinute(
     (anzahlArbeitstage * wochenarbeitszeitMinuten) / 5
   )
@@ -90,16 +96,14 @@ export function berechneKennzahlenFuerMitarbeiter(
     anzahlSnfDienste,
     anzahlFreieTage,
     anzahlFreieSamstage,
-    anzahlFreieSonntageUndFeiertage,
+    anzahlFreieSonntage,
     gearbeiteteStundenSonntageUndFeiertageMinuten,
     arbeitszeitGesamtMinuten,
     nachtbereitschaftGesamtMinuten,
     arbeitszeitOhneNachtbereitschaftGesamtMinuten,
     nachtarbeitGesamtMinuten,
     nachtzuschlagMinuten: rundeAufVolleMinute(nachtarbeitGesamtMinuten * NACHTZUSCHLAG_SATZ),
-    nachtbereitschaftszuschlagMinuten: rundeAufVolleMinute(
-      nachtbereitschaftGesamtMinuten * NACHTBEREITSCHAFTSZUSCHLAG_SATZ
-    ),
+    nachtbereitschaftszuschlagMinuten,
     anzahlRufbereitschaften,
     anzahlArbeitstage,
     istArbeitszeitMinuten,

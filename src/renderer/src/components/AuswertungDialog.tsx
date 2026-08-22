@@ -25,9 +25,9 @@ const KENNZAHLEN_ZEILEN: KennzahlenZeile[] = [
   { label: 'Anzahl SN/F-Dienste', art: 'anzahl', feld: 'anzahlSnfDienste' },
   { label: 'Anzahl freier Samstage', art: 'anzahl', feld: 'anzahlFreieSamstage' },
   {
-    label: 'Anzahl freier Sonntage und Feiertage',
+    label: 'Anzahl freier Sonntage',
     art: 'anzahl',
-    feld: 'anzahlFreieSonntageUndFeiertage'
+    feld: 'anzahlFreieSonntage'
   },
   {
     label: 'Gearbeitete Stunden an Sonntagen und Feiertagen',
@@ -36,19 +36,19 @@ const KENNZAHLEN_ZEILEN: KennzahlenZeile[] = [
   },
   { label: 'Arbeitszeit gesamt im Monat', art: 'zeit', feld: 'arbeitszeitGesamtMinuten' },
   {
-    label: 'Nachtbereitschaft gesamt im Monat',
+    label: 'Nachtbereitschaft gesamt',
     art: 'zeit',
     feld: 'nachtbereitschaftGesamtMinuten'
   },
   {
-    label: 'Arbeitszeit ohne Nachtbereitschaft gesamt im Monat',
+    label: 'Stunden ohne NB gesamt',
     art: 'zeit',
     feld: 'arbeitszeitOhneNachtbereitschaftGesamtMinuten'
   },
-  { label: 'Nachtarbeit gesamt im Monat', art: 'zeit', feld: 'nachtarbeitGesamtMinuten' },
-  { label: 'Nachtzuschlag von 20 Prozent in Stunden', art: 'zeit', feld: 'nachtzuschlagMinuten' },
+  { label: 'Nachtarbeit gesamt', art: 'zeit', feld: 'nachtarbeitGesamtMinuten' },
+  { label: '+Nachtzuschlag 20%', art: 'zeit', feld: 'nachtzuschlagMinuten' },
   {
-    label: 'Nachtbereitschaftszuschlag von 25 Prozent in Stunden',
+    label: 'Nachtbereitschaft 25%',
     art: 'zeit',
     feld: 'nachtbereitschaftszuschlagMinuten'
   },
